@@ -17,12 +17,23 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { Store } from 'src/App';
+import { useMoralis } from 'react-moralis';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardApp() {
   const theme = useTheme();
-
+  const navigate = useNavigate();
+  const { isAuthenticated } = useMoralis();
+  const { auth } = useContext(Store);
+  
+  useEffect(() => {
+    if (!auth.address || isAuthenticated) navigate('/login');
+  }, [navigate, auth, isAuthenticated]);
+  
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
