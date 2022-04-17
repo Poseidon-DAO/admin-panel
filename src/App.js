@@ -22,7 +22,7 @@ export default function App() {
     () => ({ auth, setAuth, currentNetwork, setCurrentNetwork }), 
     [auth, currentNetwork]
   );
-  console.log(value);
+
   return (
     <ThemeProvider>
       <MoralisProvider

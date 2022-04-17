@@ -50,22 +50,36 @@ export default function Main() {
   const [needMetamask, setNeedMetamask] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const { auth, setAuth, setCurrentNetwork, currentNetwork } = useContext(Store);
+
+  const fetchContract = async () => {
+    // const options = {
+    //   contractAddress: '0xfB9B43504B109c44809C541f9EABc0eF64AdDb7e',
+    //   functionName: 'getAccessiblity',
+    //   abi: '',
+    //   params: {},
+    //   msgValue: 0,
+    // }
+    // await Moralis.executeFunction(options);
+  };
 
   useEffect(() => {
     if (!auth.name || auth.name !== 'Rinkeby' || !isAuthenticated || currentNetwork !== 'Rinkeby') navigate('/login');
   },[auth, navigate, isAuthenticated, currentNetwork]);
 
   useEffect(() => {
-    if (auth.name === 'Rinkeby' && isAuthenticated) navigate('/dashboard');
-  },[auth, navigate, isAuthenticated]);
+    if (auth.name === 'Rinkeby' && isAuthenticated && location.pathname === '/login') {
+      navigate('/dashboard');
+    }
+  },[auth, navigate, isAuthenticated, location.pathname]);
 
   // Initialize web3 env
   const setWeb3Env = () => {
     getNetwork();
     monitorNetwork();
     monitorDisconnection();
+    fetchContract();
   };
 
   // Toast depending on chain being used
