@@ -6,24 +6,30 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 import Blog from './pages/Blog';
 import User from './pages/User';
 import Login from './pages/Login';
+import NotAllowed from './pages/NotAllowed';
 import NotFound from './pages/Page404';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Store } from './App';
 import { useMoralis } from 'react-moralis';
 import { NetworkTypes } from './types';
 import { Alert, Snackbar } from '@mui/material';
+import { multisigOptions } from './abis';
 
 // ----------------------------------------------------------------------
 
 function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
+      path: '/forbidden',
+      element: <NotAllowed />,
+    },
+    {
+      path: '/app',
       element: <DashboardLayout />,
       children: [
-        { path: 'app', element: <DashboardApp /> },
+        { path: 'dashboard', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
@@ -41,6 +47,7 @@ function Router() {
     },
     { path: '*', element: <Navigate to="/404" replace /> },
   ]);
+
 }
 
 export default function Main() { 
@@ -53,24 +60,25 @@ export default function Main() {
   const location = useLocation();
   const { auth, setAuth, setCurrentNetwork, currentNetwork } = useContext(Store);
 
-  const fetchContract = async () => {
-    // const options = {
-    //   contractAddress: '0xfB9B43504B109c44809C541f9EABc0eF64AdDb7e',
-    //   functionName: 'getAccessiblity',
-    //   abi: '',
-    //   params: {},
-    //   msgValue: 0,
-    // }
-    // await Moralis.executeFunction(options);
-  };
+  const fetchContract = useCallback(async () => {
+    try {
+      if (account){
+        const options = multisigOptions(account, "getIsMultiSigAddress", {})
+        const res = await Moralis.executeFunction(options);
+        return res;
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }, [Moralis, account]);
 
   useEffect(() => {
     if (!auth.name || auth.name !== 'Rinkeby' || !isAuthenticated || currentNetwork !== 'Rinkeby') navigate('/login');
-  },[auth, navigate, isAuthenticated, currentNetwork]);
+  },[auth.name, navigate, isAuthenticated, currentNetwork]);
 
   useEffect(() => {
     if (auth.name === 'Rinkeby' && isAuthenticated && location.pathname === '/login') {
-      navigate('/dashboard');
+      navigate('/app');
     }
   },[auth, navigate, isAuthenticated, location.pathname]);
 
@@ -79,8 +87,12 @@ export default function Main() {
     getNetwork();
     monitorNetwork();
     monitorDisconnection();
-    fetchContract();
   };
+
+  useEffect(() => {
+    const isAllowed = fetchContract();
+    if (!isAllowed) navigate('/forbidden');
+  }, [account, fetchContract, navigate]);
 
   // Toast depending on chain being used
   const getNetwork = async () => {
@@ -131,7 +143,6 @@ export default function Main() {
       }
     };
     enableWeb3();
-    onWeb3Enabled();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -139,6 +150,7 @@ export default function Main() {
   useEffect(() => {
     if (isAuthenticated) {
       onWeb3Enabled();
+      fetchContract();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
@@ -146,7 +158,6 @@ export default function Main() {
   // Update chain of change in wallet
   useEffect(() => {
     if (chainId.length && account) {
-      // @ts-ignore
       const chainName = NetworkTypes[chainId];
       setAuth({
         name: chainName,
