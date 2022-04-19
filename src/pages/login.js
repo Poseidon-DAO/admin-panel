@@ -4,7 +4,7 @@ import { Card, Container, Typography } from '@mui/material';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Page from '../components/Page';
-import Logo from '../components/Logo';
+import Logo from '../components/logo';
 // sections
 import AuthMetamask from '../sections/auth/AuthMetamask'
 

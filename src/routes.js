@@ -22,10 +22,6 @@ import { multisigOptions } from './abis';
 function Router() {
   return useRoutes([
     {
-      path: '/forbidden',
-      element: <NotAllowed />,
-    },
-    {
       path: '/app',
       element: <DashboardLayout />,
       children: [
@@ -44,6 +40,10 @@ function Router() {
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
+    },
+    {
+      path: '/forbidden',
+      element: <NotAllowed />,
     },
     { path: '*', element: <Navigate to="/404" replace /> },
   ]);

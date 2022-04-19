@@ -31,7 +31,7 @@ export default function DashboardApp() {
   const { auth } = useContext(Store);
   
   useEffect(() => {
-    if (!auth.address || isAuthenticated) navigate('/login');
+    if (!auth.address || isAuthenticated) navigate('/');
   }, [navigate, auth, isAuthenticated]);
   
   return (
