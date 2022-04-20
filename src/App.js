@@ -9,7 +9,11 @@ import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 import { createContext, useMemo, useState } from "react";
 
 export const Store = createContext({
-  auth: {},
+  auth: {
+    name: "",
+    id: "",
+    address: "",
+  },
   setAuth: () => {},
   currentNetwork: '',
   setCurrentNetwork: () => {},

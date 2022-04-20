@@ -58,29 +58,27 @@ export default function Main() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const { auth, setAuth, setCurrentNetwork, currentNetwork } = useContext(Store);
+  const { setAuth, setCurrentNetwork, currentNetwork } = useContext(Store);
 
-  const fetchContract = useCallback(async () => {
+  const isUserAllowed = useCallback(async () => {
     try {
       if (account){
         const options = multisigOptions(account, "getIsMultiSigAddress", {})
         const res = await Moralis.executeFunction(options);
         return res;
       }
+      return false;
     } catch (error) {
       console.log("Error", error);
     }
   }, [Moralis, account]);
 
+  //Navigate to app or login when conditions are met
   useEffect(() => {
-    if (!auth.name || auth.name !== 'Rinkeby' || !isAuthenticated || currentNetwork !== 'Rinkeby') navigate('/login');
-  },[auth.name, navigate, isAuthenticated, currentNetwork]);
-
-  useEffect(() => {
-    if (auth.name === 'Rinkeby' && isAuthenticated && location.pathname === '/login') {
-      navigate('/app');
-    }
-  },[auth, navigate, isAuthenticated, location.pathname]);
+    if (location.pathname !== '/login' && (!isAuthenticated || currentNetwork !== 'Rinkeby')) navigate('/login');
+    if (currentNetwork === 'Rinkeby' && isAuthenticated && location.pathname === '/login') navigate('/app');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[navigate, isAuthenticated, currentNetwork]);
 
   // Initialize web3 env
   const setWeb3Env = () => {
@@ -89,10 +87,16 @@ export default function Main() {
     monitorDisconnection();
   };
 
+  //Check if the user is allowed to view the dashboard by calling the smart contract getIsMultiSigAddress
   useEffect(() => {
-    const isAllowed = fetchContract();
-    if (!isAllowed) navigate('/forbidden');
-  }, [account, fetchContract, navigate]);
+    const checkAllowed = async () => {
+      const isAllowed = await isUserAllowed();
+      if (!isAllowed) navigate('/forbidden');
+    }
+    if (account && isAuthenticated && currentNetwork === 'Rinkeby') {
+      checkAllowed();
+    }
+  }, [account, isAuthenticated, isUserAllowed, navigate, currentNetwork]);
 
   // Toast depending on chain being used
   const getNetwork = async () => {
@@ -143,16 +147,16 @@ export default function Main() {
       }
     };
     enableWeb3();
+    onWeb3Enabled();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // If user authenticates, we set up the environment
+  // If user authenticates, we set up the environment, if he logs out, we clear login details
   useEffect(() => {
     if (isAuthenticated) {
       onWeb3Enabled();
-      fetchContract();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   // Update chain of change in wallet
