@@ -598,11 +598,25 @@ export const multiSigABI = [
 // Pbl: 0xDc3A186fB898669023289Fd66b68E4016875E011
 // Pvt: 0x17793bb885773856ac0a6f534f9484e74c1164bd545659b95419c430bbba5904
 
-export const multisigOptions = (address, functionName, ...params) => {
+export const multiSigOptions = (address, functionName, ...params) => {
 	return {
     contractAddress: multiSigAddress,
     functionName: functionName,
     abi: multiSigABI,
+    params: {
+      _address: address,
+			...params
+    },
+    msgValue: 0
+    
+  }
+}
+
+export const accessibilityOptions = (address, functionName, ...params) => {
+	return {
+    contractAddress: accessibilityAdress,
+    functionName: functionName,
+    abi: accessibilityABI,
     params: {
       _address: address,
 			...params

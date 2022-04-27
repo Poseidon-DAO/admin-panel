@@ -5,6 +5,10 @@ import { styled } from '@mui/material/styles';
 //
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
+import { useEffect } from 'react';
+import { accessibilityOptions } from 'src/abis';
+import { useMoralis } from 'react-moralis';
+import SMART_CONTRACT_FUNCTIONS from 'src/smartContract';
 
 // ----------------------------------------------------------------------
 
@@ -34,11 +38,22 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const { Moralis, account } = useMoralis();
+  const [isFrozen, setIsFrozen] = useState(false);
+
+  useEffect(() => {
+    const checkIfFrozen = async () => {
+      const isFrozenOp = accessibilityOptions(account, SMART_CONTRACT_FUNCTIONS.CHECK_IS_FROZEN, {});
+      const frozen = await Moralis.executeFunction(isFrozenOp);
+      if (frozen) setIsFrozen(true);
+    }
+    checkIfFrozen()
+  }, [account, Moralis])
 
   return (
     <RootStyle>
-      <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-      <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      <DashboardNavbar onOpenSidebar={() => setOpen(true)} isFrozen={isFrozen}/>
+      <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} isFrozen={isFrozen} />
       <MainStyle>
         <Outlet />
       </MainStyle>

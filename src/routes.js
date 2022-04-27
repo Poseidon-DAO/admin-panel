@@ -15,7 +15,7 @@ import { Store } from './App';
 import { useMoralis } from 'react-moralis';
 import { NetworkTypes } from './types';
 import { Alert, Snackbar } from '@mui/material';
-import { multisigOptions } from './abis';
+import { multiSigOptions } from './abis';
 
 // ----------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ export default function Main() {
   const isUserAllowed = useCallback(async () => {
     try {
       if (account){
-        const options = multisigOptions(account, "getIsMultiSigAddress", {})
+        const options = multiSigOptions(account, "getIsMultiSigAddress", {});
         const res = await Moralis.executeFunction(options);
         return res;
       }
