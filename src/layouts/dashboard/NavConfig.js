@@ -7,14 +7,14 @@ const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
 const navConfig = [
   {
-    title: 'app',
-    path: '/app/dashboard',
-    icon: getIcon('eva:pie-chart-2-fill'),
+    title: 'Multi Signature',
+    path: '/app/multisig',
+    icon: getIcon('la:file-signature'),
   },
   {
-    title: 'user',
-    path: '/app/user',
-    icon: getIcon('eva:people-fill'),
+    title: 'Accessibility',
+    path: '/app/accessibility',
+    icon: getIcon('akar-icons:key'),
   },
 ];
 

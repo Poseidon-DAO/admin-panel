@@ -3,12 +3,11 @@ import { Navigate, useNavigate, useRoutes, useLocation } from 'react-router-dom'
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
-import Blog from './pages/Blog';
-import User from './pages/User';
+import Accessibility from './pages/Accessibility';
 import Login from './pages/Login';
 import NotAllowed from './pages/NotAllowed';
 import NotFound from './pages/Page404';
-import Products from './pages/Products';
+import MultiSig from './pages/MultiSig';
 import DashboardApp from './pages/DashboardApp';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Store } from './App';
@@ -26,9 +25,8 @@ function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'dashboard', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: 'accessibility', element: <Accessibility /> },
+        { path: 'multisig', element: <MultiSig /> },
       ],
     },
     {
@@ -173,15 +171,15 @@ export default function Main() {
 
   return (
     <>
-        <Snackbar
-          severity="error"
-          open={needMetamask || currentNetwork !== 'Rinkeby'}
-          autoHideDuration={6000}
-          onClose={() => {
-            setNeedMetamask(false);
-          }}
-          anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-        >
+      <Snackbar
+        severity="error"
+        open={needMetamask || currentNetwork !== 'Rinkeby'}
+        autoHideDuration={6000}
+        onClose={() => {
+          setNeedMetamask(false);
+        }}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      >
         <Alert severity='error'>{needMetamask ? "Please install Metamask to continue." : "Please change network to Rinkeby!"}</Alert>
       </Snackbar>
       <Router />

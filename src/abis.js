@@ -598,30 +598,46 @@ export const multiSigABI = [
 // Pbl: 0xDc3A186fB898669023289Fd66b68E4016875E011
 // Pvt: 0x17793bb885773856ac0a6f534f9484e74c1164bd545659b95419c430bbba5904
 
-export const multiSigOptions = (address, functionName, ...params) => {
+export const multiSigOptions = (address, functionName, args) => {
+	const params = {...args, _address: address}
 	return {
     contractAddress: multiSigAddress,
     functionName: functionName,
     abi: multiSigABI,
-    params: {
-      _address: address,
-			...params
-    },
+    params,
     msgValue: 0
     
   }
 }
 
-export const accessibilityOptions = (address, functionName, ...params) => {
+export const multiSigEventsOptions = (data, ...args) => {
 	return {
-    contractAddress: accessibilityAdress,
+    address: multiSigAddress,
+    abi: multiSigABI.filter(abi => abi.name === data)[0],
+		topic: data,
+		limit: '3',
+		...args
+  }
+}
+
+export const accessibilityOptions = (address, functionName, args) => {
+	const params = {...args, _address: address};
+	return {
+		contractAddress: accessibilityAdress,
     functionName: functionName,
     abi: accessibilityABI,
-    params: {
-      _address: address,
-			...params
-    },
+    params,
     msgValue: 0
     
   }
+}
+
+export const accessibilityEventsOptions = (data, ...args) => {
+	return {
+		address: accessibilityAdress,
+		abi: accessibilityABI.filter(abi => abi.name === data)[0],
+		topic: data,
+		limit: '3',
+		...args
+	}
 }
