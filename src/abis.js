@@ -610,13 +610,14 @@ export const multiSigOptions = (address, functionName, args) => {
   }
 }
 
-export const multiSigEventsOptions = (data, ...args) => {
+export const multiSigEventsOptions = (topic, args) => {
+	const params = {...args }
 	return {
     address: multiSigAddress,
-    abi: multiSigABI.filter(abi => abi.name === data)[0],
-		topic: data,
+    abi: multiSigABI.filter(abi => abi.name === topic)[0],
+		topic,
 		limit: '3',
-		...args
+		params,
   }
 }
 
@@ -632,12 +633,13 @@ export const accessibilityOptions = (address, functionName, args) => {
   }
 }
 
-export const accessibilityEventsOptions = (data, ...args) => {
+export const accessibilityEventsOptions = (topic, args) => {
+	const params = { ...args }
 	return {
 		address: accessibilityAdress,
-		abi: accessibilityABI.filter(abi => abi.name === data)[0],
-		topic: data,
+		abi: accessibilityABI.filter(abi => abi.name === topic)[0],
+		topic,
 		limit: '3',
-		...args
+		params
 	}
 }
