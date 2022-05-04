@@ -15,8 +15,8 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
   const fetchEvents = useCallback(async (event) => {
 
     let options; 
-    if (isMultiSig) options = multiSigEventsOptions(event.topic, event.name)
-    else options = accessibilityEventsOptions(event.topic, event.name)
+    if (isMultiSig) options = multiSigEventsOptions(event.name)
+    else options = accessibilityEventsOptions(event.name)
     console.log(options)
     const res = await Web3Api.native.getContractEvents(options);
     //What to do when we receive the events

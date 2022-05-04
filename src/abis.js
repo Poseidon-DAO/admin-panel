@@ -1,3 +1,4 @@
+import Web3 from 'web3';
 
 export const accessibilityAdress = "0xc5416Fb370807bfFD6C4B11e24DB25BcE20874A3";
 export const multiSigAddress = "0xA342A3106D77859C8d5100A5aDcE39F4159caaf4";
@@ -611,11 +612,15 @@ export const multiSigOptions = (address, functionName, args) => {
   }
 }
 
-export const multiSigEventsOptions = (topic, name) => {
+export const multiSigEventsOptions = (name) => {
+	const abi = multiSigABI.filter(abi => abi.name === name)[0];
+	const inputs = abi.inputs.map(a => a.internalType).join(",");
+	const topic = new Web3.utils.sha3(`${name}(${inputs})`)
+	console.log(topic);
 	return {
 		chain: process.env.REACT_APP_CHAIN,
     address: multiSigAddress,
-    abi: multiSigABI.filter(abi => abi.name === name)[0],
+    abi,
 		topic,
 		limit: '1',
   }
