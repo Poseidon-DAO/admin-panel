@@ -15,8 +15,11 @@ const availableFunctions = [
     event: {
       name: SMART_CONTRACT_FUNCTIONS.EVENT_NEW_MULTISIG,
       args: {
-        _pollTypeID: 3,
-      }
+        pollType: 3,
+        pollIndex: 1,
+        creator: '0x3d6AD09Ed37447b963A7f5470bF6C0003D36dEe3',
+      },
+      topic: "0x254281af94dadbfad557c2cdaea9d8277144968e60de2579b5102bffcfc1516d"
     }
   }, 
   {

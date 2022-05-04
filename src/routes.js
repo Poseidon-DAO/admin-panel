@@ -73,8 +73,8 @@ export default function Main() {
 
   //Navigate to app or login when conditions are met
   useEffect(() => {
-    if (location.pathname !== '/login' && (!isAuthenticated || currentNetwork !== 'Rinkeby')) navigate('/login');
-    if (currentNetwork === 'Rinkeby' && isAuthenticated && location.pathname === '/login') navigate('/app');
+    if (location.pathname !== '/login' && (!isAuthenticated || currentNetwork.toLowerCase() !== process.env.REACT_APP_CHAIN)) navigate('/login');
+    if (currentNetwork.toLowerCase() === process.env.REACT_APP_CHAIN && isAuthenticated && location.pathname === '/login') navigate('/app');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[navigate, isAuthenticated, currentNetwork]);
 
@@ -91,7 +91,7 @@ export default function Main() {
       const isAllowed = await isUserAllowed();
       if (!isAllowed) navigate('/forbidden');
     }
-    if (account && isAuthenticated && currentNetwork === 'Rinkeby') {
+    if (account && isAuthenticated && currentNetwork.toLowerCase() === process.env.REACT_APP_CHAIN) {
       checkAllowed();
     }
   }, [account, isAuthenticated, isUserAllowed, navigate, currentNetwork]);
@@ -173,14 +173,14 @@ export default function Main() {
     <>
       <Snackbar
         severity="error"
-        open={needMetamask || currentNetwork !== 'Rinkeby'}
+        open={needMetamask || currentNetwork.toLowerCase() !== process.env.REACT_APP_CHAIN}
         autoHideDuration={6000}
         onClose={() => {
           setNeedMetamask(false);
         }}
         anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
       >
-        <Alert severity='error'>{needMetamask ? "Please install Metamask to continue." : "Please change network to Rinkeby!"}</Alert>
+        <Alert severity='error'>{needMetamask ? "Please install Metamask to continue." : "Please change network to " + process.env.REACT_APP_CHAIN}</Alert>
       </Snackbar>
       <Router />
     </>

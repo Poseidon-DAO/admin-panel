@@ -1,6 +1,7 @@
 
-export const accessibilityAdress = "0xfB9B43504B109c44809C541f9EABc0eF64AdDb7e";
-export const multiSigAddress = "0x01f79308f1ADa2cfA990D2a8a119Af2AD9741AdE";
+export const accessibilityAdress = "0xc5416Fb370807bfFD6C4B11e24DB25BcE20874A3";
+export const multiSigAddress = "0xA342A3106D77859C8d5100A5aDcE39F4159caaf4";
+export const accountabilityAddress = "0x6Aa7B5A9870c85Ff3a2eF0d947bEb50bA6Fa1ACf";
 
 export const accessibilityABI = [
 	{
@@ -610,14 +611,13 @@ export const multiSigOptions = (address, functionName, args) => {
   }
 }
 
-export const multiSigEventsOptions = (topic, args) => {
-	const params = {...args }
+export const multiSigEventsOptions = (topic, name) => {
 	return {
+		chain: process.env.REACT_APP_CHAIN,
     address: multiSigAddress,
-    abi: multiSigABI.filter(abi => abi.name === topic)[0],
+    abi: multiSigABI.filter(abi => abi.name === name)[0],
 		topic,
-		limit: '3',
-		params,
+		limit: '1',
   }
 }
 
@@ -633,13 +633,12 @@ export const accessibilityOptions = (address, functionName, args) => {
   }
 }
 
-export const accessibilityEventsOptions = (topic, args) => {
-	const params = { ...args }
+export const accessibilityEventsOptions = (topic, name) => {
 	return {
+		chain: process.env.REACT_APP_CHAIN,
 		address: accessibilityAdress,
-		abi: accessibilityABI.filter(abi => abi.name === topic)[0],
+		abi: accessibilityABI.filter(abi => abi.name === name)[0],
 		topic,
 		limit: '3',
-		params
 	}
 }

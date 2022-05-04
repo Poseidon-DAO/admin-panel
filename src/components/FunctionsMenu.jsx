@@ -5,7 +5,7 @@ import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
 import { accessibilityEventsOptions, accessibilityOptions, multiSigEventsOptions, multiSigOptions } from 'src/abis';
 import FreezeAlert from './FreezeAlert';
 
-export default function FunctionsMenu({ availableFunctions, isMultiSig, params }) {
+export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
   const [error, setError] = useState(false);
   const Web3Api = useMoralisWeb3Api();
   const { Moralis, account } = useMoralis();
@@ -15,11 +15,10 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig, params }
   const fetchEvents = useCallback(async (event) => {
 
     let options; 
-    if (isMultiSig) options = multiSigEventsOptions(event.name, event.args)
-    else options = accessibilityEventsOptions(event.name, event.args)
+    if (isMultiSig) options = multiSigEventsOptions(event.topic, event.name)
+    else options = accessibilityEventsOptions(event.topic, event.name)
     console.log(options)
     const res = await Web3Api.native.getContractEvents(options);
-
     //What to do when we receive the events
     console.log("Event fetch response: ", res);
   }, [Web3Api, isMultiSig]);
