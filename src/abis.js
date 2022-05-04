@@ -1,3 +1,5 @@
+import { keccak256 } from "@ethersproject/keccak256";
+import { toUtf8Bytes } from "@ethersproject/strings";
 
 export const accessibilityAdress = "0xc5416Fb370807bfFD6C4B11e24DB25BcE20874A3";
 export const multiSigAddress = "0xA342A3106D77859C8d5100A5aDcE39F4159caaf4";
@@ -599,6 +601,8 @@ export const multiSigABI = [
 // Pbl: 0xDc3A186fB898669023289Fd66b68E4016875E011
 // Pvt: 0x17793bb885773856ac0a6f534f9484e74c1164bd545659b95419c430bbba5904
 
+const getTopicHash = (string) => keccak256(toUtf8Bytes(string));
+
 export const multiSigOptions = (address, functionName, args) => {
 	const params = {...args, _address: address}
 	return {
@@ -609,17 +613,20 @@ export const multiSigOptions = (address, functionName, args) => {
     msgValue: 0
     
   }
-}
+};
 
-export const multiSigEventsOptions = (topic, name) => {
+export const multiSigEventsOptions = ( name ) => {
+	const abi = multiSigABI.filter(abi => abi.name === name)[0];
+	const inputs = abi.inputs.map(a => a.internalType).join(",");
+	const topic = getTopicHash(`${name}(${inputs})`);
 	return {
 		chain: process.env.REACT_APP_CHAIN,
     address: multiSigAddress,
-    abi: multiSigABI.filter(abi => abi.name === name)[0],
+    abi,
 		topic,
-		limit: '1',
+		limit: '3',
   }
-}
+};
 
 export const accessibilityOptions = (address, functionName, args) => {
 	const params = {...args, _address: address};
@@ -631,14 +638,17 @@ export const accessibilityOptions = (address, functionName, args) => {
     msgValue: 0
     
   }
-}
+};
 
-export const accessibilityEventsOptions = (topic, name) => {
+export const accessibilityEventsOptions = ( name ) => {
+	const abi = accessibilityABI.filter(abi => abi.name === name)[0];
+	const inputs = abi.inputs.map(a => a.internalType).join(",");
+	const topic = getTopicHash(`${name}(${inputs})`);
 	return {
 		chain: process.env.REACT_APP_CHAIN,
 		address: accessibilityAdress,
-		abi: accessibilityABI.filter(abi => abi.name === name)[0],
+		abi,
 		topic,
 		limit: '3',
 	}
-}
+};
