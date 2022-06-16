@@ -15,6 +15,7 @@ import { useMoralis } from 'react-moralis';
 import { NetworkTypes } from './types';
 import { Alert, Snackbar } from '@mui/material';
 import { multiSigOptions } from './abis';
+import SMART_CONTRACT_FUNCTIONS from './smartContract'
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +28,7 @@ function Router() {
         { path: 'dashboard', element: <DashboardApp /> },
         { path: 'accessibility', element: <Accessibility /> },
         { path: 'multisig', element: <MultiSig /> },
+        // { path: 'polls', element: <ActivePolls /> },
       ],
     },
     {
@@ -61,7 +63,8 @@ export default function Main() {
   const isUserAllowed = useCallback(async () => {
     try {
       if (account){
-        const options = multiSigOptions(account, "getIsMultiSigAddress", {});
+        const options = multiSigOptions(account, SMART_CONTRACT_FUNCTIONS.GET_IS_MULTISIG_ADDRESS, {});
+        console.log(options)
         const res = await Moralis.executeFunction(options);
         return res;
       }
@@ -73,7 +76,7 @@ export default function Main() {
 
   //Navigate to app or login when conditions are met
   useEffect(() => {
-    if (location.pathname !== '/login' && (!isAuthenticated || currentNetwork.toLowerCase() !== process.env.REACT_APP_CHAIN)) navigate('/login');
+    // if (location.pathname !== '/login' && (!isAuthenticated || currentNetwork.toLowerCase() !== process.env.REACT_APP_CHAIN)) navigate('/login');
     if (currentNetwork.toLowerCase() === process.env.REACT_APP_CHAIN && isAuthenticated && location.pathname === '/login') navigate('/app');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[navigate, isAuthenticated, currentNetwork]);

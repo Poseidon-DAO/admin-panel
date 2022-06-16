@@ -9,9 +9,15 @@ const availableFunctions = [
   {
     name: "Create Poll", 
     functionName: SMART_CONTRACT_FUNCTIONS.CREATE_MULTISIG_POLL,
-    args: {
-      _pollTypeID: 3,
-    },
+    inputRequired: true,
+    args: [{
+      name: "_pollTypeID",
+      type: Number
+    }, 
+    {
+      name: "_voteReceiverAddress",
+      type: String 
+    }],
     event: {
       name: SMART_CONTRACT_FUNCTIONS.EVENT_NEW_MULTISIG,
       args: {

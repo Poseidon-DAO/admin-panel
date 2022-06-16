@@ -7,11 +7,6 @@ export const accountabilityAddress = "0x6Aa7B5A9870c85Ff3a2eF0d947bEb50bA6Fa1ACf
 
 export const accessibilityABI = [
 	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -66,6 +61,32 @@ export const accessibilityABI = [
 		],
 		"name": "ChangeUserGroupEvent",
 		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "version",
+				"type": "uint8"
+			}
+		],
+		"name": "Initialized",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "DAOCreator",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -198,6 +219,19 @@ export const accessibilityABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getMultiSigRefAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -214,6 +248,13 @@ export const accessibilityABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "initialize",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -246,6 +287,19 @@ export const accessibilityABI = [
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "multiSigRefAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -293,18 +347,31 @@ export const multiSigABI = [
 		"inputs": [
 			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "voted",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "pollIndex",
+				"type": "uint256"
 			},
 			{
 				"indexed": false,
-				"internalType": "uint256",
-				"name": "pollType",
-				"type": "uint256"
+				"internalType": "address",
+				"name": "voteReceiver",
+				"type": "address"
 			}
 		],
 		"name": "ChangeStatementMultisigPollEvent",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "version",
+				"type": "uint8"
+			}
+		],
+		"name": "Initialized",
 		"type": "event"
 	},
 	{
@@ -327,6 +394,12 @@ export const multiSigABI = [
 				"internalType": "uint256",
 				"name": "pollType",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "voteReceiver",
+				"type": "address"
 			}
 		],
 		"name": "NewMultisigPollEvent",
@@ -349,13 +422,39 @@ export const multiSigABI = [
 			},
 			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "voteFor",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "vote",
+				"type": "uint256"
 			}
 		],
 		"name": "VoteMultisigPollEvent",
 		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "ERC20Address",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "accessibilitySettingsAddress",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -363,6 +462,11 @@ export const multiSigABI = [
 				"internalType": "uint256",
 				"name": "_pollTypeID",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_voteReceiverAddress",
+				"type": "address"
 			}
 		],
 		"name": "createMultiSigPoll",
@@ -380,50 +484,16 @@ export const multiSigABI = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "_pollIndex",
+				"name": "_pollID",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_voteForAddress",
-				"type": "address"
 			}
 		],
-		"name": "voteMultiSigPoll",
+		"name": "getExpirationBlockTime",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "uint256",
 				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_accessibilitySettingsAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "address[]",
-				"name": "_multiSigAddresses",
-				"type": "address[]"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "accessibilitySettingsAddress",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -450,8 +520,55 @@ export const multiSigABI = [
 	},
 	{
 		"inputs": [],
+		"name": "getListOfActivePoll",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "getMultiSigLength",
 		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pollID",
+				"type": "uint256"
+			}
+		],
+		"name": "getPollMetaData",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
 				"name": "",
@@ -474,31 +591,7 @@ export const multiSigABI = [
 				"type": "uint256"
 			}
 		],
-		"name": "getMultiSigPollHasVoted",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_voteFor",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_pollID",
-				"type": "uint256"
-			}
-		],
-		"name": "getMultiSigPollVotes",
+		"name": "getVoterVote",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -520,6 +613,24 @@ export const multiSigABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_accessibilitySettingsAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "address[]",
+				"name": "_multiSigAddresses",
+				"type": "address[]"
+			}
+		],
+		"name": "initialize",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -573,33 +684,65 @@ export const multiSigABI = [
 				"internalType": "uint256",
 				"name": "pollBlockStart",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "voteReceiverAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amountApprovedVoteReceiver",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_ERC20Address",
+				"type": "address"
+			}
+		],
+		"name": "setERC1155Address",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pollIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_vote",
+				"type": "uint256"
+			}
+		],
+		"name": "voteMultiSigPoll",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
-
-
-
-// Rinkeby Testnet
-
-// Pbl: 0xB6097b6932ad88D1159c10bA7D290ba05087507D
-// Pvt: 0x05da23ac61f6033d09e69470b9b1f6afcc98214451b78164ee0017e474ebd75a
-
-// Pbl: 0x7db3c4099660a6f33bBfF63B3318CBf9b4D07743
-// Pvt: 0x9723825bcb901c7fa2bb209763eb12d02a2fa233f3b31bda1c9256c2c76507e5
-
-// Pbl: 0x0a767592E4C4CbD5A65BAc08bd3c7112d68496A5
-// Pvt: 0x9e5173918505a0917dbb5a2c40ecdeecb11fb48f88dc5a9e84a968174dc2910f
-
-// Pbl: 0x3d6AD09Ed37447b963A7f5470bF6C0003D36dEe3
-// Pvt: 0xc41927c6c49d5e09b0b6b93be73f1420ed6b381614fbb824f37af79fe78480cd
-
-// Owner
-
-// Pbl: 0xDc3A186fB898669023289Fd66b68E4016875E011
-// Pvt: 0x17793bb885773856ac0a6f534f9484e74c1164bd545659b95419c430bbba5904
 
 const getTopicHash = (string) => keccak256(toUtf8Bytes(string));
 
@@ -630,6 +773,7 @@ export const multiSigEventsOptions = ( name ) => {
 
 export const accessibilityOptions = (address, functionName, args) => {
 	const params = {...args, _address: address};
+	console.log(functionName)
 	return {
 		contractAddress: accessibilityAdress,
     functionName: functionName,
