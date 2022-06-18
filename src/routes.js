@@ -16,6 +16,7 @@ import { NetworkTypes } from './types';
 import { Alert, Snackbar } from '@mui/material';
 import { multiSigOptions } from './abis';
 import SMART_CONTRACT_FUNCTIONS from './smartContract'
+import ActivePolls from './pages/ActivePolls';
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +29,7 @@ function Router() {
         { path: 'dashboard', element: <DashboardApp /> },
         { path: 'accessibility', element: <Accessibility /> },
         { path: 'multisig', element: <MultiSig /> },
-        // { path: 'polls', element: <ActivePolls /> },
+        { path: 'polls', element: <ActivePolls /> },
       ],
     },
     {
@@ -64,7 +65,6 @@ export default function Main() {
     try {
       if (account){
         const options = multiSigOptions(account, SMART_CONTRACT_FUNCTIONS.GET_IS_MULTISIG_ADDRESS, {});
-        console.log(options)
         const res = await Moralis.executeFunction(options);
         return res;
       }

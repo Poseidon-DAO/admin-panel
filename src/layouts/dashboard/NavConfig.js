@@ -16,6 +16,11 @@ const navConfig = [
     path: '/app/accessibility',
     icon: getIcon('akar-icons:key'),
   },
+  {
+    title: 'Poll List',
+    path: '/app/polls',
+    icon: getIcon('mdi:vote-outline'),
+  },
 ];
 
 export default navConfig;

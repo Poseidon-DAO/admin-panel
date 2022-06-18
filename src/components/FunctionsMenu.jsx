@@ -1,12 +1,16 @@
-import { Alert, Chip, Container, Snackbar, Stack, Typography } from '@mui/material';
+import { Chip, Container, Stack, Typography } from '@mui/material';
 import React, { useCallback, useState } from 'react'
 import { useMoralis, useMoralisWeb3Api } from 'react-moralis';
 import { accessibilityEventsOptions, accessibilityOptions, multiSigEventsOptions, multiSigOptions } from 'src/abis';
 import ArgumentsModal from './ArgumentsModal';
+import CustomSnackbar from './CustomSnackbar';
 import FreezeAlert from './FreezeAlert';
+
+const baseEtherscan = process.env.REACT_APP_CHAIN !== 'ethereum' ? 'https://rinkeby.etherscan.io/tx/' : 'https://etherscan.io/tx/';
 
 export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
   const [error, setError] = useState("");
+  const [successfulTransaction, setSuccessfulTransaction] = useState('');
   const Web3Api = useMoralisWeb3Api();
   const { Moralis, account } = useMoralis();
   const [modalActive, setModalActive] = useState(false);
@@ -20,6 +24,7 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
     const res = await Web3Api.native.getContractEvents(options);
     //What to do when we receive the events
     console.log("Event fetch response: ", res);
+    return res;
   }, [Web3Api, isMultiSig]);
 
   const handleClick = (fn) => {
@@ -47,7 +52,11 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
         else options = accessibilityOptions(account, fn.functionName, args);
         const res = await Moralis.executeFunction(options);
         if (fn.event) {
-          fetchEvents(fn.event)
+          const res = await fetchEvents(fn.event);
+          if (res) {
+            setSuccessfulTransaction(res.result[0].transaction_hash)
+            onCancelModal();
+          }
         }
         return res;
       }
@@ -73,18 +82,7 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
           </Stack>
         </Stack>
       </Container>
-      <Snackbar
-        severity="error"
-        open={error.length > 0}
-        autoHideDuration={6000}
-        onClose={() => {
-          setError("");
-        }}
-        style={{ maxWidth: '40vw' }}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-      >
-        <Alert severity='error'>{error}</Alert>
-      </Snackbar>
+
       <FreezeAlert
         onFreezeCanceled={() => setIsFreezeDialogOpen(false)}
         onFreezeConfirmed={() => {
@@ -93,12 +91,32 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
         }}
         open={isFreezeDialogOpen}
       />
+
+
       <ArgumentsModal
         open={modalActive}
         handleClose={onCancelModal}
         handleAccept={handleExecuteFunction}
         fnc={modalProps}
       />
+
+      <CustomSnackbar
+        isOpen={error.length > 0}
+        type='error'
+        onClose={() => setError('')}
+        message={error}
+      />
+      <CustomSnackbar
+        isOpen={successfulTransaction.length}
+        type='success'
+        onClose={() => setSuccessfulTransaction('')}
+        message={
+          <Typography>The transaction was successful! Hash:
+            <a target="_blank" rel='noreferrer' href={baseEtherscan + successfulTransaction}>{successfulTransaction}</a>
+          </Typography>
+        }
+      />
+
     </>
   )
 }

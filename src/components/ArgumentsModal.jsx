@@ -25,10 +25,8 @@ const DefaultArguments = {
 }
 
 export default function ArgumentsModal({open, handleClose, handleAccept, fnc}) {
-  const [isLoading, setIsLoading] = useState(false)
   const [args, setArgs] = useState(DefaultArguments)
   const onSubmit = async () => {
-    setIsLoading(true);
     const fnArgs = {
       ...args, 
       _voteReceiverAddress: args._voteReceiverAddress.length
@@ -37,9 +35,7 @@ export default function ArgumentsModal({open, handleClose, handleAccept, fnc}) {
     }
     console.log(fnArgs)
     const res = await handleAccept(fnc, fnArgs)
-    if (res.message) {
-      setIsLoading(false);
-    }
+    return res;
   }
 
   const onArgumentChange = (value, name) => {

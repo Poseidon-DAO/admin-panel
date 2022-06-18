@@ -1,9 +1,9 @@
 import { keccak256 } from "@ethersproject/keccak256";
 import { toUtf8Bytes } from "@ethersproject/strings";
 
-export const accessibilityAdress = "0xc5416Fb370807bfFD6C4B11e24DB25BcE20874A3";
-export const multiSigAddress = "0xA342A3106D77859C8d5100A5aDcE39F4159caaf4";
-export const accountabilityAddress = "0x6Aa7B5A9870c85Ff3a2eF0d947bEb50bA6Fa1ACf";
+export const accessibilityAdress = process.env.REACT_APP_ACCESSIBILITY_ADDRESS;
+export const multiSigAddress = process.env.REACT_APP_MULTI_SIG_ADDRESS;
+export const accountabilityAddress = process.env.REACT_APP_ACOUNTABILITY_ADDRESS;
 
 export const accessibilityABI = [
 	{
