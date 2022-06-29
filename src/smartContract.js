@@ -8,12 +8,14 @@ const GET_EXPIRATION_BLOCK = "getExpirationBlockTime";
 const EVENT_NEW_MULTISIG = "NewMultisigPollEvent";
 const GET_POLL_META = "getPollMetaData";
 const GET_VOTE = "getVoterVote";
+const GET_MULTISIG_LENGTH = "getMultiSigLength";
 
 const SMART_CONTRACT_FUNCTIONS = {
   // Functions
   GET_IS_MULTISIG_ADDRESS,
   CHECK_IS_FROZEN,
   CREATE_MULTISIG_POLL,
+  GET_MULTISIG_LENGTH,
   VOTE_MULTISIG_POLL,
   FREEZE_DAO,
   GET_POLL_META,

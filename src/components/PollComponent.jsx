@@ -23,6 +23,7 @@ export default function PollComponent({ type, onApprove, onDecline, vote }) {
         </Box>
       ) : (
         <Chip
+          sx={{ marginTop: 2, marginBottom: 3 }}
           label={VoteTypes[vote]}
           variant="outlined"
           color={VoteTypes[vote] === 'Declined' ? 'error' : 'success'}

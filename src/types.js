@@ -19,3 +19,8 @@ export const VoteTypes = {
   1: "Approved",
   2: "Declined",
 };
+
+export const baseEtherscan =
+  process.env.REACT_APP_CHAIN !== "ethereum"
+    ? "https://rinkeby.etherscan.io/tx/"
+    : "https://etherscan.io/tx/";
