@@ -12,7 +12,7 @@ const navConfig = [
     icon: getIcon("akar-icons:key"),
   },
   {
-    title: "Poll List",
+    title: "Polls",
     path: "/app/polls",
     icon: getIcon("mdi:vote-outline"),
   },

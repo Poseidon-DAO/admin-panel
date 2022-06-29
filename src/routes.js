@@ -20,7 +20,7 @@ import { NetworkTypes } from "./types";
 import { Alert, Snackbar } from "@mui/material";
 import { multiSigOptions } from "./abis";
 import SMART_CONTRACT_FUNCTIONS from "./smartContract";
-import ActivePolls from "./pages/ActivePolls";
+import Polls from "./pages/Polls";
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ function Router() {
       children: [
         { path: "dashboard", element: <DashboardApp /> },
         { path: "accessibility", element: <Accessibility /> },
-        { path: "polls", element: <ActivePolls /> },
+        { path: "polls", element: <Polls /> },
       ],
     },
     {

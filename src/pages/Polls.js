@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import PollComponent from "src/components/PollComponent";
-import { Chip, Typography } from "@mui/material";
+import { Chip, Container, Typography } from "@mui/material";
 import PollArgumentsModal from "src/components/PollArgumentsModal";
 import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
@@ -36,7 +36,7 @@ const CREATE_MULTISIG_POLL = {
   },
 };
 
-export default function ActivePolls({ isMultiSig }) {
+export default function Polls({ isMultiSig }) {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
   const Web3Api = useMoralisWeb3Api();
@@ -87,8 +87,6 @@ export default function ActivePolls({ isMultiSig }) {
     fetchActivePolls();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(pollList);
 
   const handleClick = () => {
     if (account) {
@@ -144,7 +142,7 @@ export default function ActivePolls({ isMultiSig }) {
           setPollList([
             ...pollList.filter((el) => el.pollID !== _pollIndex, ...newPoll),
           ]);
-          console.log(res);
+
           setSuccessfulTransaction();
           return res;
         } catch (e) {
@@ -158,7 +156,6 @@ export default function ActivePolls({ isMultiSig }) {
 
   const onCreateMultisigPoll = useCallback(
     async (_, args) => {
-      console.log(args);
       if (account) {
         try {
           const options = multiSigOptions(
@@ -190,7 +187,8 @@ export default function ActivePolls({ isMultiSig }) {
       SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
     );
     const res = await Moralis.executeFunction(options);
-    console.log(res);
+    console.log("Result of Get Active Polls: ", res);
+    const multiSigLength = await getMultiSigLength();
     res.map(async (el) => {
       // GET POLL METADATA FROM POLL ID
       const metaDataOptions = multiSigOptions(
@@ -201,7 +199,6 @@ export default function ActivePolls({ isMultiSig }) {
       const metaData = await Moralis.executeFunction(metaDataOptions);
       const expiration = await getExpirationBlock(el._hex);
       const currentVote = await getCurrentVote(el._hex);
-      const multiSigLength = await getMultiSigLength();
       const poll = setUpPoll(
         metaData,
         expiration,
@@ -209,68 +206,80 @@ export default function ActivePolls({ isMultiSig }) {
         multiSigLength,
         el._hex
       );
-      setPollList([...pollList, { ...poll }]);
+      setPollList((oldPollList) => [...oldPollList, poll]);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Moralis, account, getExpirationBlock, pollList]);
+  // console.log("Result of Poll Transformation: ", pollList);
 
   return (
-    <Page title="Active Polls">
-      <Chip
-        label={"Create New Poll"}
-        variant="outlined"
-        onClick={handleClick}
-        style={{
-          backgroundColor: "forestgreen",
-          color: "white",
-          position: "absolute",
-          right: "10vw",
-          height: "3rem",
-          borderRadius: "50px",
-          borderColor: "none",
-        }}
-      />
-      <PollArgumentsModal
-        open={modalActive}
-        handleClose={onCancelModal}
-        handleAccept={onCreateMultisigPoll}
-        fnc={modalProps}
-      />
-      {pollList.length ? (
-        pollList.map((poll) => (
-          <PollComponent
-            type={poll.type}
-            vote={poll.currentVote}
-            onApprove={() => handleVote(1, poll.pollID)}
-            onDecline={() => handleVote(2, poll.pollID)}
+    <Page title="Active Polls" style={{ width: "100%" }}>
+      <Container>
+        <Container
+          sx={{
+            display: "flex",
+            minWidth: "100%",
+            justifyContent: "space-between",
+            marginBottom: "2rem",
+            alignItems: "center",
+          }}
+        >
+          <h1>List of polls</h1>
+          <Chip
+            label={"Create New Poll"}
+            variant="outlined"
+            onClick={handleClick}
+            style={{
+              backgroundColor: "forestgreen",
+              color: "white",
+              height: "3rem",
+              borderRadius: "50px",
+              borderColor: "none",
+            }}
           />
-        ))
-      ) : (
-        <Typography>There are no active polls at the moment.</Typography>
-      )}
-      <CustomSnackbar
-        isOpen={error.length > 0}
-        type="error"
-        onClose={() => setError("")}
-        message={error}
-      />
-      <CustomSnackbar
-        isOpen={successfulTransaction.length}
-        type="success"
-        onClose={() => setSuccessfulTransaction("")}
-        message={
-          <Typography>
-            The transaction was successful! Hash:
-            <a
-              target="_blank"
-              rel="noreferrer"
-              href={baseEtherscan + successfulTransaction}
-            >
-              {successfulTransaction}
-            </a>
-          </Typography>
-        }
-      />
+        </Container>
+        <PollArgumentsModal
+          open={modalActive}
+          handleClose={onCancelModal}
+          handleAccept={onCreateMultisigPoll}
+          fnc={modalProps}
+        />
+        {pollList.length ? (
+          pollList.map((poll) => (
+            <PollComponent
+              type={poll.type}
+              vote={poll.currentVote}
+              onApprove={() => handleVote(1, poll.pollID)}
+              onDecline={() => handleVote(2, poll.pollID)}
+            />
+          ))
+        ) : (
+          <Typography>There are no active polls at the moment.</Typography>
+        )}
+        <CustomSnackbar
+          isOpen={error.length > 0}
+          type="error"
+          onClose={() => setError("")}
+          message={error}
+        />
+        <CustomSnackbar
+          isOpen={successfulTransaction.length}
+          type="success"
+          onClose={() => setSuccessfulTransaction("")}
+          message={
+            <Typography>
+              The transaction was successful! Hash:
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={baseEtherscan + successfulTransaction}
+              >
+                {successfulTransaction}
+              </a>
+            </Typography>
+          }
+        />
+      </Container>
     </Page>
   );
 }
