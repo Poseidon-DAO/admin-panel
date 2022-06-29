@@ -1,18 +1,13 @@
 import { Chip, Container, Stack, Typography } from '@mui/material'
 import React, { useCallback, useState } from 'react'
 import { useMoralis, useMoralisWeb3Api } from 'react-moralis'
-import {
-  accessibilityEventsOptions,
-  accessibilityOptions,
-  multiSigEventsOptions,
-  multiSigOptions,
-} from 'src/abis'
+import { accessibilityEventsOptions, accessibilityOptions } from 'src/abis'
 import { baseEtherscan } from 'src/types'
-import ArgumentsModal from './ArgumentsModal'
+import PollArgumentsModal from './PollArgumentsModal'
 import CustomSnackbar from './CustomSnackbar'
 import FreezeAlert from './FreezeAlert'
 
-export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
+export default function FunctionsMenu({ availableFunctions }) {
   const [error, setError] = useState('')
   const [successfulTransaction, setSuccessfulTransaction] = useState('')
   const Web3Api = useMoralisWeb3Api()
@@ -23,15 +18,13 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
 
   const fetchEvents = useCallback(
     async (event) => {
-      let options
-      if (isMultiSig) options = multiSigEventsOptions(event.name)
-      else options = accessibilityEventsOptions(event.name)
+      const options = accessibilityEventsOptions(event.name)
       const res = await Web3Api.native.getContractEvents(options)
       //What to do when we receive the events
       console.log('Event fetch response: ', res)
       return res
     },
-    [Web3Api, isMultiSig],
+    [Web3Api],
   )
 
   const handleClick = (fn) => {
@@ -53,10 +46,7 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
   const handleExecuteFunction = useCallback(
     async (fn, args) => {
       try {
-        let options
-        if (isMultiSig)
-          options = multiSigOptions(account, fn.functionName, args)
-        else options = accessibilityOptions(account, fn.functionName, args)
+        const options = accessibilityOptions(account, fn.functionName, args)
         const res = await Moralis.executeFunction(options)
         if (fn.event) {
           const evt = await fetchEvents(fn.event)
@@ -71,14 +61,14 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
         return error
       }
     },
-    [Moralis, account, fetchEvents, isMultiSig],
+    [Moralis, account, fetchEvents],
   )
 
   return (
     <>
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
-          {isMultiSig ? 'Multi Signature' : 'Accessibility'} Available Functions
+          Accessibility's Available Functions
         </Typography>
         <Stack
           direction="row"
@@ -115,7 +105,7 @@ export default function FunctionsMenu({ availableFunctions, isMultiSig }) {
         open={isFreezeDialogOpen}
       />
 
-      <ArgumentsModal
+      <PollArgumentsModal
         open={modalActive}
         handleClose={onCancelModal}
         handleAccept={handleExecuteFunction}

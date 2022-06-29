@@ -34,7 +34,7 @@ const DefaultArguments = {
   _voteReceiverAddress: NULL_ADDRESS,
 }
 
-export default function PollArgumentsModal({
+export default function ArgumentsModal({
   open,
   handleClose,
   handleAccept,

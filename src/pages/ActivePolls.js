@@ -11,7 +11,7 @@ import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import PollComponent from "src/components/PollComponent";
 import { Chip, Typography } from "@mui/material";
-import ArgumentsModal from "src/components/ArgumentsModal";
+import PollArgumentsModal from "src/components/PollArgumentsModal";
 import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
 
@@ -211,14 +211,8 @@ export default function ActivePolls({ isMultiSig }) {
       );
       setPollList([...pollList, { ...poll }]);
     });
-  }, [
-    Moralis,
-    account,
-    getExpirationBlock,
-    pollList,
-    getCurrentVote,
-    getMultiSigLength,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Moralis, account, getExpirationBlock, pollList]);
 
   return (
     <Page title="Active Polls">
@@ -236,7 +230,7 @@ export default function ActivePolls({ isMultiSig }) {
           borderColor: "none",
         }}
       />
-      <ArgumentsModal
+      <PollArgumentsModal
         open={modalActive}
         handleClose={onCancelModal}
         handleAccept={onCreateMultisigPoll}

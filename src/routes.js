@@ -12,7 +12,6 @@ import Accessibility from "./pages/Accessibility";
 import Login from "./pages/Login";
 import NotAllowed from "./pages/NotAllowed";
 import NotFound from "./pages/Page404";
-import MultiSig from "./pages/MultiSig";
 import DashboardApp from "./pages/DashboardApp";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { Store } from "./App";
@@ -33,7 +32,6 @@ function Router() {
       children: [
         { path: "dashboard", element: <DashboardApp /> },
         { path: "accessibility", element: <Accessibility /> },
-        { path: "multisig", element: <MultiSig /> },
         { path: "polls", element: <ActivePolls /> },
       ],
     },
