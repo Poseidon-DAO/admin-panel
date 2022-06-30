@@ -1,16 +1,12 @@
 // components
 import Page from "../components/Page";
 import { useCallback, useEffect } from "react";
-import {
-  accessibilityEventsOptions,
-  multiSigEventsOptions,
-  multiSigOptions,
-} from "src/abis";
+import { multiSigEventsOptions, multiSigOptions } from "src/abis";
 import { useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import PollComponent from "src/components/PollComponent";
-import { Chip, Container, Typography } from "@mui/material";
+import { Box, Chip, Container, Typography } from "@mui/material";
 import PollArgumentsModal from "src/components/PollArgumentsModal";
 import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
@@ -30,18 +26,48 @@ const CREATE_MULTISIG_POLL = {
     args: {
       pollType: 3,
       pollIndex: 1,
-      creator: "0x3d6AD09Ed37447b963A7f5470bF6C0003D36dEe3",
     },
-    topic: "0x254281af94dadbfad557c2cdaea9d8277144968e60de2579b5102bffcfc1516d",
   },
 };
 
-export default function Polls({ isMultiSig }) {
+const VOTE_POLL = {
+  name: "Vote Poll",
+  functionName: SMART_CONTRACT_FUNCTIONS.VOTE_MULTISIG_POLL,
+  inputRequired: true,
+  args: [
+    {
+      name: "_pollTypeID",
+      type: Number,
+    },
+  ],
+  event: {
+    name: SMART_CONTRACT_FUNCTIONS.EVENT_VOTE_MULTISIG,
+    args: [
+      {
+        name: "voter",
+        type: String,
+      },
+      {
+        name: "pollIndex",
+        type: Number,
+      },
+      {
+        name: "vote",
+        type: Number,
+      },
+    ],
+  },
+};
+
+export default function Polls() {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
   const Web3Api = useMoralisWeb3Api();
   const { Moralis, account } = useMoralis();
-  const [pollList, setPollList] = useState([]);
+
+  const [votedPolls, setVotedPolls] = useState([]);
+  const [pendingPolls, setPendingPolls] = useState([]);
+
   const [modalActive, setModalActive] = useState(false);
   const [modalProps, setModalProps] = useState(null);
 
@@ -96,16 +122,12 @@ export default function Polls({ isMultiSig }) {
   };
 
   const fetchEvents = useCallback(
-    async (event) => {
-      let options;
-      if (isMultiSig) options = multiSigEventsOptions(event.name);
-      else options = accessibilityEventsOptions(event.name);
+    async (event, args) => {
+      const options = multiSigEventsOptions(event.name, account, args);
       const res = await Web3Api.native.getContractEvents(options);
-      //What to do when we receive the events
-      console.log("Event fetch response: ", res);
       return res;
     },
-    [Web3Api, isMultiSig]
+    [Web3Api, account]
   );
 
   const getCurrentVote = async (_pollID) => {
@@ -127,11 +149,19 @@ export default function Polls({ isMultiSig }) {
     return res;
   };
 
+  const changePollVote = useCallback((poll) => {
+    setPendingPolls((prevPending) => [
+      ...prevPending.filter((p) => p.pollID !== poll.pollID),
+    ]);
+
+    setVotedPolls((prevVoted) => [...prevVoted, poll]);
+  }, []);
+
   const handleVote = useCallback(
     async (_vote, _pollIndex) => {
       if (account) {
         try {
-          let newPoll = pollList.find((poll) => poll.pollID === _pollIndex);
+          let newPoll = pendingPolls.find((poll) => poll.pollID === _pollIndex);
           const options = multiSigOptions(
             account,
             SMART_CONTRACT_FUNCTIONS.VOTE_MULTISIG_POLL,
@@ -139,19 +169,22 @@ export default function Polls({ isMultiSig }) {
           );
           const res = await Moralis.executeFunction(options);
           newPoll.currentVote = _vote;
-          setPollList([
-            ...pollList.filter((el) => el.pollID !== _pollIndex, ...newPoll),
-          ]);
-
-          setSuccessfulTransaction();
+          const voteEvents = await fetchEvents(VOTE_POLL.event, {
+            voter: account,
+            pollIndex: _pollIndex,
+            vote: _vote,
+          });
+          setSuccessfulTransaction(voteEvents.result[0].transaction_hash);
+          changePollVote(newPoll);
           return res;
         } catch (e) {
+          console.log(e);
           setError((error[0] || error.message) ?? "Something went wrong");
         }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [account, Moralis, error]
+    [account, Moralis, error, pendingPolls]
   );
 
   const onCreateMultisigPoll = useCallback(
@@ -164,12 +197,10 @@ export default function Polls({ isMultiSig }) {
             args
           );
           const res = await Moralis.executeFunction(options);
-          if (CREATE_MULTISIG_POLL.event) {
-            const evt = await fetchEvents(CREATE_MULTISIG_POLL.event);
-            if (evt) {
-              setSuccessfulTransaction(evt.result[0].transaction_hash);
-              onCancelModal();
-            }
+          const evt = await fetchEvents(CREATE_MULTISIG_POLL.event);
+          if (evt) {
+            setSuccessfulTransaction(evt.result[0].transaction_hash);
+            onCancelModal();
           }
           return res;
         } catch (error) {
@@ -187,7 +218,6 @@ export default function Polls({ isMultiSig }) {
       SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
     );
     const res = await Moralis.executeFunction(options);
-    console.log("Result of Get Active Polls: ", res);
     const multiSigLength = await getMultiSigLength();
     res.map(async (el) => {
       // GET POLL METADATA FROM POLL ID
@@ -205,12 +235,30 @@ export default function Polls({ isMultiSig }) {
         currentVote,
         multiSigLength,
         el._hex
-      );
-      setPollList((oldPollList) => [...oldPollList, poll]);
+      ); // Filter polls to lists depending on if voted or not
+      if (poll.currentVote === 0) {
+        setPendingPolls((oldPollList) => [...oldPollList, poll]);
+      } else {
+        setVotedPolls((oldVotedPolls) => [...oldVotedPolls, poll]);
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Moralis, account, getExpirationBlock, pollList]);
-  // console.log("Result of Poll Transformation: ", pollList);
+  }, [Moralis, account, getExpirationBlock]);
+
+  const pollGrid = (polls) => (
+    <Box display="flex" flexWrap="wrap">
+      {polls.map((poll) => (
+        <Box margin={2} key={poll.pollID}>
+          <PollComponent
+            type={poll.type}
+            vote={poll.currentVote}
+            onApprove={() => handleVote(1, poll.pollID)}
+            onDecline={() => handleVote(2, poll.pollID)}
+          />
+        </Box>
+      ))}
+    </Box>
+  );
 
   return (
     <Page title="Active Polls" style={{ width: "100%" }}>
@@ -244,15 +292,17 @@ export default function Polls({ isMultiSig }) {
           handleAccept={onCreateMultisigPoll}
           fnc={modalProps}
         />
-        {pollList.length ? (
-          pollList.map((poll) => (
-            <PollComponent
-              type={poll.type}
-              vote={poll.currentVote}
-              onApprove={() => handleVote(1, poll.pollID)}
-              onDecline={() => handleVote(2, poll.pollID)}
-            />
-          ))
+        {pendingPolls.length || votedPolls.length ? (
+          <>
+            <Box sx={{ flexGrow: 1 }}>
+              <h3>Active Polls</h3>
+              {pollGrid(pendingPolls)}
+            </Box>
+            <Box sx={{ flexGrow: 1, marginTop: "1rem" }}>
+              <h3>Voted Polls</h3>
+              {pollGrid(votedPolls)}
+            </Box>
+          </>
         ) : (
           <Typography>There are no active polls at the moment.</Typography>
         )}
@@ -268,13 +318,15 @@ export default function Polls({ isMultiSig }) {
           onClose={() => setSuccessfulTransaction("")}
           message={
             <Typography>
-              The transaction was successful! Hash:
+              The transaction was successful! Hash:{" "}
               <a
                 target="_blank"
                 rel="noreferrer"
                 href={baseEtherscan + successfulTransaction}
               >
-                {successfulTransaction}
+                {successfulTransaction.slice(0, 8) +
+                  "..." +
+                  successfulTransaction?.slice(-8)}
               </a>
             </Typography>
           }

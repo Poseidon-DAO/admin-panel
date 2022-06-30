@@ -48,7 +48,7 @@ export default function ArgumentsModal({
         ? args._voteReceiverAddress
         : NULL_ADDRESS,
     }
-    console.log(fnArgs)
+
     const res = await handleAccept(fnc, fnArgs)
     return res
   }
@@ -64,6 +64,7 @@ export default function ArgumentsModal({
   const closeModal = () => {
     setArgs(DefaultArguments)
     handleClose()
+    console.log('CloseModal', args)
   }
 
   const PollTypeIdSelectField = (value, name) => (

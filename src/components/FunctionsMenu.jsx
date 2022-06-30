@@ -130,7 +130,8 @@ export default function FunctionsMenu({ availableFunctions }) {
               rel="noreferrer"
               href={baseEtherscan + successfulTransaction}
             >
-              {successfulTransaction}
+              {successfulTransaction.slice(0, 8) +
+                successfulTransaction.slice(-4)}
             </a>
           </Typography>
         }
