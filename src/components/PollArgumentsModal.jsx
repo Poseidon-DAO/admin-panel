@@ -41,6 +41,7 @@ export default function ArgumentsModal({
   fnc,
 }) {
   const [args, setArgs] = useState(DefaultArguments)
+  const [description, setDescription] = useState('')
   const onSubmit = async () => {
     const fnArgs = {
       ...args,
@@ -48,8 +49,7 @@ export default function ArgumentsModal({
         ? args._voteReceiverAddress
         : NULL_ADDRESS,
     }
-
-    const res = await handleAccept(fnc, fnArgs)
+    const res = await handleAccept(fnc, fnArgs, description)
     return res
   }
 
@@ -64,7 +64,6 @@ export default function ArgumentsModal({
   const closeModal = () => {
     setArgs(DefaultArguments)
     handleClose()
-    console.log('CloseModal', args)
   }
 
   const PollTypeIdSelectField = (value, name) => (
@@ -140,6 +139,15 @@ export default function ArgumentsModal({
               </FormControl>
             )
         })}
+        <FormControl fullWidth>
+          <TextField
+            style={{ marginTop: '1rem' }}
+            type="text"
+            label="Description"
+            variant="outlined"
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </FormControl>
         <Button
           sx={{ marginTop: '1rem' }}
           variant="contained"

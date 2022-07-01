@@ -6,10 +6,21 @@ import { useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import PollComponent from "src/components/PollComponent";
-import { Box, Chip, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
 import PollArgumentsModal from "src/components/PollArgumentsModal";
 import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
+import { fHex } from "src/utils/formatNumber";
+import { useMemo } from "react";
+
+const BLOCK_DURATION_SECS = 15000;
+const MORALIS_OBJECT_NAME = "Polls";
 
 const CREATE_MULTISIG_POLL = {
   name: "Create Poll",
@@ -59,17 +70,44 @@ const VOTE_POLL = {
   },
 };
 
+const setUpPoll = (
+  description,
+  pollData,
+  expiration,
+  currentVote,
+  multiSigLength,
+  pollID
+) => {
+  const poll = {};
+  poll.description = description;
+  poll.type = fHex(pollData[0]._hex);
+  poll.blockStart = pollData[1]._hex;
+  poll.voteReceiverAddress = pollData[2]._hex;
+  poll.amountApprovedVoteReceiver = fHex(pollData[3]._hex);
+  poll.expiration = fHex(expiration._hex) * BLOCK_DURATION_SECS;
+  poll.currentVote = fHex(currentVote._hex);
+  poll.multiSigLength = fHex(multiSigLength._hex);
+  poll.pollID = pollID;
+
+  return poll;
+};
+
 export default function Polls() {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
   const Web3Api = useMoralisWeb3Api();
   const { Moralis, account } = useMoralis();
-
   const [votedPolls, setVotedPolls] = useState([]);
   const [pendingPolls, setPendingPolls] = useState([]);
 
+  const [isFetchingPolls, setIsFetchingPolls] = useState(true);
+
   const [modalActive, setModalActive] = useState(false);
   const [modalProps, setModalProps] = useState(null);
+
+  // Moralis DB object
+  const PollSubclass = Moralis.Object.extend(MORALIS_OBJECT_NAME);
+  const poll = useMemo(() => new PollSubclass(), [PollSubclass]);
 
   const onCancelModal = () => {
     setModalActive(false);
@@ -88,26 +126,6 @@ export default function Polls() {
     },
     [Moralis, account]
   );
-
-  const setUpPoll = (
-    pollData,
-    expiration,
-    currentVote,
-    multiSigLength,
-    pollID
-  ) => {
-    const poll = {};
-    poll.type = parseInt(pollData[0]._hex, 16);
-    poll.blockStart = pollData[1]._hex;
-    poll.voteReceiverAddress = pollData[2]._hex;
-    poll.amountApprovedVoteReceiver = pollData[3]._hex;
-    poll.expiration = expiration._hex;
-    poll.currentVote = parseInt(currentVote._hex, 16);
-    poll.multiSigLength = parseInt(multiSigLength._hex, 16);
-    poll.pollID = pollID;
-
-    return poll;
-  };
 
   useEffect(() => {
     fetchActivePolls();
@@ -187,32 +205,10 @@ export default function Polls() {
     [account, Moralis, error, pendingPolls]
   );
 
-  const onCreateMultisigPoll = useCallback(
-    async (_, args) => {
-      if (account) {
-        try {
-          const options = multiSigOptions(
-            account,
-            CREATE_MULTISIG_POLL.functionName,
-            args
-          );
-          const res = await Moralis.executeFunction(options);
-          const evt = await fetchEvents(CREATE_MULTISIG_POLL.event);
-          if (evt) {
-            setSuccessfulTransaction(evt.result[0].transaction_hash);
-            onCancelModal();
-          }
-          return res;
-        } catch (error) {
-          setError((error[0] || error.message) ?? "Something went wrong");
-          return error;
-        }
-      }
-    },
-    [Moralis, account, fetchEvents]
-  );
-
   const fetchActivePolls = useCallback(async () => {
+    setIsFetchingPolls(true);
+    setPendingPolls([]);
+    setVotedPolls([]);
     const options = multiSigOptions(
       account,
       SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
@@ -229,13 +225,16 @@ export default function Polls() {
       const metaData = await Moralis.executeFunction(metaDataOptions);
       const expiration = await getExpirationBlock(el._hex);
       const currentVote = await getCurrentVote(el._hex);
+      const description = await readMoralisDescription(fHex(el._hex));
       const poll = setUpPoll(
+        description,
         metaData,
         expiration,
         currentVote,
         multiSigLength,
         el._hex
       ); // Filter polls to lists depending on if voted or not
+
       if (poll.currentVote === 0) {
         setPendingPolls((oldPollList) => [...oldPollList, poll]);
       } else {
@@ -245,13 +244,66 @@ export default function Polls() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Moralis, account, getExpirationBlock]);
 
+  const createNewMoralisEntry = useCallback(
+    async (pollID, description) => {
+      try {
+        const res = await poll.save({ pollID, description });
+        return res;
+      } catch (e) {
+        setError("Something went wrong when saving the description");
+      }
+    },
+    [poll]
+  );
+
+  const readMoralisDescription = useCallback(
+    async (pollID) => {
+      try {
+        const query = new Moralis.Query(MORALIS_OBJECT_NAME);
+        query.equalTo("pollID", `${pollID}`);
+        const res = await query.find();
+        if (!res.length) return null;
+        return res[0].attributes.description;
+      } catch (e) {
+        setError("Couldn't find a description for the poll");
+      }
+    },
+    [Moralis.Query]
+  );
+
+  const onCreateMultisigPoll = useCallback(
+    async (_, args, description) => {
+      if (account) {
+        try {
+          const options = multiSigOptions(
+            account,
+            CREATE_MULTISIG_POLL.functionName,
+            args
+          );
+          const res = await Moralis.executeFunction(options);
+          const evt = await fetchEvents(CREATE_MULTISIG_POLL.event);
+          if (evt) {
+            createNewMoralisEntry(evt.result[0].data.pollIndex, description);
+            setSuccessfulTransaction(evt.result[0].transaction_hash);
+            onCancelModal();
+          }
+          fetchActivePolls();
+          return res;
+        } catch (error) {
+          setError((error[0] || error.message) ?? "Something went wrong");
+          return error;
+        }
+      }
+    },
+    [account, Moralis, fetchEvents, fetchActivePolls, createNewMoralisEntry]
+  );
+
   const pollGrid = (polls) => (
     <Box display="flex" flexWrap="wrap">
-      {polls.map((poll) => (
-        <Box margin={2} key={poll.pollID}>
+      {polls.map((poll, i) => (
+        <Box margin={2} key={poll.pollID + i} minHeight="100%">
           <PollComponent
-            type={poll.type}
-            vote={poll.currentVote}
+            poll={poll}
             onApprove={() => handleVote(1, poll.pollID)}
             onDecline={() => handleVote(2, poll.pollID)}
           />
@@ -259,6 +311,12 @@ export default function Polls() {
       ))}
     </Box>
   );
+
+  useEffect(() => {
+    if (isFetchingPolls && (pendingPolls.length || votedPolls.length)) {
+      setIsFetchingPolls(false);
+    }
+  }, [pendingPolls, votedPolls, isFetchingPolls]);
 
   return (
     <Page title="Active Polls" style={{ width: "100%" }}>
@@ -292,7 +350,9 @@ export default function Polls() {
           handleAccept={onCreateMultisigPoll}
           fnc={modalProps}
         />
-        {pendingPolls.length || votedPolls.length ? (
+        {isFetchingPolls ? (
+          <CircularProgress />
+        ) : pendingPolls.length || votedPolls.length ? (
           <>
             <Box sx={{ flexGrow: 1 }}>
               <h3>Active Polls</h3>
