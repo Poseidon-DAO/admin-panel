@@ -187,6 +187,8 @@ export default function Polls() {
           );
           const res = await Moralis.executeFunction(options);
           newPoll.currentVote = _vote;
+          newPoll.amountApprovedVoteReceiver =
+            +newPoll.amountApprovedVoteReceiver + 1;
           const voteEvents = await fetchEvents(VOTE_POLL.event, {
             voter: account,
             pollIndex: _pollIndex,
@@ -206,15 +208,16 @@ export default function Polls() {
   );
 
   const fetchActivePolls = useCallback(async () => {
-    setIsFetchingPolls(true);
     setPendingPolls([]);
     setVotedPolls([]);
+    setIsFetchingPolls(true);
     const options = multiSigOptions(
       account,
       SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
     );
     const res = await Moralis.executeFunction(options);
     const multiSigLength = await getMultiSigLength();
+
     res.map(async (el) => {
       // GET POLL METADATA FROM POLL ID
       const metaDataOptions = multiSigOptions(
