@@ -7,9 +7,20 @@ export const NetworkTypes = {
 };
 
 export const PollTypes = {
-  'change_creator': process.env.REACT_APP_CHANGE_CREATOR,
-  'delete_address_multisig': process.env.REACT_APP_DELETE_ADDRESS,
-  'add_address_multisig': process.env.REACT_APP_ADD_ADDRESS,
-  'unfreeze': process.env.REACT_APP_UNFREEZE,
-  'change_pdn_smart_contract_owner': process.env.REACT_APP_CHANGE_OWNER,
-}
+  change_creator: process.env.REACT_APP_CHANGE_CREATOR,
+  delete_address_multisig: process.env.REACT_APP_DELETE_ADDRESS,
+  add_address_multisig: process.env.REACT_APP_ADD_ADDRESS,
+  unfreeze: process.env.REACT_APP_UNFREEZE,
+  change_pdn_smart_contract_owner: process.env.REACT_APP_CHANGE_OWNER,
+};
+
+export const VoteTypes = {
+  0: false,
+  1: "Approved",
+  2: "Declined",
+};
+
+export const baseEtherscan =
+  process.env.REACT_APP_CHAIN !== "ethereum"
+    ? "https://rinkeby.etherscan.io/tx/"
+    : "https://etherscan.io/tx/";

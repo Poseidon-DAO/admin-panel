@@ -1,6 +1,17 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material'
 import React from 'react'
-import { useState } from 'react';
+import { useState } from 'react'
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -16,50 +27,55 @@ const style = {
   p: 4,
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center'
-};
+  alignItems: 'center',
+}
 
 const DefaultArguments = {
   _pollTypeID: 0,
   _voteReceiverAddress: NULL_ADDRESS,
 }
 
-export default function ArgumentsModal({open, handleClose, handleAccept, fnc}) {
-  const [isLoading, setIsLoading] = useState(false)
+export default function PollArgumentsModal({
+  open,
+  handleClose,
+  handleAccept,
+  fnc,
+}) {
   const [args, setArgs] = useState(DefaultArguments)
+  const [loading, setLoading] = useState(false)
   const onSubmit = async () => {
-    setIsLoading(true);
+    setLoading(true)
     const fnArgs = {
-      ...args, 
+      ...args,
       _voteReceiverAddress: args._voteReceiverAddress.length
-        ? args._voteReceiverAddress 
-        : NULL_ADDRESS 
+        ? args._voteReceiverAddress
+        : NULL_ADDRESS,
     }
-    console.log(fnArgs)
     const res = await handleAccept(fnc, fnArgs)
-    if (res.message) {
-      setIsLoading(false);
-    }
+    setLoading(false)
+    return res
   }
 
   const onArgumentChange = (value, name) => {
     const newArgs = {
       ...args,
     }
-    newArgs[name] = value;
-    setArgs({ ...newArgs });
+    newArgs[name] = value
+    setArgs({ ...newArgs })
   }
 
   const closeModal = () => {
-    setArgs(DefaultArguments);
-    handleClose();
+    setArgs(DefaultArguments)
+    handleClose()
   }
 
   const PollTypeIdSelectField = (value, name) => (
-    <MenuItem 
+    <MenuItem
       value={value}
       onClick={() => onArgumentChange(+value, '_pollTypeID')}
-    >{name}</MenuItem>
+    >
+      {name}
+    </MenuItem>
   )
   return fnc !== null ? (
     <Modal
@@ -68,45 +84,78 @@ export default function ArgumentsModal({open, handleClose, handleAccept, fnc}) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
-          Input the arguments needed
-        </Typography>
-        {fnc.args.map(({ name, type}) => {
-          if (name === '_pollTypeID') {
-            return (
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Poll Type</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={args._pollTypeID}
-                  label="Poll Type"
-                >
-                  {PollTypeIdSelectField(process.env.REACT_APP_CHANGE_CREATOR, "Change Creator")}
-                  {PollTypeIdSelectField(process.env.REACT_APP_DELETE_ADDRESS, "Delete Address")}
-                  {PollTypeIdSelectField(process.env.REACT_APP_ADD_ADDRESS, "Add Address")}
-                  {PollTypeIdSelectField(process.env.REACT_APP_UNFREEZE, "Unfreeze")}
-                  {PollTypeIdSelectField(process.env.REACT_APP_CHANGE_OWNER, "Change Owner")}
-                </Select>
-              </FormControl>
-            )
-          }
-          else return (
-            <FormControl fullWidth>
-              <TextField 
-                key={name}
-                style={{ marginTop: '1rem' }}
-                type='text'
-                label={name}
-                variant='outlined'
-                required={name === '_voteReceiverAddress' ? false : true}
-                onChange={e => onArgumentChange(type === Number ? +e.target.value : e.target.value, name)}
-              />
-            </FormControl>
-        )})}
-        <Button sx={{ marginTop: '1rem' }} variant='contained' onClick={onSubmit}>Submit</Button>
-      </Box>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" mb={2}>
+            Input the arguments needed
+          </Typography>
+          {fnc.args.map(({ name, type }) => {
+            if (name === '_pollTypeID') {
+              return (
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Poll Type
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={args._pollTypeID}
+                    label="Poll Type"
+                  >
+                    {PollTypeIdSelectField(
+                      process.env.REACT_APP_CHANGE_CREATOR,
+                      'Change Creator',
+                    )}
+                    {PollTypeIdSelectField(
+                      process.env.REACT_APP_DELETE_ADDRESS,
+                      'Delete Address',
+                    )}
+                    {PollTypeIdSelectField(
+                      process.env.REACT_APP_ADD_ADDRESS,
+                      'Add Address',
+                    )}
+                    {PollTypeIdSelectField(
+                      process.env.REACT_APP_UNFREEZE,
+                      'Unfreeze',
+                    )}
+                    {PollTypeIdSelectField(
+                      process.env.REACT_APP_CHANGE_OWNER,
+                      'Change Owner',
+                    )}
+                  </Select>
+                </FormControl>
+              )
+            } else
+              return (
+                <FormControl fullWidth>
+                  <TextField
+                    key={name}
+                    style={{ marginTop: '1rem' }}
+                    type="text"
+                    label={name}
+                    variant="outlined"
+                    required={name === '_voteReceiverAddress' ? false : true}
+                    onChange={(e) =>
+                      onArgumentChange(
+                        type === Number ? +e.target.value : e.target.value,
+                        name,
+                      )
+                    }
+                  />
+                </FormControl>
+              )
+          })}
+          <Button
+            sx={{ marginTop: '1rem' }}
+            variant="contained"
+            onClick={onSubmit}
+          >
+            Submit
+          </Button>
+        </Box>
+      )}
     </Modal>
   ) : null
 }
