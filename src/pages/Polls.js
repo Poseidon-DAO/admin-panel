@@ -32,6 +32,24 @@ const CREATE_MULTISIG_POLL = {
       type: Number,
     },
   ],
+  pollTypeArgs: {
+    1: [
+      {
+        type: "address",
+        name: "_newDAOCreator",
+      },
+    ],
+    2: [
+      {
+        name: "_functionSignatureList",
+        type: Number,
+      },
+      { name: "_userGroupList", type: Number },
+    ],
+    3: [],
+    4: [],
+    5: [],
+  },
   event: {
     name: SMART_CONTRACT_FUNCTIONS.EVENT_NEW_MULTISIG,
     args: {
