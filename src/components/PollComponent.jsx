@@ -8,11 +8,13 @@ import {
   Divider,
 } from '@mui/material'
 import React from 'react'
+import { useState } from 'react'
 import Countdown from 'react-countdown'
 import { PollTypes, VoteTypes } from 'src/types'
 import Iconify from './Iconify'
 
 export default function PollComponent({ onApprove, onDecline, poll }) {
+  const [mouseOnAddress, setMouseOnAddress] = useState(false)
   const {
     currentVote,
     type,
@@ -20,19 +22,46 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
     amountApprovedVoteReceiver,
     multiSigLength,
     description,
+    voteReceiverAddress,
   } = poll
   const pollName = Object.keys(PollTypes).find(
     (key) => PollTypes[key] === `${type}`,
   )
+
+  const showReceiverAddress = pollName !== 'unfreeze'
+
+  const onCopyAddress = () => navigator.clipboard.writeText(voteReceiverAddress)
 
   const hasVoted = VoteTypes[currentVote] === false ? false : true
   return (
     <Card sx={{ width: 250, minHeight: '100%' }}>
       <CardContent>
         <h3>{pollName.toUpperCase()}</h3>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {description || 'No description found'}
-        </Typography>
+        <Box display="flex" flexDirection="column" maxWidth="100%">
+          <Typography
+            variant="body2"
+            color={!mouseOnAddress ? 'textSecondary' : 'green'}
+            component="p"
+            width="100%"
+            sx={{ cursor: 'pointer' }}
+            onClick={() => onCopyAddress()}
+            onMouseEnter={() => setMouseOnAddress(true)}
+            onMouseLeave={() => setMouseOnAddress(false)}
+          >
+            {showReceiverAddress &&
+              voteReceiverAddress.slice(0, 8) +
+                ' ... ' +
+                voteReceiverAddress.slice(-6)}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            component="p"
+            mt={1}
+          >
+            {description || 'No description found'}
+          </Typography>
+        </Box>
         <Box
           display="flex"
           width="100%"

@@ -31,25 +31,11 @@ const CREATE_MULTISIG_POLL = {
       name: "_pollTypeID",
       type: Number,
     },
+    {
+      name: "_voteReceiverAddress",
+      type: String,
+    },
   ],
-  pollTypeArgs: {
-    1: [
-      {
-        type: "address",
-        name: "_newDAOCreator",
-      },
-    ],
-    2: [
-      {
-        name: "_functionSignatureList",
-        type: Number,
-      },
-      { name: "_userGroupList", type: Number },
-    ],
-    3: [],
-    4: [],
-    5: [],
-  },
   event: {
     name: SMART_CONTRACT_FUNCTIONS.EVENT_NEW_MULTISIG,
     args: {
@@ -97,10 +83,11 @@ const setUpPoll = (
   pollID
 ) => {
   const poll = {};
+
   poll.description = description;
   poll.type = fHex(pollData[0]._hex);
   poll.blockStart = pollData[1]._hex;
-  poll.voteReceiverAddress = pollData[2]._hex;
+  poll.voteReceiverAddress = pollData[2];
   poll.amountApprovedVoteReceiver = fHex(pollData[3]._hex);
   poll.expiration = fHex(expiration._hex) * BLOCK_DURATION_SECS;
   poll.currentVote = fHex(currentVote._hex);
@@ -233,7 +220,10 @@ export default function Polls() {
       account,
       SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
     );
+
+    // fetch all the polls
     const res = await Moralis.executeFunction(options);
+    // Get the length of the multisig address list
     const multiSigLength = await getMultiSigLength();
 
     res.map(async (el) => {
@@ -247,6 +237,7 @@ export default function Polls() {
       const expiration = await getExpirationBlock(el._hex);
       const currentVote = await getCurrentVote(el._hex);
       const description = await readMoralisDescription(fHex(el._hex));
+
       const poll = setUpPoll(
         description,
         metaData,
@@ -254,14 +245,19 @@ export default function Polls() {
         currentVote,
         multiSigLength,
         el._hex
-      ); // Filter polls to lists depending on if voted or not
+      );
 
+      // Filter polls to diff lists by votes
       if (poll.currentVote === 0) {
         setPendingPolls((oldPollList) => [...oldPollList, poll]);
       } else {
         setVotedPolls((oldVotedPolls) => [...oldVotedPolls, poll]);
       }
     });
+
+    // set loading spinner to false
+    setTimeout(() => setIsFetchingPolls(false), 3000);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Moralis, account, getExpirationBlock]);
 
@@ -332,12 +328,6 @@ export default function Polls() {
       ))}
     </Box>
   );
-
-  useEffect(() => {
-    if (isFetchingPolls && (pendingPolls.length || votedPolls.length)) {
-      setIsFetchingPolls(false);
-    }
-  }, [pendingPolls, votedPolls, isFetchingPolls]);
 
   return (
     <Page title="Active Polls" style={{ width: "100%" }}>

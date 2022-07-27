@@ -31,7 +31,7 @@ const style = {
 
 const DefaultArguments = {
   _pollTypeID: 0,
-  _voteReceiverAddress: NULL_ADDRESS,
+  _voteReceiverAddress: '',
 }
 
 export default function ArgumentsModal({
@@ -54,6 +54,9 @@ export default function ArgumentsModal({
   }
 
   const onArgumentChange = (value, name) => {
+    if (name === '_pollTypeID') {
+      setArgs(DefaultArguments)
+    }
     const newArgs = {
       ...args,
     }
@@ -74,6 +77,8 @@ export default function ArgumentsModal({
       {name}
     </MenuItem>
   )
+  const freezePollID = +process.env.REACT_APP_UNFREEZE
+
   return fnc !== null ? (
     <Modal
       open={open}
@@ -95,6 +100,7 @@ export default function ArgumentsModal({
                   id="demo-simple-select"
                   value={args._pollTypeID}
                   label="Poll Type"
+                  defaultValue="Select a poll type"
                 >
                   {PollTypeIdSelectField(
                     process.env.REACT_APP_CHANGE_CREATOR,
@@ -120,15 +126,17 @@ export default function ArgumentsModal({
               </FormControl>
             )
           } else
-            return (
+            return args._pollTypeID === freezePollID ||
+              !args._pollTypeID ? null : (
               <FormControl fullWidth>
                 <TextField
                   key={name}
                   style={{ marginTop: '1rem' }}
                   type="text"
+                  value={args._voteReceiverAddress}
                   label={name}
                   variant="outlined"
-                  required={name === '_voteReceiverAddress' ? false : true}
+                  required={true}
                   onChange={(e) =>
                     onArgumentChange(
                       type === Number ? +e.target.value : e.target.value,
@@ -152,6 +160,9 @@ export default function ArgumentsModal({
           sx={{ marginTop: '1rem' }}
           variant="contained"
           onClick={onSubmit}
+          disabled={
+            args._pollTypeID !== freezePollID && !args._voteReceiverAddress
+          }
         >
           Submit
         </Button>
