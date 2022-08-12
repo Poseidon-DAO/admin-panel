@@ -16,6 +16,11 @@ const navConfig = [
     path: "/app/polls",
     icon: getIcon("mdi:vote-outline"),
   },
+  {
+    title: "Token",
+    path: "/app/token",
+    icon: getIcon("bi:coin"),
+  },
 ];
 
 export default navConfig;

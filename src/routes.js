@@ -21,6 +21,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { multiSigOptions } from "./abis";
 import SMART_CONTRACT_FUNCTIONS from "./smartContract";
 import Polls from "./pages/Polls";
+import Token from "./pages/Token";
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +34,7 @@ function Router() {
         { path: "dashboard", element: <DashboardApp /> },
         { path: "accessibility", element: <Accessibility /> },
         { path: "polls", element: <Polls /> },
+        { path: "token", element: <Token /> },
       ],
     },
     {
