@@ -17,9 +17,14 @@ const navConfig = [
     icon: getIcon("mdi:vote-outline"),
   },
   {
-    title: "Token",
-    path: "/app/token",
+    title: "Airdrop",
+    path: "/app/airdrop",
     icon: getIcon("bi:coin"),
+  },
+  {
+    title: "Transfer",
+    path: "/app/transfer",
+    icon: getIcon("bx:transfer"),
   },
 ];
 

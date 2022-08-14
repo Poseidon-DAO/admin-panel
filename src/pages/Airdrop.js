@@ -14,8 +14,9 @@ import { formatAddress } from "src/utils/formatAddress";
 import { erc20Options } from "src/abis";
 import { useMoralis } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import AirdropTable from "src/components/AirdropTable";
 
-export default function Token() {
+export default function Airdrop() {
   const { Moralis, account } = useMoralis();
 
   const [address, setAddress] = useState("");
@@ -96,7 +97,7 @@ export default function Token() {
     <Page title="Dashboard: Token">
       <Container>
         <Typography variant="h3" sx={{ mb: 5 }}>
-          Send Tokens To Addresses
+          Create Airdrop
         </Typography>
 
         <form
@@ -189,6 +190,8 @@ export default function Token() {
             Finish Airdrop
           </Button>
         )}
+
+        <AirdropTable />
       </Container>
     </Page>
   );

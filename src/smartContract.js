@@ -10,6 +10,7 @@ const EVENT_NEW_MULTISIG = "NewMultisigPollEvent";
 const GET_VOTE = "getVoterVote";
 const GET_MULTISIG_LENGTH = "getMultiSigLength";
 const RUN_AIR_DROP = "runAirdrop";
+const TRANSFER = "transfer";
 
 // EVENTS
 const GET_POLL_META = "getPollMetaData";
@@ -28,6 +29,7 @@ const SMART_CONTRACT_FUNCTIONS = {
   GET_ACTIVE_POLLS,
   GET_EXPIRATION_BLOCK,
   RUN_AIR_DROP,
+  TRANSFER,
 
   // Events
   EVENT_NEW_MULTISIG,
