@@ -20,39 +20,15 @@ import Form from "src/sections/airdrop/form/Form";
 export default function Airdrop() {
   const { Moralis, account } = useMoralis();
 
-  const [address, setAddress] = useState("");
-  const [amount, setAmount] = useState("");
-  const [errors, setErrors] = useState({
-    address: "",
-    amount: "",
-  });
-
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [selectedAddresses, setSelectedAddresses] = useState([]);
 
-  const handleInputChange = (event) => {
-    console.log({ event });
+  function handleAddressAdd(address) {
+    setAirdropAddresses((prevAddresses) => [...prevAddresses, address]);
+  }
 
-    // setter(asNumber ? event.target.valueAsNumber : event.target.value);
-    // setErrors((errors) => ({
-    //   ...errors,
-    //   [event.target.name]: "",
-    // }));
-  };
-
-  function handleAddressAdd(e, address, amount) {
-    e.preventDefault();
-    const isValid = validate();
-
-    if (!isValid) return;
-
-    setAirdropAddresses((airdropAddresses) => [
-      ...airdropAddresses,
-      { address, amount },
-    ]);
-
-    setAddress("");
-    setAmount("");
+  function handleAddressSelection(addresses) {
+    setSelectedAddresses((prevAddresses) => [...prevAddresses, ...addresses]);
   }
 
   function handleAddressRemove(address) {
@@ -61,23 +37,6 @@ export default function Airdrop() {
         (selectedAddress) => address !== selectedAddress.address
       )
     );
-  }
-
-  function validate() {
-    if (!amount || (!selectedAddresses.length && !address)) {
-      setErrors({
-        ...(!amount && {
-          amount: "Please provide an amount!",
-        }),
-        ...(!address && {
-          address: "Please provide a valid Address!",
-        }),
-      });
-
-      return false;
-    }
-
-    return true;
   }
 
   async function handleAirdrop() {
@@ -105,17 +64,14 @@ export default function Airdrop() {
           Create Airdrop
         </Typography>
 
-        <Form
-          onSubmit={(e) => handleAddressAdd(e, address, amount)}
-          onChange={handleInputChange}
-          address={address}
-          amount={amount}
-          errors={errors}
-        />
+        <Form onSubmit={handleAddressAdd} />
 
-        {console.log({ selectedAddresses, airdropAddresses })}
-
-        {!!airdropAddresses.length && <AirdropTable rows={airdropAddresses} />}
+        {!!airdropAddresses.length && (
+          <AirdropTable
+            rows={airdropAddresses}
+            onSelectChange={handleAddressSelection}
+          />
+        )}
 
         {!!airdropAddresses.length && (
           <Button

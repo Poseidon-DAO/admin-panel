@@ -48,7 +48,7 @@ const headCells = [
   },
 ];
 
-function Table({ rows }) {
+function Table({ rows, onSelectChange }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("amount");
   const [selected, setSelected] = useState([]);
@@ -63,32 +63,27 @@ function Table({ rows }) {
 
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.address);
-      setSelected(newSelected);
+      setSelected(rows);
       return;
     }
     setSelected([]);
   }
 
-  function handleClick(event, name) {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
+  function handleClick(event, row) {
+    const elementIsSelected = selected.find((el) => el.address === row.address);
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
+    if (elementIsSelected) {
+      setSelected((prevSelected) =>
+        prevSelected.filter((el) => el.address !== row.address)
       );
+
+      return;
     }
 
-    setSelected(newSelected);
+    setSelected((prevSelected) => [...prevSelected, row]);
   }
+
+  console.log({ selected });
 
   function handleChangePage(event, newPage) {
     setPage(newPage);
@@ -99,7 +94,7 @@ function Table({ rows }) {
     setPage(0);
   }
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (name) => !!selected.find((el) => el.address === name);
 
   const rowCount = rows.length;
   const emptyRows =
@@ -202,7 +197,7 @@ function Table({ rows }) {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.address)}
+                      onClick={(event) => handleClick(event, row)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
