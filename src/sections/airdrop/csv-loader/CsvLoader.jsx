@@ -1,13 +1,21 @@
 import {
-  Box,
   Button,
   Grid,
   IconButton,
+  styled,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { useCSVReader } from "react-papaparse";
 import Iconify from "src/components/Iconify";
+
+const Wrapper = styled(Grid)`
+  border: 1px solid #d7dde1;
+  border-radius: 8px;
+  width: 200px;
+  height: 36px;
+  padding: 0 8px;
+`;
 
 function CSVLoader({ onFileLoad, onFileRemove }) {
   const { CSVReader } = useCSVReader();
@@ -29,26 +37,13 @@ function CSVLoader({ onFileLoad, onFileRemove }) {
 
         onFileLoad?.(formatedData);
       }}
-      onUploadRejected={() => {
-        console.log("hinii");
-        // onFileRemove
-      }}
     >
       {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }) => (
         <>
-          <Grid container wrap="nowrap">
+          <Grid container wrap="nowrap" justifyContent="flex-end">
             <Grid item container alignItems="center">
               {!!acceptedFile ? (
-                <Grid
-                  container
-                  style={{
-                    border: "1px solid #D7DDE1",
-                    borderRadius: 8,
-                    width: 200,
-                    height: 36,
-                    padding: "0 8px",
-                  }}
-                >
+                <Wrapper container>
                   <Grid
                     container
                     alignItems="center"
@@ -82,14 +77,12 @@ function CSVLoader({ onFileLoad, onFileRemove }) {
                   </Grid>
 
                   <ProgressBar style={{ height: 2 }} />
-                </Grid>
+                </Wrapper>
               ) : (
                 <Button variant="contained" {...getRootProps()}>
                   Import CSV file
                 </Button>
               )}
-
-              <Box marginLeft={2}></Box>
             </Grid>
           </Grid>
         </>

@@ -16,6 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useEffect } from "react";
 import { useState } from "react";
 import Iconify from "src/components/Iconify";
 
@@ -48,7 +49,7 @@ const headCells = [
   },
 ];
 
-function Table({ rows, onSelectChange }) {
+function Table({ rows, onSelectChange, onRowsDelete }) {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("amount");
   const [selected, setSelected] = useState([]);
@@ -61,26 +62,31 @@ function Table({ rows, onSelectChange }) {
     setOrderBy(property);
   }
 
+  function handleSelectChange(rows) {
+    setSelected(rows);
+    onSelectChange(rows);
+  }
+
   function handleSelectAllClick(event) {
     if (event.target.checked) {
-      setSelected(rows);
+      handleSelectChange(rows);
       return;
     }
-    setSelected([]);
+    handleSelectChange([]);
   }
 
   function handleClick(event, row) {
     const elementIsSelected = selected.find((el) => el.address === row.address);
 
     if (elementIsSelected) {
-      setSelected((prevSelected) =>
-        prevSelected.filter((el) => el.address !== row.address)
-      );
+      const filtered = selected.filter((el) => el.address !== row.address);
+      handleSelectChange(filtered);
 
       return;
     }
 
-    setSelected((prevSelected) => [...prevSelected, row]);
+    const updatedSelected = [...selected, row];
+    handleSelectChange(updatedSelected);
   }
 
   function handleChangePage(event, newPage) {
@@ -90,6 +96,12 @@ function Table({ rows, onSelectChange }) {
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  }
+
+  function handleRowsDelete() {
+    const selectedAddresses = selected.map((a) => a.address);
+    onRowsDelete(selectedAddresses);
+    handleSelectChange([]);
   }
 
   const isSelected = (name) => !!selected.find((el) => el.address === name);
@@ -139,7 +151,10 @@ function Table({ rows, onSelectChange }) {
             {numSelected > 0 ? (
               <Tooltip title="Delete">
                 <IconButton>
-                  <Iconify icon="ant-design:delete-filled" />
+                  <Iconify
+                    icon="ant-design:delete-filled"
+                    onClick={handleRowsDelete}
+                  />
                 </IconButton>
               </Tooltip>
             ) : (

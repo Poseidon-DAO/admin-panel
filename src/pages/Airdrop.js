@@ -1,17 +1,6 @@
-import {
-  Button,
-  Container,
-  Grid,
-  TextField,
-  Tooltip,
-  Typography,
-  Chip,
-  Box,
-} from "@mui/material";
+import { Button, Container, Grid, Typography, Box } from "@mui/material";
 import Page from "../components/Page";
-import Iconify from "src/components/Iconify";
 import { useState } from "react";
-import { formatAddress } from "src/utils/formatAddress";
 import { erc20Options } from "src/abis";
 import { useMoralis } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
@@ -30,7 +19,7 @@ export default function Airdrop() {
   }
 
   function handleAddressSelection(addresses) {
-    setSelectedAddresses((prevAddresses) => [...prevAddresses, ...addresses]);
+    setSelectedAddresses(addresses);
   }
 
   function handleCSVFileLoad(addresses) {
@@ -41,11 +30,9 @@ export default function Airdrop() {
     setAirdropAddresses([]);
   }
 
-  function handleAddressRemove(address) {
-    setSelectedAddresses((selectedAddresses) =>
-      selectedAddresses.filter(
-        (selectedAddress) => address !== selectedAddress.address
-      )
+  function handleRemoveRows(selectedAddresses) {
+    setAirdropAddresses((addresses) =>
+      addresses.filter(({ address }) => !selectedAddresses.includes(address))
     );
   }
 
@@ -70,8 +57,8 @@ export default function Airdrop() {
   return (
     <Page title="Dashboard: Token">
       <Container>
-        <Grid container wrap="nowrap">
-          <Box width="97%">
+        <Grid container wrap="nowrap" justifyContent="space-between">
+          <Box width="80%">
             <Typography variant="h3" sx={{ mb: 5 }}>
               Create Airdrop
             </Typography>
@@ -91,6 +78,7 @@ export default function Airdrop() {
           <AirdropTable
             rows={airdropAddresses}
             onSelectChange={handleAddressSelection}
+            onRowsDelete={handleRemoveRows}
           />
         )}
 
