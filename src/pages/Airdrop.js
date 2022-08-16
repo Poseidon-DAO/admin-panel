@@ -68,6 +68,7 @@ export default function Airdrop() {
             <CSVLoader
               onFileLoad={handleCSVFileLoad}
               onFileRemove={handleCSVFileRemove}
+              removeFileCondition={!airdropAddresses.length} //  in case user deletes all accounts from table we remove the file
             />
           </Box>
         </Grid>

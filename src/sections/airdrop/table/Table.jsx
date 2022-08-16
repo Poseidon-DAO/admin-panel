@@ -16,7 +16,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
 import { useState } from "react";
 import Iconify from "src/components/Iconify";
 
@@ -150,11 +149,8 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
 
             {numSelected > 0 ? (
               <Tooltip title="Delete">
-                <IconButton>
-                  <Iconify
-                    icon="ant-design:delete-filled"
-                    onClick={handleRowsDelete}
-                  />
+                <IconButton onClick={handleRowsDelete}>
+                  <Iconify icon="ant-design:delete-filled" />
                 </IconButton>
               </Tooltip>
             ) : (

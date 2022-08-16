@@ -6,6 +6,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { useEffect } from "react";
+import { useRef } from "react";
 import { useCSVReader } from "react-papaparse";
 import Iconify from "src/components/Iconify";
 
@@ -17,8 +19,15 @@ const Wrapper = styled(Grid)`
   padding: 0 8px;
 `;
 
-function CSVLoader({ onFileLoad, onFileRemove }) {
+function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
   const { CSVReader } = useCSVReader();
+  const deleteButtonRef = useRef();
+
+  useEffect(() => {
+    if (removeFileCondition && !!deleteButtonRef.current) {
+      deleteButtonRef?.current?.click();
+    }
+  }, [removeFileCondition]);
 
   function handleFileRemove(e, { onClick }) {
     onClick(e);
@@ -63,6 +72,7 @@ function CSVLoader({ onFileLoad, onFileRemove }) {
                     <Grid item>
                       <Tooltip title="Remove file">
                         <IconButton
+                          ref={deleteButtonRef}
                           onClick={(e) =>
                             handleFileRemove(e, getRemoveFileProps())
                           }
