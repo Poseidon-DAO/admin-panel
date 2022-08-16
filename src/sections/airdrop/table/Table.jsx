@@ -83,8 +83,6 @@ function Table({ rows, onSelectChange }) {
     setSelected((prevSelected) => [...prevSelected, row]);
   }
 
-  console.log({ selected });
-
   function handleChangePage(event, newPage) {
     setPage(newPage);
   }
@@ -173,14 +171,20 @@ function Table({ rows, onSelectChange }) {
                     align="left"
                     sortDirection={orderBy === headCell.id ? order : false}
                   >
-                    <TableSortLabel
-                      active={orderBy === headCell.id}
-                      direction={orderBy === headCell.id ? order : "asc"}
-                      onClick={(event) => handleRequestSort(event, headCell.id)}
-                      style={{ fontWeight: "bolder" }}
-                    >
-                      {headCell.label}
-                    </TableSortLabel>
+                    {headCell.id === "amount" ? (
+                      <TableSortLabel
+                        active={orderBy === headCell.id}
+                        direction={orderBy === headCell.id ? order : "asc"}
+                        onClick={(event) =>
+                          handleRequestSort(event, headCell.id)
+                        }
+                        style={{ fontWeight: "bolder" }}
+                      >
+                        {headCell.label}
+                      </TableSortLabel>
+                    ) : (
+                      headCell.label
+                    )}
                   </TableCell>
                 ))}
               </TableRow>

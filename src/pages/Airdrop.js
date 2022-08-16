@@ -6,6 +6,7 @@ import {
   Tooltip,
   Typography,
   Chip,
+  Box,
 } from "@mui/material";
 import Page from "../components/Page";
 import Iconify from "src/components/Iconify";
@@ -16,6 +17,7 @@ import { useMoralis } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import AirdropTable from "src/sections/airdrop/table/Table";
 import Form from "src/sections/airdrop/form/Form";
+import CSVLoader from "src/sections/airdrop/csv-loader/CsvLoader";
 
 export default function Airdrop() {
   const { Moralis, account } = useMoralis();
@@ -29,6 +31,14 @@ export default function Airdrop() {
 
   function handleAddressSelection(addresses) {
     setSelectedAddresses((prevAddresses) => [...prevAddresses, ...addresses]);
+  }
+
+  function handleCSVFileLoad(addresses) {
+    setAirdropAddresses(addresses);
+  }
+
+  function handleCSVFileRemove() {
+    setAirdropAddresses([]);
   }
 
   function handleAddressRemove(address) {
@@ -60,9 +70,20 @@ export default function Airdrop() {
   return (
     <Page title="Dashboard: Token">
       <Container>
-        <Typography variant="h3" sx={{ mb: 5 }}>
-          Create Airdrop
-        </Typography>
+        <Grid container wrap="nowrap">
+          <Box width="97%">
+            <Typography variant="h3" sx={{ mb: 5 }}>
+              Create Airdrop
+            </Typography>
+          </Box>
+
+          <Box paddingTop={1}>
+            <CSVLoader
+              onFileLoad={handleCSVFileLoad}
+              onFileRemove={handleCSVFileRemove}
+            />
+          </Box>
+        </Grid>
 
         <Form onSubmit={handleAddressAdd} />
 
