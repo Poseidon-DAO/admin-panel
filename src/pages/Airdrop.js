@@ -12,14 +12,9 @@ export default function Airdrop() {
   const { Moralis, account } = useMoralis();
 
   const [airdropAddresses, setAirdropAddresses] = useState([]);
-  const [selectedAddresses, setSelectedAddresses] = useState([]);
 
   function handleAddressAdd(address) {
     setAirdropAddresses((prevAddresses) => [...prevAddresses, address]);
-  }
-
-  function handleAddressSelection(addresses) {
-    setSelectedAddresses(addresses);
   }
 
   function handleCSVFileLoad(addresses) {
@@ -30,9 +25,9 @@ export default function Airdrop() {
     setAirdropAddresses([]);
   }
 
-  function handleRemoveRows(selectedAddresses) {
+  function handleRemoveRows(selected) {
     setAirdropAddresses((addresses) =>
-      addresses.filter(({ address }) => !selectedAddresses.includes(address))
+      addresses.filter(({ address }) => !selected.includes(address))
     );
   }
 
@@ -41,14 +36,15 @@ export default function Airdrop() {
       account,
       SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP,
       {
-        _addresses: selectedAddresses.map((address) => address.address),
-        _amounts: selectedAddresses.map((address) => address.amount),
+        _addresses: airdropAddresses.map((address) => address.address),
+        _amounts: airdropAddresses.map((address) => address.amount),
         _decimals: 18,
       }
     );
 
     try {
       await Moralis.executeFunction(options);
+      setAirdropAddresses([]);
     } catch (err) {
       console.error(err);
     }
@@ -78,7 +74,6 @@ export default function Airdrop() {
         {!!airdropAddresses.length && (
           <AirdropTable
             rows={airdropAddresses}
-            onSelectChange={handleAddressSelection}
             onRowsDelete={handleRemoveRows}
           />
         )}

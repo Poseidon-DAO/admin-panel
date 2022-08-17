@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import Iconify from "src/components/Iconify";
+import SearchBar from "./SearchBar";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -49,6 +50,9 @@ const headCells = [
 ];
 
 function Table({ rows, onSelectChange, onRowsDelete }) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchRows, setSearchRows] = useState(rows);
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("amount");
   const [selected, setSelected] = useState([]);
@@ -63,7 +67,7 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
 
   function handleSelectChange(rows) {
     setSelected(rows);
-    onSelectChange(rows);
+    onSelectChange?.(rows);
   }
 
   function handleSelectAllClick(event) {
@@ -74,7 +78,7 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
     handleSelectChange([]);
   }
 
-  function handleClick(event, row) {
+  function handleClick(_, row) {
     const elementIsSelected = selected.find((el) => el.address === row.address);
 
     if (elementIsSelected) {
@@ -88,7 +92,7 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
     handleSelectChange(updatedSelected);
   }
 
-  function handleChangePage(event, newPage) {
+  function handleChangePage(_, newPage) {
     setPage(newPage);
   }
 
@@ -103,11 +107,24 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
     handleSelectChange([]);
   }
 
+  function requestSearch(query) {
+    setSearchQuery(query);
+    const filteredRows = rows.filter((row) => {
+      return row.address.toLowerCase().includes(query?.toLowerCase());
+    });
+    setSearchRows(filteredRows);
+  }
+
+  function cancelSearch() {
+    setSearchQuery("");
+    requestSearch("");
+  }
+
   const isSelected = (name) => !!selected.find((el) => el.address === name);
 
-  const rowCount = rows.length;
+  const rowCount = searchRows.length;
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - searchRows.length) : 0;
   const numSelected = selected.length;
 
   return (
@@ -147,16 +164,16 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
               </Typography>
             )}
 
-            {numSelected > 0 ? (
+            <SearchBar
+              value={searchQuery}
+              onChange={(e) => requestSearch(e.target.value)}
+              onSearchCancel={cancelSearch}
+            />
+
+            {numSelected > 0 && (
               <Tooltip title="Delete">
                 <IconButton onClick={handleRowsDelete}>
                   <Iconify icon="ant-design:delete-filled" />
-                </IconButton>
-              </Tooltip>
-            ) : (
-              <Tooltip title="Filter list">
-                <IconButton>
-                  <Iconify icon="filter" />
                 </IconButton>
               </Tooltip>
             )}
@@ -202,7 +219,7 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
             </TableHead>
 
             <TableBody>
-              {rows
+              {searchRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
@@ -249,7 +266,7 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={searchRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
