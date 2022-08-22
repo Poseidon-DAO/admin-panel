@@ -69,7 +69,7 @@ export default function Airdrop() {
           </Box>
         </Grid>
 
-        <Form onSubmit={handleAddressAdd} />
+        <Form onSubmit={handleAddressAdd} resetOnSubmit />
 
         {!!airdropAddresses.length && (
           <AirdropTable
@@ -82,11 +82,11 @@ export default function Airdrop() {
           <Button
             variant="contained"
             size="large"
-            color="error"
-            style={{ marginTop: 30, width: "100%" }}
+            color="success"
+            style={{ marginTop: 30, width: "100%", color: "white" }}
             onClick={handleAirdrop}
           >
-            Finish Airdrop
+            Run Airdrop
           </Button>
         )}
       </Container>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Grid, TextField, Button } from "@mui/material";
 
-function Form({ onSubmit }) {
+function Form({ onSubmit, buttonProps, resetOnSubmit = false }) {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({
@@ -45,19 +45,21 @@ function Form({ onSubmit }) {
 
     onSubmit?.({ address, amount });
 
-    setAddress("");
-    setAmount("");
+    if (resetOnSubmit) {
+      setAddress("");
+      setAmount("");
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ height: 79 }}>
-      <Grid container justifyContent="space-between">
-        <Grid item sm={9}>
+    <form onSubmit={handleSubmit}>
+      <Grid container spacing={2} wrap="nowrap">
+        <Grid item xs={9}>
           <TextField
             name="address"
             value={address}
             onChange={handleInputChange(setAddress)}
-            placeholder="E.g. 0x850EdEfE0A1d573057a695B870Ada74116F8E3d0"
+            placeholder="0x850EdEfE0A1d573057a695B870Ada74116F8E3d0"
             label="Address"
             autoComplete="off"
             InputLabelProps={{ shrink: true }}
@@ -67,12 +69,12 @@ function Form({ onSubmit }) {
           />
         </Grid>
 
-        <Grid item sm={2}>
+        <Grid item xs={2}>
           <TextField
             name="amount"
             value={amount}
             onChange={handleInputChange(setAmount, true)}
-            placeholder="E.g. 5"
+            placeholder="0.5"
             label="Amount"
             type="number"
             autoComplete="off"
@@ -83,16 +85,15 @@ function Form({ onSubmit }) {
           />
         </Grid>
 
-        <Grid
-          item
-          container
-          width="auto"
-          alignItems="center"
-          justifyContent="center"
-          height={56}
-        >
-          <Button variant="outlined" size="large" type="submit">
-            Add
+        <Grid item xs>
+          <Button
+            variant="outlined"
+            size="large"
+            type="submit"
+            style={{ marginTop: 4 }}
+            {...buttonProps}
+          >
+            {buttonProps?.title || "Add"}
           </Button>
         </Grid>
       </Grid>
