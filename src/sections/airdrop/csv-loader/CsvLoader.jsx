@@ -6,9 +6,8 @@ import {
   Tooltip,
   Typography,
   tooltipClasses,
-  Box,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRef } from "react";
 import { useCSVReader } from "react-papaparse";
 import Iconify from "src/components/Iconify";
