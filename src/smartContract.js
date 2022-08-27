@@ -11,6 +11,8 @@ const GET_VOTE = "getVoterVote";
 const GET_MULTISIG_LENGTH = "getMultiSigLength";
 const RUN_AIR_DROP = "runAirdrop";
 const TRANSFER = "transfer";
+const PDN_BALANCE = "balanceOf";
+const SYMBOL = "symbol";
 
 // EVENTS
 const GET_POLL_META = "getPollMetaData";
@@ -30,6 +32,8 @@ const SMART_CONTRACT_FUNCTIONS = {
   GET_EXPIRATION_BLOCK,
   RUN_AIR_DROP,
   TRANSFER,
+  PDN_BALANCE,
+  SYMBOL,
 
   // Events
   EVENT_NEW_MULTISIG,

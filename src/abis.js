@@ -1206,8 +1206,9 @@ export const accessibilityEventsOptions = (name) => {
   };
 };
 
-export const erc20Options = (address, functionName, args) => {
+export const erc20Options = (address, functionName, args = {}) => {
   const params = { ...args, _address: address };
+
   return {
     contractAddress: erc20Address,
     functionName: functionName,

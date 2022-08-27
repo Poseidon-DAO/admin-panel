@@ -6,11 +6,13 @@ import {
   Tooltip,
   Typography,
   tooltipClasses,
+  Box,
 } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { useCSVReader } from "react-papaparse";
 import Iconify from "src/components/Iconify";
+import web3 from "web3";
 import DataFormatNotice from "../data-format-notice/DataFormatNotice";
 
 function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
@@ -18,7 +20,7 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
   const deleteButtonRef = useRef();
 
   useEffect(() => {
-    if (removeFileCondition && !!deleteButtonRef.current) {
+    if (!!deleteButtonRef.current && removeFileCondition) {
       deleteButtonRef?.current?.click();
     }
   }, [removeFileCondition]);
@@ -38,7 +40,15 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
           amount: Number(amount),
         }));
 
-        onFileLoad?.(formatedData);
+        const isDataValid = formatedData.every(({ address, amount }) => {
+          return !web3.utils.isAddress(address) && !isNaN(amount);
+        });
+
+        if (!isDataValid) {
+          deleteButtonRef?.current?.click();
+        }
+
+        onFileLoad?.(formatedData, !isDataValid || false);
       }}
     >
       {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }) => (
@@ -83,9 +93,12 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
                   <ProgressBar style={{ height: 2 }} />
                 </Wrapper>
               ) : (
-                <Grid container alignItems="center">
+                <Grid container alignItems="center" wrap="nowrap">
                   <CustomTooltip title={<DataFormatNotice />} arrow>
-                    <IconButton style={{ margin: "0 5px" }}>
+                    <IconButton
+                      style={{ margin: "0 5px", cursor: "help" }}
+                      disableTouchRipple
+                    >
                       <Iconify
                         icon="ant-design:info-circle-outlined"
                         width={20}
@@ -95,7 +108,11 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
                     </IconButton>
                   </CustomTooltip>
 
-                  <Button variant="contained" {...getRootProps()}>
+                  <Button
+                    variant="contained"
+                    {...getRootProps()}
+                    style={{ minWidth: 150 }}
+                  >
                     Import CSV file
                   </Button>
                 </Grid>

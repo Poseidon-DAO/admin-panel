@@ -12,7 +12,6 @@ import Scrollbar from "../../components/Scrollbar";
 import NavSection from "../../components/NavSection";
 import navConfig from "./NavConfig";
 import { Store } from "../../App";
-import { roundBalance } from "src/utils/formatNumber";
 
 const DRAWER_WIDTH = 280;
 
@@ -20,12 +19,14 @@ DashboardSidebar.propTypes = {
   isOpenSidebar: PropTypes.bool,
   onCloseSidebar: PropTypes.func,
   balance: PropTypes.number,
+  symbol: PropTypes.string,
 };
 
 export default function DashboardSidebar({
   isOpenSidebar,
   onCloseSidebar,
   balance,
+  symbol,
 }) {
   const { pathname } = useLocation();
   const { auth } = useContext(Store);
@@ -60,12 +61,12 @@ export default function DashboardSidebar({
             <Box sx={{ ml: 2 }}>
               <Tooltip title={auth?.address}>
                 <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                  {formatAddress(auth?.address, 6)}
+                  {formatAddress(auth?.address, 4)}
                 </Typography>
               </Tooltip>
               <Tooltip title={balance}>
                 <Typography variant="caption" sx={{ color: "text.primary" }}>
-                  {roundBalance(balance)} ETH
+                  {balance} {symbol}
                 </Typography>
               </Tooltip>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>

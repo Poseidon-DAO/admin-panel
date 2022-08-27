@@ -1,23 +1,34 @@
 import { Container, Typography } from "@mui/material";
-import { erc20Options } from "src/abis";
-import { useMoralis } from "react-moralis";
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import Page from "../components/Page";
-import { useOutletContext } from "react-router-dom";
+import { useTransfer } from "src/lib";
+import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
+import { useState } from "react";
 
 export default function Transfer() {
-  const { balance } = useOutletContext();
-  const { Moralis, account } = useMoralis();
+  const { transfer, isFetching, isLoading } = useTransfer();
+  const [transactionState, setTransactionState] = useState("");
 
-  async function handleTransfer({ address, amount }) {
-    const options = erc20Options(account, SMART_CONTRACT_FUNCTIONS.TRANSFER, {
-      to: address,
-      amount: Moralis.Units.Token(amount, 18),
-    });
+  function handleSnackbarClose() {
+    setTransactionState("");
+  }
 
+  function handleTransactionSuccess(resetForm) {
+    setTransactionState("success");
+    resetForm();
+  }
+
+  function handleTransactionFailure() {
+    setTransactionState("error");
+  }
+
+  async function handleTransfer(transferData, resetForm) {
     try {
-      await Moralis.executeFunction(options);
+      await transfer({
+        ...transferData,
+        onSuccess: () => handleTransactionSuccess(resetForm),
+        onError: handleTransactionFailure,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -34,13 +45,17 @@ export default function Transfer() {
           column
           maxAmountButton
           onSubmit={handleTransfer}
-          buttonProps={{
-            title: "Transfer",
-            variant: "contained",
-            // disabled: balance < 10,
-          }}
+          loading={isFetching || isLoading}
+          buttonProps={{ title: "Transfer", variant: "contained" }}
         />
       </Container>
+
+      {!!transactionState && (
+        <TransactionSnackbar
+          variant={transactionState}
+          onClose={handleSnackbarClose}
+        />
+      )}
     </Page>
   );
 }

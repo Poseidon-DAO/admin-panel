@@ -1,13 +1,10 @@
 import { useState, useEffect } from "react";
-import { useMoralis } from "react-moralis";
 import { Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
-import { accessibilityOptions } from "src/abis";
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
-
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
+import { useIsFrozen, usePDNBalance, usePDNSymbol } from "src/lib/hooks";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -15,66 +12,46 @@ const APP_BAR_DESKTOP = 92;
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
-  const [balance, setBalance] = useState(null);
-  const { Moralis, account, user } = useMoralis();
+  const { fetchIsFrozen } = useIsFrozen();
+  const { fetchPDNBalance, roundedBalance } = usePDNBalance();
+  const { fetchPDNSymbol, symbol } = usePDNSymbol();
 
   useEffect(() => {
-    async function getIsFrozen() {
-      try {
-        const frozen = await Moralis.executeFunction(
-          accessibilityOptions(
-            account,
-            SMART_CONTRACT_FUNCTIONS.CHECK_IS_FROZEN,
-            {}
-          )
-        );
-
-        if (!!frozen) setIsFrozen(true);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    getIsFrozen();
+    fetchIsFrozen({
+      onSuccess: (isFrozen) => {
+        if (!!isFrozen) setIsFrozen(isFrozen);
+      },
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
+  }, []);
 
   useEffect(() => {
-    async function getBalance() {
-      try {
-        const response = await Moralis.Web3API.account.getNativeBalance({
-          chain: process.env.REACT_APP_CHAIN,
-          account: user.get("ethAddress"),
-        });
-
-        const balance = Moralis.Units.FromWei(response.balance);
-        const balanceAsNumber = Number(balance);
-        setBalance(balanceAsNumber);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    getBalance();
+    fetchPDNBalance();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, []);
+
+  useEffect(() => {
+    fetchPDNSymbol();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <RootStyle>
       <DashboardNavbar
         onOpenSidebar={() => setOpen(true)}
         isFrozen={isFrozen}
-        balance={balance}
       />
       <DashboardSidebar
         isOpenSidebar={open}
         onCloseSidebar={() => setOpen(false)}
-        balance={balance}
+        balance={roundedBalance}
+        symbol={symbol}
       />
       <MainStyle isFrozen={isFrozen}>
-        <Outlet context={{ balance }} />
+        <Outlet context={{ balance: roundedBalance, symbol }} />
       </MainStyle>
     </RootStyle>
   );
