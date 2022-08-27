@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Grid, TextField, Button, Tooltip } from "@mui/material";
+import web3 from "web3";
 
 function TransactionForm({
   onSubmit,
@@ -28,12 +29,21 @@ function TransactionForm({
   function validate() {
     if (!amount || !address) {
       setErrors({
+        ...(!address && {
+          address: "Please provide an address!",
+        }),
         ...(!amount && {
           amount: "Please provide an amount!",
         }),
-        ...(!address && {
-          address: "Please provide a valid Address!",
-        }),
+      });
+
+      return false;
+    }
+
+    if (!web3.utils.isAddress(address)) {
+      setErrors({
+        ...errors,
+        address: "Please provide a valid address!",
       });
 
       return false;
