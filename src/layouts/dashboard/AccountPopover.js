@@ -1,15 +1,21 @@
-import { useContext, useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useContext, useRef, useState } from "react";
 // @mui
-import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@mui/material';
+import { alpha } from "@mui/material/styles";
+import {
+  Box,
+  Divider,
+  Typography,
+  MenuItem,
+  Avatar,
+  IconButton,
+} from "@mui/material";
 // components
-import MenuPopover from '../../components/MenuPopover';
+import MenuPopover from "../../components/MenuPopover";
 // mocks_
-import account from '../../_mock/account';
+import account from "../../_mock/account";
 
-import { Store } from 'src/App';
-import { useMoralis } from 'react-moralis';
+import { Store } from "src/App";
+import { useMoralis } from "react-moralis";
 
 // ----------------------------------------------------------------------
 
@@ -42,13 +48,13 @@ export default function AccountPopover() {
         sx={{
           p: 0,
           ...(open && {
-            '&:before': {
+            "&:before": {
               zIndex: 1,
               content: "''",
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              position: 'absolute',
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+              position: "absolute",
               bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
             },
           }),
@@ -65,22 +71,23 @@ export default function AccountPopover() {
           p: 0,
           mt: 1.5,
           ml: 0.75,
-          '& .MuiMenuItem-root': {
-            typography: 'body2',
+          "& .MuiMenuItem-root": {
+            typography: "body2",
             borderRadius: 0.75,
           },
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {auth.address && auth.address?.slice(0, 6)}...{auth.address?.slice(-6)}
+            {auth.address && auth.address?.slice(0, 6)}...
+            {auth.address?.slice(-6)}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+          <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
             Admin
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: "dashed" }} />
         <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>

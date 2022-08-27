@@ -5,19 +5,13 @@ import {
   styled,
   Tooltip,
   Typography,
+  tooltipClasses,
 } from "@mui/material";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useCSVReader } from "react-papaparse";
 import Iconify from "src/components/Iconify";
-
-const Wrapper = styled(Grid)`
-  border: 1px solid #d7dde1;
-  border-radius: 8px;
-  width: 200px;
-  height: 36px;
-  padding: 0 8px;
-`;
+import DataFormatNotice from "../data-format-notice/DataFormatNotice";
 
 function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
   const { CSVReader } = useCSVReader();
@@ -89,9 +83,22 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
                   <ProgressBar style={{ height: 2 }} />
                 </Wrapper>
               ) : (
-                <Button variant="contained" {...getRootProps()}>
-                  Import CSV file
-                </Button>
+                <Grid container alignItems="center">
+                  <CustomTooltip title={<DataFormatNotice />} arrow>
+                    <IconButton style={{ margin: "0 5px" }}>
+                      <Iconify
+                        icon="ant-design:info-circle-outlined"
+                        width={20}
+                        height={20}
+                        color="#d7dde1"
+                      />
+                    </IconButton>
+                  </CustomTooltip>
+
+                  <Button variant="contained" {...getRootProps()}>
+                    Import CSV file
+                  </Button>
+                </Grid>
               )}
             </Grid>
           </Grid>
@@ -100,5 +107,23 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
     </CSVReader>
   );
 }
+
+const Wrapper = styled(Grid)`
+  border: 1px solid #d7dde1;
+  border-radius: 8px;
+  width: 200px;
+  height: 36px;
+  padding: 0 8px;
+`;
+
+const CustomTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(() => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 370,
+    padding: 8,
+    textAlign: "center",
+  },
+}));
 
 export default CSVLoader;

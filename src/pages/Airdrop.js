@@ -5,8 +5,8 @@ import { erc20Options } from "src/abis";
 import { useMoralis } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 import AirdropTable from "src/sections/airdrop/table/Table";
-import Form from "src/sections/airdrop/form/Form";
-import CSVLoader from "src/sections/airdrop/csv-loader/CsvLoader";
+import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
+import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
 
 export default function Airdrop() {
   const { Moralis, account } = useMoralis();
@@ -69,7 +69,7 @@ export default function Airdrop() {
           </Box>
         </Grid>
 
-        <Form onSubmit={handleAddressAdd} resetOnSubmit />
+        <TransactionForm onSubmit={handleAddressAdd} resetOnSubmit />
 
         {!!airdropAddresses.length && (
           <AirdropTable

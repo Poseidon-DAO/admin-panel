@@ -1,7 +1,9 @@
-export function formatAddress(address) {
+export function formatAddress(address, charsToSlice) {
   if (!address) return;
 
   return (
-    address?.substring(0, 4) + "..." + address?.substring(address.length - 4)
+    address?.substring(0, charsToSlice || 4) +
+    "..." +
+    address?.substring(address.length - charsToSlice || 4)
   );
 }

@@ -26,3 +26,7 @@ export function fData(number) {
 export function fHex(hex) {
   return parseInt(hex, 16);
 }
+
+export function roundBalance(number, numberToRoundTo = 4) {
+  return number?.toFixed(numberToRoundTo);
+}

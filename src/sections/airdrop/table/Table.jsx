@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Iconify from "src/components/Iconify";
 import SearchBar from "./SearchBar";
 
@@ -52,6 +52,10 @@ const headCells = [
 function Table({ rows, onSelectChange, onRowsDelete }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchRows, setSearchRows] = useState(rows);
+
+  useEffect(() => {
+    setSearchRows(rows);
+  }, [rows]);
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("amount");

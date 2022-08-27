@@ -1,7 +1,13 @@
 import { useState } from "react";
-import { Grid, TextField, Button } from "@mui/material";
+import { Grid, TextField, Button, Tooltip } from "@mui/material";
 
-function Form({ onSubmit, buttonProps, resetOnSubmit = false }) {
+function TransactionForm({
+  onSubmit,
+  buttonProps,
+  resetOnSubmit = false,
+  column = false,
+  maxAmountButton = false,
+}) {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({
@@ -53,7 +59,12 @@ function Form({ onSubmit, buttonProps, resetOnSubmit = false }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Grid container spacing={2} wrap="nowrap">
+      <Grid
+        container
+        direction={column ? "column" : "row"}
+        spacing={2}
+        wrap="nowrap"
+      >
         <Grid item xs={9}>
           <TextField
             name="address"
@@ -74,7 +85,7 @@ function Form({ onSubmit, buttonProps, resetOnSubmit = false }) {
             name="amount"
             value={amount}
             onChange={handleInputChange(setAmount, true)}
-            placeholder="0.5"
+            placeholder="7"
             label="Amount"
             type="number"
             autoComplete="off"
@@ -82,10 +93,22 @@ function Form({ onSubmit, buttonProps, resetOnSubmit = false }) {
             error={!!errors["amount"]}
             helperText={errors["amount"]}
             style={{ width: "100%" }}
+            InputProps={{
+              endAdornment: maxAmountButton && !amount && (
+                <Tooltip
+                  title="Use the max amount of tokens you have"
+                  placement="top"
+                >
+                  <Button variant="text" size="medium">
+                    Max
+                  </Button>
+                </Tooltip>
+              ),
+            }}
           />
         </Grid>
 
-        <Grid item xs>
+        <Grid item xs container justifyContent="flex-end">
           <Button
             variant="outlined"
             size="large"
@@ -101,4 +124,4 @@ function Form({ onSubmit, buttonProps, resetOnSubmit = false }) {
   );
 }
 
-export default Form;
+export default TransactionForm;

@@ -2,17 +2,13 @@ import { Container, Typography } from "@mui/material";
 import { erc20Options } from "src/abis";
 import { useMoralis } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
-import Form from "src/sections/airdrop/form/Form";
+import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import Page from "../components/Page";
-import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 
 export default function Transfer() {
-  const { Moralis, account, user } = useMoralis();
-  const [balance, setBalance] = useState(null);
-
-  useEffect(() => {
-    getBalance();
-  }, []);
+  const { balance } = useOutletContext();
+  const { Moralis, account } = useMoralis();
 
   async function handleTransfer({ address, amount }) {
     const options = erc20Options(account, SMART_CONTRACT_FUNCTIONS.TRANSFER, {
@@ -27,19 +23,6 @@ export default function Transfer() {
     }
   }
 
-  async function getBalance() {
-    try {
-      const res = await Moralis.Web3API.account.getNativeBalance({
-        chain: process.env.REACT_APP_CHAIN,
-        account: user.get("ethAddress"),
-      });
-
-      setBalance(Moralis.Units.FromWei(res.balance));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   return (
     <Page title="Dashboard: Token transfer">
       <Container>
@@ -47,12 +30,14 @@ export default function Transfer() {
           Transfer tokens
         </Typography>
 
-        <Form
+        <TransactionForm
+          column
+          maxAmountButton
           onSubmit={handleTransfer}
           buttonProps={{
             title: "Transfer",
             variant: "contained",
-            // disabled: !balance,
+            // disabled: balance < 10,
           }}
         />
       </Container>
