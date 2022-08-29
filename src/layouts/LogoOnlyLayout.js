@@ -2,6 +2,55 @@ import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Logo from "../components/logo";
 import { useMoralis } from "react-moralis";
+import { useEffect, useState } from "react";
+import { Alert, Snackbar } from "@mui/material";
+
+const metamaskInstallationStatus = {
+  PENDING: "pending",
+  INSTALLED: "installed",
+  NOT_INSTALLED: "not-installed",
+};
+
+export default function LogoOnlyLayout() {
+  const { isAuthenticated } = useMoralis();
+  const [metamaskInstallation, setMetamaskInstallation] = useState(
+    metamaskInstallationStatus.PENDING
+  );
+
+  useEffect(() => {
+    if (!window.ethereum) {
+      setMetamaskInstallation(metamaskInstallationStatus.NOT_INSTALLED);
+    } else {
+      setMetamaskInstallation(metamaskInstallationStatus.INSTALLED);
+    }
+  }, []);
+
+  if (isAuthenticated) {
+    return <Navigate to="/app/dashboard" replace />;
+  }
+
+  const isSnackbarOpen =
+    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED;
+
+  return (
+    <>
+      <HeaderStyle>
+        <Logo />
+      </HeaderStyle>
+      <Outlet />
+      <Snackbar
+        severity="error"
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert severity="error" elevation={6} variant="filled">
+          Please install Metamask to continue.
+        </Alert>
+      </Snackbar>
+    </>
+  );
+}
 
 const HeaderStyle = styled("header")(({ theme }) => ({
   top: 0,
@@ -14,20 +63,3 @@ const HeaderStyle = styled("header")(({ theme }) => ({
     padding: theme.spacing(5, 5, 0),
   },
 }));
-
-export default function LogoOnlyLayout() {
-  const { isAuthenticated } = useMoralis();
-
-  if (isAuthenticated) {
-    return <Navigate to="/app/dashboard" replace />;
-  }
-
-  return (
-    <>
-      <HeaderStyle>
-        <Logo />
-      </HeaderStyle>
-      <Outlet />
-    </>
-  );
-}
