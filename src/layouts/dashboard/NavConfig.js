@@ -16,6 +16,16 @@ const navConfig = [
     path: "/app/polls",
     icon: getIcon("mdi:vote-outline"),
   },
+  {
+    title: "Airdrop",
+    path: "/app/airdrop",
+    icon: getIcon("bi:coin"),
+  },
+  {
+    title: "Transfer",
+    path: "/app/transfer",
+    icon: getIcon("bx:transfer"),
+  },
 ];
 
 export default navConfig;

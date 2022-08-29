@@ -21,6 +21,8 @@ import { Alert, Snackbar } from "@mui/material";
 import { multiSigOptions } from "./abis";
 import SMART_CONTRACT_FUNCTIONS from "./smartContract";
 import Polls from "./pages/Polls";
+import Airdrop from "./pages/Airdrop";
+import Transfer from "./pages/Transfer";
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +35,8 @@ function Router() {
         { path: "dashboard", element: <DashboardApp /> },
         { path: "accessibility", element: <Accessibility /> },
         { path: "polls", element: <Polls /> },
+        { path: "airdrop", element: <Airdrop /> },
+        { path: "transfer", element: <Transfer /> },
       ],
     },
     {
