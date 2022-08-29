@@ -1,13 +1,8 @@
-// material
 import { Box, Button, Typography } from "@mui/material";
-// components
 import Page from "../components/Page";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { useMoralis } from "react-moralis";
-
-// ----------------------------------------------------------------------
 
 export default function NotAllowed() {
   const navigate = useNavigate();
