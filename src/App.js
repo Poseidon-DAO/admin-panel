@@ -1,43 +1,21 @@
-// routes
 import { MoralisProvider } from "react-moralis";
-import Router from './routes';
-// theme
-import ThemeProvider from './theme';
-// components
-import ScrollToTop from './components/ScrollToTop';
-import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
-import { createContext, useMemo, useState } from "react";
 
-export const Store = createContext({
-  auth: {
-    name: "",
-    id: "",
-    address: "",
-  },
-  setAuth: () => {},
-  currentNetwork: '',
-  setCurrentNetwork: () => {},
-});
+import ThemeProvider from "src/theme";
+import ScrollToTop from "src/components/ScrollToTop";
+import { BaseOptionChartStyle } from "src/components/chart/BaseOptionChart";
+
+import Router from "./routes";
 
 export default function App() {
-  const [auth, setAuth] = useState({});
-  const [currentNetwork, setCurrentNetwork] = useState("");
-  const value = useMemo(
-    () => ({ auth, setAuth, currentNetwork, setCurrentNetwork }), 
-    [auth, currentNetwork]
-  );
-
   return (
     <ThemeProvider>
       <MoralisProvider
         appId={process.env.REACT_APP_MORALIS_ID}
         serverUrl={process.env.REACT_APP_MORALIS_URL}
       >
-        <Store.Provider value={value}>
-          <ScrollToTop />
-          <BaseOptionChartStyle />
-          <Router />
-        </Store.Provider>
+        <ScrollToTop />
+        <BaseOptionChartStyle />
+        <Router />
       </MoralisProvider>
     </ThemeProvider>
   );

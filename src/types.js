@@ -6,6 +6,11 @@ export const NetworkTypes = {
   "0x5": "Goerli",
 };
 
+export const ActiveNetworkTypes = {
+  "0x4": "Rinkeby",
+  "0x1": "Mainnet",
+};
+
 export const PollTypes = {
   change_creator: process.env.REACT_APP_CHANGE_CREATOR,
   delete_address_multisig: process.env.REACT_APP_DELETE_ADDRESS,

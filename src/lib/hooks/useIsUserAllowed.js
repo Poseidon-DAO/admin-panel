@@ -1,23 +1,23 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { accessibilityOptions } from "src/abis";
+import { multiSigOptions } from "src/abis";
 
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
 
-function useIsFrozen({ account } = {}) {
+function useIsUserAllowed({ account } = {}) {
   const { user } = useMoralis();
 
-  const options = accessibilityOptions(
+  const options = multiSigOptions(
     account || user?.get("ethAddress"),
-    SMART_CONTRACT_FUNCTIONS.CHECK_IS_FROZEN
+    SMART_CONTRACT_FUNCTIONS.GET_IS_MULTISIG_ADDRESS
   );
 
   const result = useWeb3ExecuteFunction(options);
 
   return {
     ...result,
-    isFrozen: result.data,
-    fetchIsFrozen: result.fetch,
+    isAllowed: result.data || true,
+    fetchIsUserAllowed: result.fetch,
   };
 }
 
-export { useIsFrozen };
+export { useIsUserAllowed };

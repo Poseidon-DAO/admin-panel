@@ -1,42 +1,73 @@
 import { useState, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { useMoralis } from "react-moralis";
+import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
+
+import {
+  useAccountChange,
+  useChainChange,
+  useIsFrozen,
+  useIsUserAllowed,
+  usePDNBalance,
+  usePDNSymbol,
+} from "src/lib";
 
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
-import { useIsFrozen, usePDNBalance, usePDNSymbol } from "src/lib/hooks";
+import { ActiveNetworkTypes } from "src/types";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const [isFrozen, setIsFrozen] = useState(false);
-  const { fetchIsFrozen } = useIsFrozen();
-  const { fetchPDNBalance, roundedBalance } = usePDNBalance();
-  const { fetchPDNSymbol, symbol } = usePDNSymbol();
+  const { account, isAuthenticated, enableWeb3, isWeb3Enabled, logout } =
+    useMoralis();
+
+  const { fetchIsFrozen, isFrozen } = useIsFrozen();
+  const {
+    fetchPDNBalance,
+    roundedBalance,
+    isLoading: isBalanceLoading,
+    isFetching: isBalanceFetching,
+  } = usePDNBalance();
+  const {
+    fetchPDNSymbol,
+    symbol,
+    isLoading: isSymbolLoading,
+    isFetching: isSymbolFetching,
+  } = usePDNSymbol();
+  const { fetchIsUserAllowed, isAllowed } = useIsUserAllowed();
+
+  useAccountChange({ onChange: logout });
+  useChainChange({
+    onChange: (chainId) => {
+      if (!!ActiveNetworkTypes[chainId]) return;
+
+      logout();
+    },
+  });
 
   useEffect(() => {
-    fetchIsFrozen({
-      onSuccess: (isFrozen) => {
-        if (!!isFrozen) setIsFrozen(isFrozen);
-      },
-    });
+    if (!isWeb3Enabled) {
+      return enableWeb3();
+    }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     fetchPDNBalance();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     fetchPDNSymbol();
+    fetchIsFrozen();
+    fetchIsUserAllowed();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isWeb3Enabled]);
+
+  if (!isAllowed) {
+    return <Navigate to="/forbidden" />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <RootStyle>
@@ -45,12 +76,20 @@ export default function DashboardLayout() {
         isFrozen={isFrozen}
       />
       <DashboardSidebar
-        isOpenSidebar={open}
-        onCloseSidebar={() => setOpen(false)}
-        balance={roundedBalance}
-        symbol={symbol}
+        isSidebarOpen={open}
+        onSidebarClose={() => setOpen(false)}
+        accountInfo={{
+          address: account,
+          balance: roundedBalance,
+          symbol,
+          isLoading:
+            isBalanceLoading |
+            isBalanceFetching |
+            isSymbolLoading |
+            isSymbolFetching,
+        }}
       />
-      <MainStyle isFrozen={isFrozen}>
+      <MainStyle>
         <Outlet context={{ balance: roundedBalance, symbol }} />
       </MainStyle>
     </RootStyle>

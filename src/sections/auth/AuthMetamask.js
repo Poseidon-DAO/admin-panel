@@ -1,23 +1,33 @@
-// material
-import {  Button, Divider } from '@mui/material';
-import { useContext } from 'react';
+import { Button, Divider } from "@mui/material";
+import { useMoralis } from "react-moralis";
+import { NetworkTypes } from "src/types";
 
-import { useMoralis } from 'react-moralis';
-import { Store } from 'src/App';
-import metamask from '../../assets/metamask.png';
-
-// ----------------------------------------------------------------------
+import metamask from "../../assets/metamask.png";
 
 export default function AuthMetamask() {
-  const { authenticate } = useMoralis();
-  const { currentNetwork } = useContext(Store);
+  const { authenticate, chainId } = useMoralis();
+
   const handleLogin = () => {
-    if (currentNetwork.toLowerCase() === process.env.REACT_APP_CHAIN) authenticate('metamask');
-  }
+    try {
+      authenticate("metamask");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const buttonDisabled =
+    NetworkTypes[chainId]?.toLowerCase() !== process.env.REACT_APP_CHAIN;
+
   return (
     <>
-      <Button disabled={!window.ethereum || currentNetwork.toLowerCase() !== process.env.REACT_APP_CHAIN} onClick={handleLogin} color="inherit" height='50px' width='50px' >
-        <img src={metamask} alt='metamask' height='100%' width='100%' />
+      <Button
+        disabled={buttonDisabled}
+        onClick={handleLogin}
+        color="inherit"
+        height="50px"
+        width="50px"
+      >
+        <img src={metamask} alt="metamask" height="100%" width="100%" />
       </Button>
       <Divider sx={{ my: 3 }} />
     </>
