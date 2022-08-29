@@ -1,39 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
 
-function useChainChange(callback) {
-  const { Moralis } = useMoralis();
-  const [chain, setChain] = useState("");
+function useChainChange({ onChange = () => {} } = {}) {
+  const { Moralis, enableWeb3, isWeb3Enabled } = useMoralis();
 
-  // TODO add toast for chain change
   useEffect(() => {
-    const unsubscribeChainChangeHandler = Moralis.onChainChanged((chain) => {
-      setChain(chain);
+    if (!isWeb3Enabled) {
+      enableWeb3();
+    }
 
-      if (
-        chain === Moralis.Chains.ETH_MAINET ||
-        chain === Moralis.Chains.ETH_RINKBEY
-      )
-        return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWeb3Enabled]);
 
-      callback?.();
-
-      // if (toast.isActive(toastId)) return;
-
-      // toast({
-      //   id: toastId,
-      //   position: "top-right",
-      //   status: "warning",
-      //   title: "Please connect to mainnet!",
-      // });
-    });
+  useEffect(() => {
+    const unsubscribeChainChangeHandler = Moralis.onChainChanged(onChange);
 
     return () => unsubscribeChainChangeHandler();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  return chain;
 }
 
 export { useChainChange };

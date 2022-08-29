@@ -1,25 +1,27 @@
-// material
 import { Button, Divider } from "@mui/material";
-
 import { useMoralis } from "react-moralis";
+import { NetworkTypes } from "src/types";
+
 import metamask from "../../assets/metamask.png";
 
 export default function AuthMetamask() {
-  const { authenticate } = useMoralis();
+  const { authenticate, chainId } = useMoralis();
 
   const handleLogin = () => {
-    // if (currentNetwork.toLowerCase() === process.env.REACT_APP_CHAIN)
-    authenticate("metamask");
+    try {
+      authenticate("metamask");
+    } catch (err) {
+      console.log(err);
+    }
   };
+
+  const buttonDisabled =
+    NetworkTypes[chainId]?.toLowerCase() !== process.env.REACT_APP_CHAIN;
 
   return (
     <>
       <Button
-        disabled={
-          !window.ethereum
-          // ||
-          // currentNetwork.toLowerCase() !== process.env.REACT_APP_CHAIN
-        }
+        disabled={buttonDisabled}
         onClick={handleLogin}
         color="inherit"
         height="50px"

@@ -2,7 +2,16 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import { Box, Link, Drawer, Typography, Avatar, Tooltip } from "@mui/material";
+import {
+  Box,
+  Link,
+  Drawer,
+  Typography,
+  Avatar,
+  Tooltip,
+  CircularProgress,
+  Stack,
+} from "@mui/material";
 import account from "../../_mock/account";
 import useResponsive from "../../hooks/useResponsive";
 import Logo from "../../components/logo.js";
@@ -29,13 +38,14 @@ DashboardSidebar.defaultProps = {
     address: "",
     balance: "",
     symbol: "",
+    isLoading: false,
   },
 };
 
 export default function DashboardSidebar({
   isSidebarOpen,
   onSidebarClose,
-  accountInfo: { address, balance, symbol },
+  accountInfo: { address, balance, symbol, isLoading },
 }) {
   const { pathname } = useLocation();
   const isDesktop = useResponsive("up", "lg");
@@ -63,9 +73,14 @@ export default function DashboardSidebar({
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none" component={RouterLink} to="#">
-          <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+        <AccountStyle>
+          <Avatar src={account.photoURL} alt="photoURL" />
+
+          {isLoading ? (
+            <Stack sx={{ ml: 8 }}>
+              <CircularProgress size={20} />
+            </Stack>
+          ) : (
             <Box sx={{ ml: 2 }}>
               <Tooltip title={address || ""}>
                 <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
@@ -81,8 +96,8 @@ export default function DashboardSidebar({
                 {account.role}
               </Typography>
             </Box>
-          </AccountStyle>
-        </Link>
+          )}
+        </AccountStyle>
       </Box>
 
       <NavSection navConfig={navConfig} />
@@ -134,6 +149,7 @@ const RootStyle = styled("div")(({ theme }) => ({
 const AccountStyle = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
+  minHeight: "78px",
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
   backgroundColor: theme.palette.grey[500_12],

@@ -3,7 +3,9 @@ import { styled } from "@mui/material/styles";
 import Logo from "../components/logo";
 import { useMoralis } from "react-moralis";
 import { useEffect, useState } from "react";
-import { Alert, Snackbar } from "@mui/material";
+import CustomSnackbar from "src/components/CustomSnackbar";
+import { useChainChange } from "src/lib";
+import { NetworkTypes } from "src/types";
 
 const metamaskInstallationStatus = {
   PENDING: "pending",
@@ -11,11 +13,18 @@ const metamaskInstallationStatus = {
   NOT_INSTALLED: "not-installed",
 };
 
+const errorMessages = {
+  metamask: "Please install Metamask to continue.",
+  chain: `Please change your network to ${process.env.REACT_APP_CHAIN}`,
+};
+
 export default function LogoOnlyLayout() {
-  const { isAuthenticated } = useMoralis();
+  const { isAuthenticated, chainId } = useMoralis();
+  const chainToUse = NetworkTypes[chainId]?.toLowerCase();
   const [metamaskInstallation, setMetamaskInstallation] = useState(
     metamaskInstallationStatus.PENDING
   );
+  useChainChange();
 
   useEffect(() => {
     if (!window.ethereum) {
@@ -30,7 +39,15 @@ export default function LogoOnlyLayout() {
   }
 
   const isSnackbarOpen =
-    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED;
+    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED ||
+    chainToUse !== process.env.REACT_APP_CHAIN;
+
+  const message =
+    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
+      ? errorMessages["metamask"]
+      : chainToUse !== process.env.REACT_APP_CHAIN
+      ? errorMessages["chain"]
+      : "";
 
   return (
     <>
@@ -38,16 +55,8 @@ export default function LogoOnlyLayout() {
         <Logo />
       </HeaderStyle>
       <Outlet />
-      <Snackbar
-        severity="error"
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert severity="error" elevation={6} variant="filled">
-          Please install Metamask to continue.
-        </Alert>
-      </Snackbar>
+
+      <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" />
     </>
   );
 }

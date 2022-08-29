@@ -1,17 +1,28 @@
-import { Alert, Snackbar } from '@mui/material';
-import React from 'react'
+import React from "react";
+import { Alert, Snackbar } from "@mui/material";
 
-export default function CustomSnackbar({ type, message, isOpen, onClose }) {
+export default function CustomSnackbar({
+  type,
+  variant,
+  message,
+  isOpen,
+  onClose,
+}) {
   return (
     <Snackbar
       severity={type}
       open={isOpen}
       autoHideDuration={6000}
       onClose={onClose}
-      style={{ maxWidth: '40vw' }}
-      anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
     >
-      <Alert severity={type}>{message}</Alert>
+      <Alert severity={type} elevation={6} variant={variant}>
+        {message}
+      </Alert>
     </Snackbar>
-  )
+  );
 }
+
+CustomSnackbar.defaultProps = {
+  variant: "filled",
+};

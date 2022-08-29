@@ -376,7 +376,7 @@ export default function Polls() {
           message={error}
         />
         <CustomSnackbar
-          isOpen={successfulTransaction.length}
+          isOpen={!!successfulTransaction.length}
           type="success"
           onClose={() => setSuccessfulTransaction("")}
           message={

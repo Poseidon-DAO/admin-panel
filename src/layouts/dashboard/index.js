@@ -14,6 +14,7 @@ import {
 
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
+import { ActiveNetworkTypes } from "src/types";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -24,11 +25,28 @@ export default function DashboardLayout() {
     useMoralis();
 
   const { fetchIsFrozen, isFrozen } = useIsFrozen();
-  const { fetchPDNBalance, roundedBalance } = usePDNBalance();
-  const { fetchPDNSymbol, symbol } = usePDNSymbol();
+  const {
+    fetchPDNBalance,
+    roundedBalance,
+    isLoading: isBalanceLoading,
+    isFetching: isBalanceFetching,
+  } = usePDNBalance();
+  const {
+    fetchPDNSymbol,
+    symbol,
+    isLoading: isSymbolLoading,
+    isFetching: isSymbolFetching,
+  } = usePDNSymbol();
   const { fetchIsUserAllowed, isAllowed } = useIsUserAllowed();
-  useAccountChange(logout);
-  useChainChange(logout);
+
+  useAccountChange({ onChange: logout });
+  useChainChange({
+    onChange: (chainId) => {
+      if (!!ActiveNetworkTypes[chainId]) return;
+
+      logout();
+    },
+  });
 
   useEffect(() => {
     if (!isWeb3Enabled) {
@@ -64,6 +82,11 @@ export default function DashboardLayout() {
           address: account,
           balance: roundedBalance,
           symbol,
+          isLoading:
+            isBalanceLoading |
+            isBalanceFetching |
+            isSymbolLoading |
+            isSymbolFetching,
         }}
       />
       <MainStyle>

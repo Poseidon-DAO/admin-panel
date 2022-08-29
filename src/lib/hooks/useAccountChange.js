@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useMoralis } from "react-moralis";
 
-function useAccountChange(callback) {
+function useAccountChange({ onChange } = {}) {
   const { Moralis } = useMoralis();
 
   useEffect(() => {
-    const unsubscribeAccountChangeHandler = Moralis.onAccountChanged(callback);
+    const unsubscribeAccountChangeHandler = Moralis.onAccountChanged(onChange);
 
     return () => unsubscribeAccountChangeHandler();
 
