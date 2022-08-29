@@ -1,40 +1,48 @@
-import { useContext, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { Box, Link, Drawer, Typography, Avatar, Tooltip } from "@mui/material";
-import { formatAddress } from "src/utils/formatAddress";
-
 import account from "../../_mock/account";
 import useResponsive from "../../hooks/useResponsive";
 import Logo from "../../components/logo.js";
 import Scrollbar from "../../components/Scrollbar";
 import NavSection from "../../components/NavSection";
+
 import navConfig from "./NavConfig";
-import { Store } from "../../App";
+import { formatAddress } from "src/utils/formatAddress";
 
 const DRAWER_WIDTH = 280;
 
 DashboardSidebar.propTypes = {
-  isOpenSidebar: PropTypes.bool,
-  onCloseSidebar: PropTypes.func,
-  balance: PropTypes.number,
-  symbol: PropTypes.string,
+  isSidebarOpen: PropTypes.bool,
+  onSidebarClose: PropTypes.func,
+  accountInfo: PropTypes.shape({
+    address: PropTypes.string,
+    balance: PropTypes.number,
+    symbol: PropTypes.string,
+  }),
+};
+
+DashboardSidebar.defaultProps = {
+  accountInfo: {
+    address: "",
+    balance: "",
+    symbol: "",
+  },
 };
 
 export default function DashboardSidebar({
-  isOpenSidebar,
-  onCloseSidebar,
-  balance,
-  symbol,
+  isSidebarOpen,
+  onSidebarClose,
+  accountInfo: { address, balance, symbol },
 }) {
   const { pathname } = useLocation();
-  const { auth } = useContext(Store);
   const isDesktop = useResponsive("up", "lg");
 
   useEffect(() => {
-    if (isOpenSidebar) {
-      onCloseSidebar();
+    if (isSidebarOpen) {
+      onSidebarClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
@@ -59,12 +67,12 @@ export default function DashboardSidebar({
           <AccountStyle>
             <Avatar src={account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
-              <Tooltip title={auth?.address}>
+              <Tooltip title={address || ""}>
                 <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                  {formatAddress(auth?.address, 4)}
+                  {formatAddress(address, 4)}
                 </Typography>
               </Tooltip>
-              <Tooltip title={balance}>
+              <Tooltip title={balance || ""}>
                 <Typography variant="caption" sx={{ color: "text.primary" }}>
                   {balance} {symbol}
                 </Typography>
@@ -87,8 +95,8 @@ export default function DashboardSidebar({
     <RootStyle>
       {!isDesktop && (
         <Drawer
-          open={isOpenSidebar}
-          onClose={onCloseSidebar}
+          open={isSidebarOpen}
+          onClose={onSidebarClose}
           PaperProps={{
             sx: { width: DRAWER_WIDTH },
           }}

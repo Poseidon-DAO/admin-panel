@@ -1,5 +1,4 @@
-import { useContext, useRef, useState } from "react";
-// @mui
+import { useRef, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import {
   Box,
@@ -9,22 +8,15 @@ import {
   Avatar,
   IconButton,
 } from "@mui/material";
-// components
 import MenuPopover from "../../components/MenuPopover";
-// mocks_
 import account from "../../_mock/account";
-
-import { Store } from "src/App";
 import { useMoralis } from "react-moralis";
-
-// ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
 
   const [open, setOpen] = useState(null);
 
-  const { setAuth, auth } = useContext(Store);
   const { logout } = useMoralis();
 
   const handleOpen = (event) => {
@@ -36,7 +28,7 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    setAuth({});
+    // setAuth({});
     logout();
   };
 
@@ -79,8 +71,8 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {auth.address && auth.address?.slice(0, 6)}...
-            {auth.address?.slice(-6)}
+            {/* {auth.address && auth.address?.slice(0, 6)}...
+            {auth.address?.slice(-6)} */}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
             Admin
