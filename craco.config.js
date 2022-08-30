@@ -20,6 +20,7 @@ module.exports = {
           buffer: require.resolve("buffer"),
           url: require.resolve("url"),
           assert: require.resolve("assert"),
+          zlib: require.resolve("browserify-zlib"),
         },
       },
     },
