@@ -40,7 +40,7 @@ export default function LogoOnlyLayout() {
 
   const isSnackbarOpen =
     metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED ||
-    chainToUse !== process.env.REACT_APP_CHAIN;
+    (chainToUse && chainToUse !== process.env.REACT_APP_CHAIN);
 
   const message =
     metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
