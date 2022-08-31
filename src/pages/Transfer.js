@@ -35,7 +35,7 @@ export default function Transfer() {
   }
 
   return (
-    <Page title="Dashboard: Token transfer">
+    <Page title="Transfer">
       <Container>
         <Typography variant="h3" sx={{ mb: 5 }}>
           Transfer tokens

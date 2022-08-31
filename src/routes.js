@@ -11,6 +11,7 @@ import DashboardApp from "./pages/DashboardApp";
 import Polls from "./pages/Polls";
 import Airdrop from "./pages/Airdrop";
 import Transfer from "./pages/Transfer";
+import Settings from "./pages/Settings";
 
 export default function Router() {
   return (
@@ -24,8 +25,9 @@ export default function Router() {
         <Route path="dashboard" element={<DashboardApp />} />
         <Route path="accessibility" element={<Accessibility />} />
         <Route path="polls" element={<Polls />} />
-        <Route path="airdrop" element={<Airdrop />} />
         <Route path="transfer" element={<Transfer />} />
+        <Route path="airdrop" element={<Airdrop />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
 
       <Route path="forbidden" element={<NotAllowed />} />

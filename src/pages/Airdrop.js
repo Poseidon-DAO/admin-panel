@@ -68,7 +68,7 @@ export default function Airdrop() {
   }
 
   return (
-    <Page title="Dashboard: Token">
+    <Page title="Airdrop">
       <Container>
         <Grid container wrap="nowrap" justifyContent="space-between">
           <Box width="80%">
