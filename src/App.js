@@ -1,3 +1,5 @@
+import "@fontsource/roboto";
+
 import { MoralisProvider } from "react-moralis";
 
 import ThemeProvider from "src/theme";

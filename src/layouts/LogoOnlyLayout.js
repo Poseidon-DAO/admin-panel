@@ -52,10 +52,10 @@ export default function LogoOnlyLayout() {
   return (
     <>
       <HeaderStyle>
-        <Logo />
+        <Logo width={70} />
       </HeaderStyle>
-      <Outlet />
 
+      <Outlet />
       <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" />
     </>
   );

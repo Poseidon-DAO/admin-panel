@@ -32,6 +32,7 @@ const PRIMARY = {
   dark: "#103996",
   darker: "#061B64",
   contrastText: "#fff",
+  brand: "#4924FC",
 };
 
 const SECONDARY = {
