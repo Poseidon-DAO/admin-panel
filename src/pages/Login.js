@@ -2,7 +2,7 @@ import { styled } from "@mui/material/styles";
 import { Box, Card, Container, Typography } from "@mui/material";
 import useResponsive from "../hooks/useResponsive";
 import Page from "../components/Page";
-import Logo from "../components/logo";
+import Logo from "../components/Logo";
 import AuthMetamask from "../sections/auth/AuthMetamask";
 
 export default function Login() {
