@@ -1,8 +1,8 @@
-import { Button, Divider } from "@mui/material";
+import { Button } from "@mui/material";
 import { useMoralis } from "react-moralis";
 import { NetworkTypes } from "src/types";
 
-import metamask from "../../assets/metamask.png";
+import metamask from "../../assets/metamask-logo.png";
 
 export default function AuthMetamask() {
   const { authenticate, chainId } = useMoralis();
@@ -24,12 +24,10 @@ export default function AuthMetamask() {
         disabled={buttonDisabled}
         onClick={handleLogin}
         color="inherit"
-        height="50px"
-        width="50px"
+        variant="text"
       >
-        <img src={metamask} alt="metamask" height="100%" width="100%" />
+        <img src={metamask} alt="metamask" width="200" />
       </Button>
-      <Divider sx={{ my: 3 }} />
     </>
   );
 }
