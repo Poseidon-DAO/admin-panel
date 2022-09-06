@@ -1,11 +1,13 @@
-import { Container, Typography } from "@mui/material";
-import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
-import Page from "../components/Page";
-import { useTransfer } from "src/lib";
-import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { useState } from "react";
+import { Container } from "@mui/material";
 
-export default function Transfer() {
+import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
+import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
+import Page from "src/components/Page";
+import { useTransfer } from "src/lib";
+import PageTitle from "src/sections/common/page-title/PageTitle";
+
+export default function Transfer({ sectionTitle }) {
   const { transfer, isFetching, isLoading } = useTransfer();
   const [transactionState, setTransactionState] = useState("");
 
@@ -24,7 +26,7 @@ export default function Transfer() {
 
   async function handleTransfer(transferData, resetForm) {
     try {
-      await transfer({
+      transfer({
         ...transferData,
         onSuccess: () => handleTransactionSuccess(resetForm),
         onError: handleTransactionFailure,
@@ -36,10 +38,8 @@ export default function Transfer() {
 
   return (
     <Page title="Transfer">
-      <Container>
-        <Typography variant="h3" sx={{ mb: 5 }}>
-          Transfer tokens
-        </Typography>
+      <Container maxWidth="xl">
+        <PageTitle>{sectionTitle}</PageTitle>
 
         <TransactionForm
           column

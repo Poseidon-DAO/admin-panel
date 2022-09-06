@@ -12,10 +12,13 @@ const availableFunctions = [
   },
 ];
 
-export default function Accessibility() {
+export default function Accessibility({ sectionTitle }) {
   return (
     <Page title="Accessibility">
-      <FunctionsMenu availableFunctions={availableFunctions} />
+      <FunctionsMenu
+        availableFunctions={availableFunctions}
+        sectionTitle={sectionTitle}
+      />
     </Page>
   );
 }

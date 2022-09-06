@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
+
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
+import Page from "src/components/Page";
+import SettingsLayout from "src/layouts/settings";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
-import Page from "../components/Page";
-
-export default function Settings() {
+export default function Settings({ sectionTitle }) {
   const [transactionState, setTransactionState] = useState("");
 
   function handleSnackbarClose() {
@@ -13,10 +15,10 @@ export default function Settings() {
 
   return (
     <Page title="Settings">
-      <Container>
-        <Typography variant="h3" sx={{ mb: 5 }}>
-          Settings
-        </Typography>
+      <Container maxWidth="xl">
+        <PageTitle>{sectionTitle}</PageTitle>
+
+        <SettingsLayout />
       </Container>
 
       {!!transactionState && (

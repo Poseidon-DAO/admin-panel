@@ -13,6 +13,7 @@ const RUN_AIR_DROP = "runAirdrop";
 const TRANSFER = "transfer";
 const PDN_BALANCE = "balanceOf";
 const SYMBOL = "symbol";
+const SET_ERC_1155 = "setERC1155";
 
 // EVENTS
 const GET_POLL_META = "getPollMetaData";
@@ -34,6 +35,7 @@ const SMART_CONTRACT_FUNCTIONS = {
   TRANSFER,
   PDN_BALANCE,
   SYMBOL,
+  SET_ERC_1155,
 
   // Events
   EVENT_NEW_MULTISIG,

@@ -1,4 +1,3 @@
-// components
 import Page from "../components/Page";
 import { useCallback, useEffect } from "react";
 import { multiSigEventsOptions, multiSigOptions } from "src/abis";
@@ -18,6 +17,7 @@ import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
 import { fHex } from "src/utils/formatNumber";
 import { useMemo } from "react";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
 const BLOCK_DURATION_SECS = 15000;
 const MORALIS_OBJECT_NAME = "Polls";
@@ -92,7 +92,7 @@ const setUpPoll = (
   return poll;
 };
 
-export default function Polls() {
+export default function Polls({ sectionTitle }) {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
   const Web3Api = useMoralisWeb3Api();
@@ -323,7 +323,7 @@ export default function Polls() {
 
   return (
     <Page title="Active Polls" style={{ width: "100%" }}>
-      <Container>
+      <Container maxWidth="xl">
         <Container
           sx={{
             display: "flex",
@@ -333,7 +333,7 @@ export default function Polls() {
             alignItems: "center",
           }}
         >
-          <h1>List of polls</h1>
+          <PageTitle>{sectionTitle}</PageTitle>
           <Chip
             label={"Create New Poll"}
             variant="outlined"

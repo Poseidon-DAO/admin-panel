@@ -5,6 +5,7 @@ import { Box, Stack, AppBar, Toolbar, IconButton } from "@mui/material";
 import FrozenWarn from "src/components/FrozenWarn";
 import Iconify from "../../components/Iconify";
 import AccountPopover from "./AccountPopover";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
 const DRAWER_WIDTH = 280;
 const APPBAR_MOBILE = 64;
@@ -13,9 +14,14 @@ const APPBAR_DESKTOP = 92;
 DashboardNavbar.propTypes = {
   onOpenSidebar: PropTypes.func,
   isFrozen: PropTypes.bool,
+  activeSectionTitle: PropTypes.string,
 };
 
-export default function DashboardNavbar({ onOpenSidebar, isFrozen }) {
+export default function DashboardNavbar({
+  activeSectionTitle,
+  isFrozen,
+  onOpenSidebar,
+}) {
   return (
     <RootStyle>
       {isFrozen && <FrozenWarn />}
@@ -26,6 +32,9 @@ export default function DashboardNavbar({ onOpenSidebar, isFrozen }) {
         >
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
+
+        <PageTitle position="header">{activeSectionTitle}</PageTitle>
+
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack
@@ -43,8 +52,9 @@ export default function DashboardNavbar({ onOpenSidebar, isFrozen }) {
 const RootStyle = styled(AppBar)(({ theme }) => ({
   boxShadow: "none",
   backdropFilter: "blur(6px)",
-  WebkitBackdropFilter: "blur(6px)", // Fix on Mobile
+  WebkitBackdropFilter: "blur(6px)",
   backgroundColor: alpha(theme.palette.background.default, 0.72),
+  color: theme.palette.grey[800],
   [theme.breakpoints.up("lg")]: {
     width: `calc(100% - ${DRAWER_WIDTH + 1}px)`,
   },

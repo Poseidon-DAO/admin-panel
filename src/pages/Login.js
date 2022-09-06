@@ -68,7 +68,7 @@ export default function Login() {
           </SectionStyle>
         )}
 
-        <Container maxWidth="sm">
+        <Container maxWidth="xl">
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
               Sign in to access the admin panel

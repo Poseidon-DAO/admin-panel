@@ -1,4 +1,4 @@
-import { Container, Grid, Typography, Box } from "@mui/material";
+import { Container, Grid, Box } from "@mui/material";
 import Page from "../components/Page";
 import { useState } from "react";
 import AirdropTable from "src/sections/airdrop/table/Table";
@@ -7,6 +7,7 @@ import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
 import { useAirdrop } from "src/lib";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { LoadingButton } from "@mui/lab";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
 const variant = {
   error: "error",
@@ -14,7 +15,7 @@ const variant = {
   success: "success",
 };
 
-export default function Airdrop() {
+export default function Airdrop({ sectionTitle }) {
   const { runAirdrop, isFetching, isLoading } = useAirdrop();
 
   const [airdropAddresses, setAirdropAddresses] = useState([]);
@@ -57,7 +58,7 @@ export default function Airdrop() {
 
   async function handleAirdrop() {
     try {
-      await runAirdrop({
+      runAirdrop({
         addresses: airdropAddresses,
         onSuccess: handleTransactionSuccess,
         onError: handleTransactionFailure,
@@ -69,12 +70,10 @@ export default function Airdrop() {
 
   return (
     <Page title="Airdrop">
-      <Container>
+      <Container maxWidth="xl">
         <Grid container wrap="nowrap" justifyContent="space-between">
           <Box width="80%">
-            <Typography variant="h3" sx={{ mb: 5 }}>
-              Create Airdrop
-            </Typography>
+            <PageTitle>{sectionTitle}</PageTitle>
           </Box>
 
           <Box paddingTop={1}>

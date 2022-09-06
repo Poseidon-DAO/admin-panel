@@ -6,8 +6,9 @@ import { baseEtherscan } from "src/types";
 import PollArgumentsModal from "./PollArgumentsModal";
 import CustomSnackbar from "./CustomSnackbar";
 import FreezeAlert from "./FreezeAlert";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
-export default function FunctionsMenu({ availableFunctions }) {
+export default function FunctionsMenu({ availableFunctions, sectionTitle }) {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
   const Web3Api = useMoralisWeb3Api();
@@ -66,10 +67,8 @@ export default function FunctionsMenu({ availableFunctions }) {
 
   return (
     <>
-      <Container>
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Accessibility's Available Functions
-        </Typography>
+      <Container maxWidth="xl">
+        <PageTitle>{sectionTitle}</PageTitle>
         <Stack
           direction="row"
           flexWrap="wrap"
