@@ -94,7 +94,7 @@ const RootStyle = styled("div")({
 
   "& > div > div:nth-child(1)": {
     height: "calc(100vh - 244px)",
-    width: "300px",
+    width: "280px",
     position: "fixed",
   },
 });
@@ -102,7 +102,10 @@ const RootStyle = styled("div")({
 const Content = styled("div", {
   shouldForwardProp: (props) => props !== "isFrozen",
 })(({ theme, isFrozen }) => ({
-  marginLeft: "300px",
+  marginLeft: "280px",
+  background: "red",
+  width: "calc(100% - 280px)",
+  minHeight: "calc(100vh - 244px)",
 
   // flex: "1",
   // border: "1px solid red",

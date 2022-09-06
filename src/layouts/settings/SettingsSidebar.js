@@ -1,31 +1,40 @@
-import { Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Box, List } from "@mui/material";
+import { useState } from "react";
+import NavItem from "src/components/NavItem";
+
+const settingsNavConfig = [
+  {
+    title: "Token",
+    path: "/app/settings",
+    icon: null,
+  },
+  {
+    title: "Airdrop",
+    path: "/app/settings",
+    icon: null,
+  },
+];
 
 export default function SettingsSidebar() {
+  const [activeItem, setActiveItem] = useState("Token");
+
+  function handleItemClick(item) {
+    setActiveItem(item.title);
+  }
+
   return (
-    <div>
-      <Item>Token</Item>
-      <Item>Token</Item>
-      <Item>Token</Item>
-    </div>
+    <Box sx={{ pr: 5 }}>
+      <List>
+        {settingsNavConfig.map((item) => (
+          <NavItem
+            key={item.title}
+            item={item}
+            active={() => activeItem === item.title}
+            variant="secondary"
+            onItemClick={handleItemClick}
+          />
+        ))}
+      </List>
+    </Box>
   );
 }
-
-const Item = styled(Box, {
-  shouldForwardProp: (props) => props !== "isFrozen",
-})(({ theme, isFrozen }) => ({
-  marginLeft: "300px",
-
-  // flex: "1",
-  // border: "1px solid red",
-  // flexGrow: 1,
-  // overflow: "auto",
-  // minHeight: "100%",
-  // paddingTop: APP_BAR_MOBILE + 24,
-  // paddingBottom: theme.spacing(10),
-  // [theme.breakpoints.up("lg")]: {
-  //   paddingTop: APP_BAR_DESKTOP + 24 + (isFrozen ? 25 : 0),
-  //   paddingLeft: theme.spacing(2),
-  //   paddingRight: theme.spacing(2),
-  // },
-}));
