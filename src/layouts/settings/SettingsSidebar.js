@@ -1,31 +1,29 @@
+import PropTypes from "prop-types";
 import { Box, List } from "@mui/material";
-import { useState } from "react";
 import NavItem from "src/components/NavItem";
 
-const settingsNavConfig = [
-  {
-    title: "Token",
-    path: "/app/settings",
-    icon: null,
-  },
-  {
-    title: "Airdrop",
-    path: "/app/settings",
-    icon: null,
-  },
-];
+SettingsSidebar.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      icon: PropTypes.node,
+      element: PropTypes.node,
+    })
+  ),
+  activeItem: PropTypes.string.isRequired,
+  onItemChange: PropTypes.func.isRequired,
+};
 
-export default function SettingsSidebar() {
-  const [activeItem, setActiveItem] = useState("Token");
-
+export default function SettingsSidebar({ items, activeItem, onItemChange }) {
   function handleItemClick(item) {
-    setActiveItem(item.title);
+    onItemChange(item.title);
   }
 
   return (
     <Box sx={{ pr: 5 }}>
       <List>
-        {settingsNavConfig.map((item) => (
+        {items.map((item) => (
           <NavItem
             key={item.title}
             item={item}

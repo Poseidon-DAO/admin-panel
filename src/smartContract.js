@@ -13,6 +13,9 @@ const RUN_AIR_DROP = "runAirdrop";
 const TRANSFER = "transfer";
 const PDN_BALANCE = "balanceOf";
 const SYMBOL = "symbol";
+const GET_ERC1155_ADDRESS = "ERC1155Address";
+const GET_ERC1155_ID = "ID_ERC1155";
+const GET_RATIO = "ratio";
 const SET_ERC_1155 = "setERC1155";
 
 // EVENTS
@@ -35,6 +38,9 @@ const SMART_CONTRACT_FUNCTIONS = {
   TRANSFER,
   PDN_BALANCE,
   SYMBOL,
+  GET_ERC1155_ADDRESS,
+  GET_ERC1155_ID,
+  GET_RATIO,
   SET_ERC_1155,
 
   // Events
