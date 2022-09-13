@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
-import Logo from "../components/logo";
+import Logo from "../components/Logo";
 import { useMoralis } from "react-moralis";
 import { useEffect, useState } from "react";
 import CustomSnackbar from "src/components/CustomSnackbar";
@@ -52,10 +52,10 @@ export default function LogoOnlyLayout() {
   return (
     <>
       <HeaderStyle>
-        <Logo />
+        <Logo width={70} />
       </HeaderStyle>
-      <Outlet />
 
+      <Outlet />
       <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" />
     </>
   );

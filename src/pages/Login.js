@@ -1,9 +1,42 @@
 import { styled } from "@mui/material/styles";
-import { Card, Container, Typography } from "@mui/material";
+import { Box, Card, Container, Typography } from "@mui/material";
 import useResponsive from "../hooks/useResponsive";
 import Page from "../components/Page";
-import Logo from "../components/logo";
+import Logo from "../components/Logo";
 import AuthMetamask from "../sections/auth/AuthMetamask";
+
+export default function Login() {
+  const mdUp = useResponsive("up", "md");
+
+  return (
+    <Page title="Login">
+      <RootStyle>
+        <HeaderStyle>
+          <Logo disabledLink />
+        </HeaderStyle>
+
+        {mdUp && (
+          <SectionStyle square>
+            <Container maxWidth="xl">
+              <ContentStyle>
+                <Typography variant="h1" color="white">
+                  Welcome Back
+                </Typography>
+                <Typography color="white" variant="h3">
+                  Connect Metamask to access the admin panel
+                </Typography>
+
+                <Box marginTop={4}>
+                  <AuthMetamask />
+                </Box>
+              </ContentStyle>
+            </Container>
+          </SectionStyle>
+        )}
+      </RootStyle>
+    </Page>
+  );
+}
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -29,54 +62,20 @@ const HeaderStyle = styled("header")(({ theme }) => ({
 
 const SectionStyle = styled(Card)(({ theme }) => ({
   width: "100%",
-  maxWidth: 464,
+  height: `calc(100vh - ${theme.spacing(0)})`,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  margin: theme.spacing(2, 0, 2, 2),
+  boxSizing: "border-box",
+  borderRadius: 0,
+  background:
+    " linear-gradient(142deg, rgba(73,36,252,1) 17%, rgba(255,255,255,1) 100%)",
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
   maxWidth: 480,
   margin: "auto",
-  minHeight: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  flexDirection: "column",
+  height: "100%",
+  textAlign: "center",
   padding: theme.spacing(12, 0),
 }));
-
-export default function Login() {
-  const mdUp = useResponsive("up", "md");
-
-  return (
-    <Page title="Login">
-      <RootStyle>
-        <HeaderStyle>
-          <Logo />
-        </HeaderStyle>
-
-        {mdUp && (
-          <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
-            <img
-              src="/static/illustrations/illustration_login.png"
-              alt="login"
-            />
-          </SectionStyle>
-        )}
-
-        <Container maxWidth="xl">
-          <ContentStyle>
-            <Typography variant="h4" gutterBottom>
-              Sign in to access the admin panel
-            </Typography>
-            <AuthMetamask />
-          </ContentStyle>
-        </Container>
-      </RootStyle>
-    </Page>
-  );
-}

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import account from "../../_mock/account";
 import useResponsive from "../../hooks/useResponsive";
-import Logo from "../../components/logo.js";
+import Logo from "../../components/Logo.js";
 import Scrollbar from "../../components/Scrollbar";
 import NavSection from "../../components/NavSection";
 
@@ -68,7 +68,7 @@ export default function DashboardSidebar({
       }}
     >
       <Box sx={{ px: 2.5, py: 3, display: "inline-flex" }}>
-        <Logo />
+        <Logo width={70} roundedCorners />
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
