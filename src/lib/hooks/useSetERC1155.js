@@ -19,11 +19,19 @@ function useSetERC1155({ erc1155Address = null, ercId, ratio } = {}) {
 
   return {
     ...result,
-    setERC1155: ({ erc1155Address, ercId, ratio, onSuccess, onError } = {}) => {
+    setERC1155: ({
+      erc1155Address,
+      ercId,
+      ratio,
+      onSuccess,
+      onError,
+      onComplete,
+    } = {}) => {
       result.fetch({
         params: makeOptions({ account, erc1155Address, ercId, ratio }),
         onSuccess,
         onError,
+        onComplete,
       });
     },
   };

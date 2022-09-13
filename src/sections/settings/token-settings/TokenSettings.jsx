@@ -19,6 +19,7 @@ import {
 } from "src/lib";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
+import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 
 export default function TokenSettings() {
   const {
@@ -43,6 +44,8 @@ export default function TokenSettings() {
   const theme = useTheme();
   const [isEditing, setEditing] = useState(false);
   const [localRatio, setLocalRatio] = useState(ratio);
+  const [transactionState, setTransactionState] = useState("");
+  const [isVerifingTransaction, setVerifingTransaction] = useState(null);
 
   const { setERC1155, isFetching, isLoading } = useSetERC1155({
     erc1155Address: address,
@@ -74,17 +77,31 @@ export default function TokenSettings() {
     setLocalRatio(ratio);
   }
 
-  function handleSave() {
-    try {
-      setERC1155({
-        erc1155Address: address,
-        ercId: id,
-        ratio: localRatio,
-        onSuccess: () => fetchRatio(),
-      });
-    } catch (err) {
-      console.log(err);
-    }
+  async function handleTransactionSuccess(transaction) {
+    setTransactionState("success");
+    setVerifingTransaction(true);
+    await transaction.wait();
+    setVerifingTransaction(false);
+    fetchRatio();
+  }
+
+  async function handleTransactionError(error) {
+    console.error(error);
+    setTransactionState("error");
+  }
+
+  function handleSnackbarClose() {
+    setTransactionState("");
+  }
+
+  async function handleSave() {
+    setERC1155({
+      erc1155Address: address,
+      ercId: id,
+      ratio: localRatio,
+      onSuccess: handleTransactionSuccess,
+      onError: handleTransactionError,
+    });
   }
 
   const showSpinner =
@@ -165,7 +182,7 @@ export default function TokenSettings() {
             variant="outlined"
             color="error"
             onClick={handleDecline}
-            disabled={isFetching || isLoading}
+            disabled={isFetching || isLoading || isVerifingTransaction}
           >
             Decline
           </Button>
@@ -175,12 +192,23 @@ export default function TokenSettings() {
             variant="contained"
             sx={{ marginLeft: 1 }}
             onClick={handleSave}
-            loading={isFetching || isLoading}
-            disabled={isFetching || isLoading}
+            loading={isFetching || isLoading || isVerifingTransaction}
+            disabled={isFetching || isLoading || isVerifingTransaction}
           >
             Save changes
           </LoadingButton>
         </Box>
+      )}
+
+      {!!transactionState && (
+        <TransactionSnackbar
+          message={
+            isVerifingTransaction && "The transaction is being verified!"
+          }
+          variant={transactionState}
+          onClose={handleSnackbarClose}
+          loading={!!isVerifingTransaction}
+        />
       )}
     </Box>
   );
