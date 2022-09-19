@@ -1,10 +1,13 @@
 // components
 import Page from "../components/Page";
 import { useCallback, useEffect } from "react";
-import { multiSigEventsOptions, multiSigOptions } from "src/abis";
+import {
+  multiSigEventsOptions,
+  multiSigOptions,
+} from "src/contracts/sc-options";
 import { useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 import PollComponent from "src/components/PollComponent";
 import {
   Box,

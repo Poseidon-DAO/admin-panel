@@ -1,7 +1,7 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { accessibilityOptions } from "src/abis";
+import { accessibilityOptions } from "src/contracts/sc-options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
 function useIsFrozen({ account } = {}) {
   const { user } = useMoralis();

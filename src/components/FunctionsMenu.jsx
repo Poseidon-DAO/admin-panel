@@ -1,7 +1,10 @@
 import { Chip, Container, Stack, Typography } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
-import { accessibilityEventsOptions, accessibilityOptions } from "src/abis";
+import {
+  accessibilityEventsOptions,
+  accessibilityOptions,
+} from "src/contracts/sc-options";
 import { baseEtherscan } from "src/types";
 import PollArgumentsModal from "./PollArgumentsModal";
 import CustomSnackbar from "./CustomSnackbar";

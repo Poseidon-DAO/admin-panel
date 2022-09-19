@@ -1,6 +1,6 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { erc20Options } from "src/abis";
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import { erc20Options } from "src/contracts/sc-options";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
 const makeOptions = ({ account, addresses }) =>
   erc20Options(account, SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP, {

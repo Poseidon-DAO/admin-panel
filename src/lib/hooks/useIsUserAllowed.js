@@ -1,7 +1,7 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { multiSigOptions } from "src/abis";
+import { multiSigOptions } from "src/contracts/sc-options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
 function useIsUserAllowed({ account } = {}) {
   const { user } = useMoralis();
