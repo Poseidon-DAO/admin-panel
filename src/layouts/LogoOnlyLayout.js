@@ -15,12 +15,13 @@ const metamaskInstallationStatus = {
 
 const errorMessages = {
   metamask: "Please install Metamask to continue.",
-  chain: `Please change your network to ${process.env.REACT_APP_CHAIN}`,
+  chain: `Please change your network to ${
+    NetworkTypes[process.env.REACT_APP_CHAIN]
+  }`,
 };
 
 export default function LogoOnlyLayout() {
   const { isAuthenticated, chainId } = useMoralis();
-  const chainToUse = NetworkTypes[chainId]?.toLowerCase();
   const [metamaskInstallation, setMetamaskInstallation] = useState(
     metamaskInstallationStatus.PENDING
   );
@@ -40,12 +41,12 @@ export default function LogoOnlyLayout() {
 
   const isSnackbarOpen =
     metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED ||
-    (chainToUse && chainToUse !== process.env.REACT_APP_CHAIN);
+    (chainId && chainId !== process.env.REACT_APP_CHAIN);
 
   const message =
     metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
       ? errorMessages["metamask"]
-      : chainToUse !== process.env.REACT_APP_CHAIN
+      : chainId !== process.env.REACT_APP_CHAIN
       ? errorMessages["chain"]
       : "";
 
