@@ -21,6 +21,7 @@ export default function Router() {
       </Route>
 
       <Route path="/app" element={<DashboardLayout />}>
+        <Route path="/app" element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardApp />} />
         <Route path="accessibility" element={<Accessibility />} />
         <Route path="polls" element={<Polls />} />
