@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import { useMoralis } from "react-moralis";
-import { NetworkTypes } from "src/types";
 
 import metamask from "../../assets/metamask-logo.png";
 
@@ -15,8 +14,7 @@ export default function AuthMetamask() {
     }
   };
 
-  const buttonDisabled =
-    NetworkTypes[chainId]?.toLowerCase() !== process.env.REACT_APP_CHAIN;
+  const buttonDisabled = chainId !== process.env.REACT_APP_CHAIN;
 
   return (
     <>

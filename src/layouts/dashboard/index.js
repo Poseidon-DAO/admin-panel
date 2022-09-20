@@ -21,8 +21,14 @@ const APP_BAR_DESKTOP = 92;
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const { account, isAuthenticated, enableWeb3, isWeb3Enabled, logout } =
-    useMoralis();
+  const {
+    account,
+    isAuthenticated,
+    enableWeb3,
+    isWeb3Enabled,
+    logout,
+    isAuthUndefined,
+  } = useMoralis();
 
   const { fetchIsFrozen, isFrozen } = useIsFrozen();
   const {
@@ -65,7 +71,7 @@ export default function DashboardLayout() {
     return <Navigate to="/forbidden" />;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isAuthUndefined) {
     return <Navigate to="/" />;
   }
 

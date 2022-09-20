@@ -26,6 +26,6 @@ export const VoteTypes = {
 };
 
 export const baseEtherscan =
-  process.env.REACT_APP_CHAIN !== "ethereum"
+  NetworkTypes[process.env.REACT_APP_CHAIN] !== NetworkTypes["0x1"]
     ? "https://rinkeby.etherscan.io/tx/"
     : "https://etherscan.io/tx/";
