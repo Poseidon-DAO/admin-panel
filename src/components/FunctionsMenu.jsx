@@ -4,7 +4,7 @@ import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import {
   accessibilityEventsOptions,
   accessibilityOptions,
-} from "src/contracts/sc-options";
+} from "src/contracts/options";
 import { baseEtherscan } from "src/types";
 import PollArgumentsModal from "./PollArgumentsModal";
 import CustomSnackbar from "./CustomSnackbar";

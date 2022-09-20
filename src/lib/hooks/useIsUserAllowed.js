@@ -1,5 +1,5 @@
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
-import { multiSigOptions } from "src/contracts/sc-options";
+import { multiSigOptions } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
