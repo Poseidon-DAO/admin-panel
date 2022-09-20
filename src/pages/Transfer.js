@@ -23,15 +23,11 @@ export default function Transfer() {
   }
 
   async function handleTransfer(transferData, resetForm) {
-    try {
-      await transfer({
-        ...transferData,
-        onSuccess: () => handleTransactionSuccess(resetForm),
-        onError: handleTransactionFailure,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    transfer({
+      ...transferData,
+      onSuccess: () => handleTransactionSuccess(resetForm),
+      onError: handleTransactionFailure,
+    });
   }
 
   return (

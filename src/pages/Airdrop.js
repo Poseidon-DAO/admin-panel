@@ -55,16 +55,12 @@ export default function Airdrop() {
     setTransactionState("");
   }
 
-  async function handleAirdrop() {
-    try {
-      await runAirdrop({
-        addresses: airdropAddresses,
-        onSuccess: handleTransactionSuccess,
-        onError: handleTransactionFailure,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  function handleAirdrop() {
+    runAirdrop({
+      addresses: airdropAddresses,
+      onSuccess: handleTransactionSuccess,
+      onError: handleTransactionFailure,
+    });
   }
 
   return (
