@@ -8,7 +8,7 @@ TransactionSnackbar.defaultProps = {
   onClose: () => {},
 };
 
-function TransactionSnackbar({ message, variant, onClose }) {
+function TransactionSnackbar({ message, variant, onClose, duration }) {
   const [open, setOpen] = useState(true);
 
   const isError = variant === "error";
@@ -30,7 +30,7 @@ function TransactionSnackbar({ message, variant, onClose }) {
       color="inherit"
       onClick={handleClose}
     >
-      <IconButton onClick={handleClose} aria-label="delete" size="small">
+      <IconButton aria-label="delete" size="small">
         <Iconify icon="bi:x-lg" />
       </IconButton>
     </IconButton>
@@ -39,7 +39,7 @@ function TransactionSnackbar({ message, variant, onClose }) {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={duration || 3000}
       onClose={handleClose}
       action={action}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}

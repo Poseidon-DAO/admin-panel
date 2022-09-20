@@ -96,7 +96,13 @@ export default function DashboardLayout() {
         }}
       />
       <MainStyle>
-        <Outlet context={{ balance: roundedBalance, symbol }} />
+        <Outlet
+          context={{
+            refetchBalance: fetchPDNBalance,
+            balance: roundedBalance,
+            symbol,
+          }}
+        />
       </MainStyle>
     </RootStyle>
   );

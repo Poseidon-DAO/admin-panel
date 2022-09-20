@@ -14,7 +14,12 @@ import Iconify from "src/components/Iconify";
 import web3 from "web3";
 import DataFormatNotice from "../data-format-notice/DataFormatNotice";
 
-function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
+function CSVLoader({
+  onFileLoad,
+  onFileRemove,
+  removeFileCondition,
+  disabled = false,
+}) {
   const { CSVReader } = useCSVReader();
   const deleteButtonRef = useRef();
 
@@ -111,6 +116,7 @@ function CSVLoader({ onFileLoad, onFileRemove, removeFileCondition }) {
                     variant="contained"
                     {...getRootProps()}
                     style={{ minWidth: 150 }}
+                    disabled={disabled}
                   >
                     Import CSV file
                   </Button>

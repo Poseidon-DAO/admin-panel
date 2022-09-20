@@ -1,20 +1,28 @@
+import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import { Container, Typography } from "@mui/material";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import Page from "../components/Page";
 import { useTransfer } from "src/lib";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
-import { useState } from "react";
 
 export default function Transfer() {
   const { transfer, isFetching, isLoading } = useTransfer();
   const [transactionState, setTransactionState] = useState("");
+  const [isVerifying, setVerifying] = useState(false);
+  const { refetchBalance } = useOutletContext();
 
   function handleSnackbarClose() {
     setTransactionState("");
   }
 
-  function handleTransactionSuccess(resetForm) {
+  async function handleTransactionSuccess(transaction, resetForm) {
+    setVerifying(true);
+    await transaction.wait();
+    refetchBalance();
+    setVerifying(false);
     setTransactionState("success");
+
     resetForm();
   }
 
@@ -25,7 +33,8 @@ export default function Transfer() {
   async function handleTransfer(transferData, resetForm) {
     transfer({
       ...transferData,
-      onSuccess: () => handleTransactionSuccess(resetForm),
+      onSuccess: (transaction) =>
+        handleTransactionSuccess(transaction, resetForm),
       onError: handleTransactionFailure,
     });
   }
@@ -41,15 +50,17 @@ export default function Transfer() {
           column
           maxAmountButton
           onSubmit={handleTransfer}
-          loading={isFetching || isLoading}
+          loading={isFetching || isLoading || isVerifying}
           buttonProps={{ title: "Transfer", variant: "contained" }}
         />
       </Container>
 
-      {!!transactionState && (
+      {(!!transactionState || isVerifying) && (
         <TransactionSnackbar
-          variant={transactionState}
+          variant={transactionState || "info"}
           onClose={handleSnackbarClose}
+          message={isVerifying ? "Verifying transaction...." : ""}
+          duration={isVerifying ? 20 * 1000 : 3000}
         />
       )}
     </Page>
