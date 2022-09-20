@@ -118,7 +118,7 @@ export default function Airdrop({ sectionTitle }) {
             color="success"
             style={{ marginTop: 30, width: "100%", color: "white" }}
             loading={isFetching || isLoading || isVerifying}
-            disabled={isVerifying}
+            disabled={isFetching || isLoading || isVerifying}
             onClick={handleAirdrop}
           >
             Run Airdrop
@@ -131,7 +131,7 @@ export default function Airdrop({ sectionTitle }) {
           variant={variant[transactionState]}
           onClose={handleSnackbarClose}
           message={messages[transactionState]}
-          duration={isVerifying ? 20 * 1000 : 3000}
+          duration={isVerifying ? 50 * 1000 : 3000}
         />
       )}
     </Page>

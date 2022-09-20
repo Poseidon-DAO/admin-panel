@@ -48,7 +48,7 @@ function TransactionSnackbar({ message, variant, onClose, duration, loading }) {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={duration || 3000}
+      autoHideDuration={duration === null ? null : 3000}
       onClose={handleClose}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >

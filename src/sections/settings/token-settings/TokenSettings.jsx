@@ -206,6 +206,7 @@ export default function TokenSettings() {
           variant={transactionState}
           onClose={handleSnackbarClose}
           loading={!!isVerifingTransaction}
+          duration={isVerifingTransaction ? null : 3000}
         />
       )}
     </Box>
