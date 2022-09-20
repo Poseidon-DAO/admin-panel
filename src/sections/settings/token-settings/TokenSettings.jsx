@@ -157,9 +157,7 @@ export default function TokenSettings() {
         ) : (
           <>
             <Grid item sm={10}>
-              <Typography variant="subtitle1">
-                Tokens to burn for receiving an NFT
-              </Typography>
+              <Typography variant="subtitle1">Burn Ratio</Typography>
             </Grid>
             <Grid item sm={2}>
               <Typography variant="subtitle1">{localRatio}</Typography>

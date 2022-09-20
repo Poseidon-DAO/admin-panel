@@ -15,6 +15,7 @@ import {
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
 import { ActiveNetworkTypes } from "src/types";
+import { FullPageLoader } from "src/components/FullPageLoader";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -24,7 +25,12 @@ export default function DashboardLayout({ activeSectionTitle }) {
   const { account, isAuthenticated, enableWeb3, isWeb3Enabled, logout } =
     useMoralis();
 
-  const { fetchIsFrozen, isFrozen } = useIsFrozen();
+  const {
+    fetchIsFrozen,
+    isFrozen,
+    isFetching: isFetchingFrozen,
+    isLoading: isLoadingFrozen,
+  } = useIsFrozen();
   const {
     fetchPDNBalance,
     roundedBalance,
@@ -37,7 +43,12 @@ export default function DashboardLayout({ activeSectionTitle }) {
     isLoading: isSymbolLoading,
     isFetching: isSymbolFetching,
   } = usePDNSymbol();
-  const { fetchIsUserAllowed, isAllowed } = useIsUserAllowed();
+  const {
+    fetchIsUserAllowed,
+    isAllowed,
+    isLoading: isLoadingUserAllowed,
+    isFetching: isFetchingUserAllowed,
+  } = useIsUserAllowed();
 
   useAccountChange({ onChange: logout });
   useChainChange({
@@ -61,7 +72,17 @@ export default function DashboardLayout({ activeSectionTitle }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isWeb3Enabled]);
 
-  if (!isAllowed) {
+  const showSpinner =
+    isLoadingUserAllowed ||
+    isFetchingUserAllowed ||
+    isFetchingFrozen ||
+    isLoadingFrozen;
+
+  if (showSpinner) {
+    return <FullPageLoader />;
+  }
+
+  if (!isAllowed && isAllowed !== null) {
     return <Navigate to="/forbidden" />;
   }
 

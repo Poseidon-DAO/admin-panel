@@ -15,7 +15,7 @@ function useIsUserAllowed({ account } = {}) {
 
   return {
     ...result,
-    isAllowed: result.data || true,
+    isAllowed: result.data,
     fetchIsUserAllowed: result.fetch,
   };
 }
