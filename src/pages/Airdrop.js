@@ -1,18 +1,27 @@
 import { Container, Grid, Box } from "@mui/material";
-import Page from "../components/Page";
+import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
+
+import { useAirdrop } from "src/lib";
+
 import AirdropTable from "src/sections/airdrop/table/Table";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
-import { useAirdrop } from "src/lib";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
-import { LoadingButton } from "@mui/lab";
 import PageTitle from "src/sections/common/page-title/PageTitle";
+import Page from "src/components/Page";
 
 const variant = {
   error: "error",
   fileError: "error",
   success: "success",
+  verifying: "info",
+};
+
+const messages = {
+  fileError: "Wrong data format on file!",
+  verifying: "Verifying transaction...",
 };
 
 export default function Airdrop({ sectionTitle }) {
@@ -20,6 +29,8 @@ export default function Airdrop({ sectionTitle }) {
 
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
+
+  const { refetchBalance } = useOutletContext();
 
   function handleAddressAdd(address) {
     setAirdropAddresses((prevAddresses) => [...prevAddresses, address]);
@@ -43,7 +54,10 @@ export default function Airdrop({ sectionTitle }) {
     );
   }
 
-  function handleTransactionSuccess() {
+  async function handleTransactionSuccess(transaction) {
+    setTransactionState("verifying");
+    await transaction.wait();
+    refetchBalance();
     setTransactionState("success");
     setAirdropAddresses([]);
   }
@@ -56,17 +70,15 @@ export default function Airdrop({ sectionTitle }) {
     setTransactionState("");
   }
 
-  async function handleAirdrop() {
-    try {
-      runAirdrop({
-        addresses: airdropAddresses,
-        onSuccess: handleTransactionSuccess,
-        onError: handleTransactionFailure,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+  function handleAirdrop() {
+    runAirdrop({
+      addresses: airdropAddresses,
+      onSuccess: handleTransactionSuccess,
+      onError: handleTransactionFailure,
+    });
   }
+
+  const isVerifying = transactionState === "verifying";
 
   return (
     <Page title="Airdrop">
@@ -81,13 +93,14 @@ export default function Airdrop({ sectionTitle }) {
               onFileLoad={handleCSVFileLoad}
               onFileRemove={handleCSVFileRemove}
               removeFileCondition={!airdropAddresses.length} //  in case user deletes all accounts from table we remove the file
+              disabled={isVerifying || isLoading || isFetching}
             />
           </Box>
         </Grid>
 
         <TransactionForm
           onSubmit={handleAddressAdd}
-          loading={isFetching || isLoading}
+          loading={isFetching || isLoading || isVerifying}
           resetOnSubmit
         />
 
@@ -104,7 +117,8 @@ export default function Airdrop({ sectionTitle }) {
             size="large"
             color="success"
             style={{ marginTop: 30, width: "100%", color: "white" }}
-            loading={isFetching || isLoading}
+            loading={isFetching || isLoading || isVerifying}
+            disabled={isVerifying}
             onClick={handleAirdrop}
           >
             Run Airdrop
@@ -116,9 +130,8 @@ export default function Airdrop({ sectionTitle }) {
         <TransactionSnackbar
           variant={variant[transactionState]}
           onClose={handleSnackbarClose}
-          message={
-            transactionState === "fileError" ? "Wrong data format on file!" : ""
-          }
+          message={messages[transactionState]}
+          duration={isVerifying ? 20 * 1000 : 3000}
         />
       )}
     </Page>

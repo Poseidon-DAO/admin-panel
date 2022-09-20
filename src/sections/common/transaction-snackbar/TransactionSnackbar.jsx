@@ -15,7 +15,7 @@ TransactionSnackbar.defaultProps = {
   loading: false,
 };
 
-function TransactionSnackbar({ message, variant, onClose, loading }) {
+function TransactionSnackbar({ message, variant, onClose, duration, loading }) {
   const [open, setOpen] = useState(true);
 
   const isError = variant === "error";
@@ -48,7 +48,7 @@ function TransactionSnackbar({ message, variant, onClose, loading }) {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={!loading ? 6000 : null}
+      autoHideDuration={duration || 3000}
       onClose={handleClose}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >

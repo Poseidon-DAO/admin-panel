@@ -22,8 +22,14 @@ const APP_BAR_DESKTOP = 92;
 
 export default function DashboardLayout({ activeSectionTitle }) {
   const [open, setOpen] = useState(false);
-  const { account, isAuthenticated, enableWeb3, isWeb3Enabled, logout } =
-    useMoralis();
+  const {
+    account,
+    isAuthenticated,
+    enableWeb3,
+    isWeb3Enabled,
+    logout,
+    isAuthUndefined,
+  } = useMoralis();
 
   const {
     fetchIsFrozen,
@@ -86,7 +92,7 @@ export default function DashboardLayout({ activeSectionTitle }) {
     return <Navigate to="/forbidden" />;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isAuthUndefined) {
     return <Navigate to="/" />;
   }
 
@@ -112,7 +118,13 @@ export default function DashboardLayout({ activeSectionTitle }) {
         }}
       />
       <MainStyle>
-        <Outlet context={{ balance: roundedBalance, symbol }} />
+        <Outlet
+          context={{
+            refetchBalance: fetchPDNBalance,
+            balance: roundedBalance,
+            symbol,
+          }}
+        />
       </MainStyle>
     </RootStyle>
   );

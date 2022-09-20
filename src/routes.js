@@ -38,6 +38,7 @@ export default function Router() {
         path="/app"
         element={<DashboardLayout activeSectionTitle={sectionTitle} />}
       >
+        <Route path="/app" element={<Navigate to="dashboard" replace />} />
         <Route
           path="dashboard"
           element={<DashboardApp sectionTitle={sectionTitle} />}
