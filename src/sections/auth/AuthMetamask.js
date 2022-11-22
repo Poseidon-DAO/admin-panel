@@ -1,25 +1,24 @@
 import { Button } from "@mui/material";
-import { useMoralis } from "react-moralis";
+import { useConnect, useDisconnect, useNetwork } from "wagmi";
 
 import metamask from "../../assets/metamask-logo.png";
 
 export default function AuthMetamask() {
-  const { authenticate, chainId } = useMoralis();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { chain } = useNetwork();
 
   const handleLogin = () => {
-    try {
-      authenticate("metamask");
-    } catch (err) {
-      console.log(err);
-    }
+    connect({ connector: connectors[0] });
+    // disconnect();
   };
 
-  const buttonDisabled = chainId !== process.env.REACT_APP_CHAIN;
+  // const buttonDisabled = chain.id !== process.env.REACT_APP_CHAIN;
 
   return (
     <>
       <Button
-        disabled={buttonDisabled}
+        // disabled={buttonDisabled}
         onClick={handleLogin}
         color="inherit"
         variant="text"

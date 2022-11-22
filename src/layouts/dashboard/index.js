@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import { useMoralis } from "react-moralis";
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
 import {
-  useAccountChange,
-  useChainChange,
   useIsFrozen,
   useIsUserAllowed,
   usePDNBalance,
@@ -15,20 +12,16 @@ import {
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
 import { ActiveNetworkTypes } from "src/types";
+import { useAccount, useDisconnect } from "wagmi";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const {
-    account,
-    isAuthenticated,
-    enableWeb3,
-    isWeb3Enabled,
-    logout,
-    isAuthUndefined,
-  } = useMoralis();
+
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
 
   const { fetchIsFrozen, isFrozen } = useIsFrozen();
   const {
@@ -45,18 +38,9 @@ export default function DashboardLayout() {
   } = usePDNSymbol();
   const { fetchIsUserAllowed, isAllowed } = useIsUserAllowed();
 
-  useAccountChange({ onChange: logout });
-  useChainChange({
-    onChange: (chainId) => {
-      if (!!ActiveNetworkTypes[chainId]) return;
-
-      logout();
-    },
-  });
-
   useEffect(() => {
-    if (!isWeb3Enabled) {
-      return enableWeb3();
+    if (!isConnected) {
+      return;
     }
 
     fetchPDNBalance();
@@ -65,13 +49,13 @@ export default function DashboardLayout() {
     fetchIsUserAllowed();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWeb3Enabled]);
+  }, [isConnected]);
 
   if (!isAllowed) {
     return <Navigate to="/forbidden" />;
   }
 
-  if (!isAuthenticated && !isAuthUndefined) {
+  if (!isConnected) {
     return <Navigate to="/" />;
   }
 
@@ -85,7 +69,7 @@ export default function DashboardLayout() {
         isSidebarOpen={open}
         onSidebarClose={() => setOpen(false)}
         accountInfo={{
-          address: account,
+          address,
           balance: roundedBalance,
           symbol,
           isLoading:

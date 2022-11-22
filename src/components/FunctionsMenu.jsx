@@ -1,6 +1,5 @@
 import { Chip, Container, Stack, Typography } from "@mui/material";
 import React, { useCallback, useState } from "react";
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import {
   accessibilityEventsOptions,
   accessibilityOptions,
@@ -13,32 +12,34 @@ import FreezeAlert from "./FreezeAlert";
 export default function FunctionsMenu({ availableFunctions }) {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
-  const Web3Api = useMoralisWeb3Api();
-  const { Moralis, account } = useMoralis();
+  // const Web3Api = useMoralisWeb3Api();
+  // const { Moralis, account } = useMoralis();
   const [modalActive, setModalActive] = useState(false);
   const [modalProps, setModalProps] = useState(null);
   const [isFreezeDialogOpen, setIsFreezeDialogOpen] = useState(false);
 
   const fetchEvents = useCallback(
     async (event) => {
-      const options = accessibilityEventsOptions(event.name);
-      const res = await Web3Api.native.getContractEvents(options);
-      //What to do when we receive the events
-      console.log("Event fetch response: ", res);
-      return res;
+      // const options = accessibilityEventsOptions(event.name);
+      // const res = await Web3Api.native.getContractEvents(options);
+      // //What to do when we receive the events
+      // console.log("Event fetch response: ", res);
+      // return res;
     },
-    [Web3Api]
+    [
+      // Web3Api
+    ]
   );
 
   const handleClick = (fn) => {
-    if (account) {
-      if (fn.inputRequired) {
-        setModalProps(fn);
-        setModalActive(true);
-      } else {
-        handleExecuteFunction(fn);
-      }
-    }
+    // if (account) {
+    //   if (fn.inputRequired) {
+    //     setModalProps(fn);
+    //     setModalActive(true);
+    //   } else {
+    //     handleExecuteFunction(fn);
+    //   }
+    // }
   };
 
   const onCancelModal = () => {
@@ -48,23 +49,27 @@ export default function FunctionsMenu({ availableFunctions }) {
 
   const handleExecuteFunction = useCallback(
     async (fn, args) => {
-      try {
-        const options = accessibilityOptions(account, fn.functionName, args);
-        const res = await Moralis.executeFunction(options);
-        if (fn.event) {
-          const evt = await fetchEvents(fn.event);
-          if (evt) {
-            setSuccessfulTransaction(evt.result[0].transaction_hash);
-            onCancelModal();
-          }
-        }
-        return res;
-      } catch (error) {
-        setError((error[0] || error.message) ?? "Something went wrong");
-        return error;
-      }
+      // try {
+      //   const options = accessibilityOptions(account, fn.functionName, args);
+      //   const res = await Moralis.executeFunction(options);
+      //   if (fn.event) {
+      //     const evt = await fetchEvents(fn.event);
+      //     if (evt) {
+      //       setSuccessfulTransaction(evt.result[0].transaction_hash);
+      //       onCancelModal();
+      //     }
+      //   }
+      //   return res;
+      // } catch (error) {
+      //   setError((error[0] || error.message) ?? "Something went wrong");
+      //   return error;
+      // }
     },
-    [Moralis, account, fetchEvents]
+    [
+      // Moralis,
+      //  account,
+      //  fetchEvents
+    ]
   );
 
   return (

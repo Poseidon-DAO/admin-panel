@@ -3,7 +3,6 @@ import Page from "../components/Page";
 import { useCallback, useEffect } from "react";
 import { multiSigEventsOptions, multiSigOptions } from "src/contracts/options";
 import { useState } from "react";
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 import PollComponent from "src/components/PollComponent";
 import {
@@ -18,6 +17,7 @@ import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
 import { fHex } from "src/utils/formatNumber";
 import { useMemo } from "react";
+import { useAccount } from "wagmi";
 
 const BLOCK_DURATION_SECS = 15000;
 const MORALIS_OBJECT_NAME = "Polls";
@@ -95,8 +95,8 @@ const setUpPoll = (
 export default function Polls() {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
-  const Web3Api = useMoralisWeb3Api();
-  const { Moralis, account } = useMoralis();
+
+  const { address } = useAccount();
   const [votedPolls, setVotedPolls] = useState([]);
   const [pendingPolls, setPendingPolls] = useState([]);
 
@@ -106,7 +106,7 @@ export default function Polls() {
   const [modalProps, setModalProps] = useState(null);
 
   // Moralis DB object
-  const PollSubclass = Moralis.Object.extend(MORALIS_OBJECT_NAME);
+  const PollSubclass = ""; //Moralis.Object.extend(MORALIS_OBJECT_NAME);
   const poll = useMemo(() => new PollSubclass(), [PollSubclass]);
 
   const onCancelModal = () => {
@@ -116,15 +116,18 @@ export default function Polls() {
 
   const getExpirationBlock = useCallback(
     async (_pollID) => {
-      const options = multiSigOptions(
-        account,
-        SMART_CONTRACT_FUNCTIONS.GET_EXPIRATION_BLOCK,
-        { _pollID }
-      );
-      const res = await Moralis.executeFunction(options);
-      return res;
+      // const options = multiSigOptions(
+      //   address,
+      //   SMART_CONTRACT_FUNCTIONS.GET_EXPIRATION_BLOCK,
+      //   { _pollID }
+      // );
+      // const res = await Moralis.executeFunction(options);
+      // return res;
     },
-    [Moralis, account]
+    [
+      // Moralis,
+      // address
+    ]
   );
 
   useEffect(() => {
@@ -133,38 +136,38 @@ export default function Polls() {
   }, []);
 
   const handleClick = () => {
-    if (account) {
+    if (address) {
       setModalProps(CREATE_MULTISIG_POLL);
       setModalActive(true);
     }
   };
 
   const fetchEvents = useCallback(
-    async (event, args) => {
-      const options = multiSigEventsOptions(event.name, account, args);
-      const res = await Web3Api.native.getContractEvents(options);
-      return res;
-    },
-    [Web3Api, account]
+    // async (event, args) => {
+    //   const options = multiSigEventsOptions(event.name, account, args);
+    //   const res = await Web3Api.native.getContractEvents(options);
+    //   return res;
+    // },
+    []
   );
 
   const getCurrentVote = async (_pollID) => {
-    const options = multiSigOptions(
-      account,
-      SMART_CONTRACT_FUNCTIONS.GET_VOTE,
-      { _pollID, _voter: account }
-    );
-    const res = await Moralis.executeFunction(options);
-    return res;
+    // const options = multiSigOptions(
+    //   account,
+    //   SMART_CONTRACT_FUNCTIONS.GET_VOTE,
+    //   { _pollID, _voter: account }
+    // );
+    // const res = await Moralis.executeFunction(options);
+    // return res;
   };
 
   const getMultiSigLength = async () => {
-    const options = multiSigOptions(
-      account,
-      SMART_CONTRACT_FUNCTIONS.GET_MULTISIG_LENGTH
-    );
-    const res = await Moralis.executeFunction(options);
-    return res;
+    // const options = multiSigOptions(
+    //   account,
+    //   SMART_CONTRACT_FUNCTIONS.GET_MULTISIG_LENGTH
+    // );
+    // const res = await Moralis.executeFunction(options);
+    // return res;
   };
 
   const changePollVote = useCallback((poll) => {
@@ -177,75 +180,80 @@ export default function Polls() {
 
   const handleVote = useCallback(
     async (_vote, _pollIndex) => {
-      if (account) {
-        try {
-          let newPoll = pendingPolls.find((poll) => poll.pollID === _pollIndex);
-          const options = multiSigOptions(
-            account,
-            SMART_CONTRACT_FUNCTIONS.VOTE_MULTISIG_POLL,
-            { _pollIndex, _vote }
-          );
-          const res = await Moralis.executeFunction(options);
-          newPoll.currentVote = _vote;
-          newPoll.amountApprovedVoteReceiver =
-            +newPoll.amountApprovedVoteReceiver + 1;
-          const voteEvents = await fetchEvents(VOTE_POLL.event, {
-            voter: account,
-            pollIndex: _pollIndex,
-            vote: _vote,
-          });
-          setSuccessfulTransaction(voteEvents.result[0].transaction_hash);
-          changePollVote(newPoll);
-          return res;
-        } catch (e) {
-          console.log(e);
-          setError((error[0] || error.message) ?? "Something went wrong");
-        }
+      if (address) {
+        // try {
+        //   let newPoll = pendingPolls.find((poll) => poll.pollID === _pollIndex);
+        //   const options = multiSigOptions(
+        //     address,
+        //     SMART_CONTRACT_FUNCTIONS.VOTE_MULTISIG_POLL,
+        //     { _pollIndex, _vote }
+        //   );
+        //   const res = await Moralis.executeFunction(options);
+        //   newPoll.currentVote = _vote;
+        //   newPoll.amountApprovedVoteReceiver =
+        //     +newPoll.amountApprovedVoteReceiver + 1;
+        //   const voteEvents = await fetchEvents(VOTE_POLL.event, {
+        //     voter: account,
+        //     pollIndex: _pollIndex,
+        //     vote: _vote,
+        //   });
+        //   setSuccessfulTransaction(voteEvents.result[0].transaction_hash);
+        //   changePollVote(newPoll);
+        //   return res;
+        // } catch (e) {
+        //   console.log(e);
+        //   setError((error[0] || error.message) ?? "Something went wrong");
+        // }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [account, Moralis, error, pendingPolls]
+    []
   );
 
-  const fetchActivePolls = useCallback(async () => {
-    setPendingPolls([]);
-    setVotedPolls([]);
-    setIsFetchingPolls(true);
-    const options = multiSigOptions(
-      account,
-      SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
-    );
-    const res = await Moralis.executeFunction(options);
-    const multiSigLength = await getMultiSigLength();
-
-    res.map(async (el) => {
-      // GET POLL METADATA FROM POLL ID
-      const metaDataOptions = multiSigOptions(
-        account,
-        SMART_CONTRACT_FUNCTIONS.GET_POLL_META,
-        { _pollID: el._hex }
-      );
-      const metaData = await Moralis.executeFunction(metaDataOptions);
-      const expiration = await getExpirationBlock(el._hex);
-      const currentVote = await getCurrentVote(el._hex);
-      const description = await readMoralisDescription(fHex(el._hex));
-      const poll = setUpPoll(
-        description,
-        metaData,
-        expiration,
-        currentVote,
-        multiSigLength,
-        el._hex
-      ); // Filter polls to lists depending on if voted or not
-
-      if (poll.currentVote === 0) {
-        setPendingPolls((oldPollList) => [...oldPollList, poll]);
-      } else {
-        setVotedPolls((oldVotedPolls) => [...oldVotedPolls, poll]);
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Moralis, account, getExpirationBlock]);
+  const fetchActivePolls = useCallback(
+    async () => {
+      // setPendingPolls([]);
+      // setVotedPolls([]);
+      // setIsFetchingPolls(true);
+      // const options = multiSigOptions(
+      //   account,
+      //   SMART_CONTRACT_FUNCTIONS.GET_ACTIVE_POLLS
+      // );
+      // const res = await Moralis.executeFunction(options);
+      // const multiSigLength = await getMultiSigLength();
+      // res.map(async (el) => {
+      //   // GET POLL METADATA FROM POLL ID
+      //   const metaDataOptions = multiSigOptions(
+      //     account,
+      //     SMART_CONTRACT_FUNCTIONS.GET_POLL_META,
+      //     { _pollID: el._hex }
+      //   );
+      //   const metaData = await Moralis.executeFunction(metaDataOptions);
+      //   const expiration = await getExpirationBlock(el._hex);
+      //   const currentVote = await getCurrentVote(el._hex);
+      //   const description = await readMoralisDescription(fHex(el._hex));
+      //   const poll = setUpPoll(
+      //     description,
+      //     metaData,
+      //     expiration,
+      //     currentVote,
+      //     multiSigLength,
+      //     el._hex
+      //   ); // Filter polls to lists depending on if voted or not
+      //   if (poll.currentVote === 0) {
+      //     setPendingPolls((oldPollList) => [...oldPollList, poll]);
+      //   } else {
+      //     setVotedPolls((oldVotedPolls) => [...oldVotedPolls, poll]);
+      //   }
+      // });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [
+      // Moralis,
+      //  account,
+      //   getExpirationBlock
+    ]
+  );
 
   const createNewMoralisEntry = useCallback(
     async (pollID, description) => {
@@ -259,47 +267,42 @@ export default function Polls() {
     [poll]
   );
 
-  const readMoralisDescription = useCallback(
-    async (pollID) => {
-      try {
-        const query = new Moralis.Query(MORALIS_OBJECT_NAME);
-        query.equalTo("pollID", `${pollID}`);
-        const res = await query.find();
-        if (!res.length) return null;
-        return res[0].attributes.description;
-      } catch (e) {
-        setError("Couldn't find a description for the poll");
-      }
-    },
-    [Moralis.Query]
-  );
+  const readMoralisDescription = useCallback(async (pollID) => {
+    // try {
+    //   const query = new Moralis.Query(MORALIS_OBJECT_NAME);
+    //   query.equalTo("pollID", `${pollID}`);
+    //   const res = await query.find();
+    //   if (!res.length) return null;
+    //   return res[0].attributes.description;
+    // } catch (e) {
+    //   setError("Couldn't find a description for the poll");
+    // }
+  }, []);
 
-  const onCreateMultisigPoll = useCallback(
-    async (_, args, description) => {
-      if (account) {
-        try {
-          const options = multiSigOptions(
-            account,
-            CREATE_MULTISIG_POLL.functionName,
-            args
-          );
-          const res = await Moralis.executeFunction(options);
-          const evt = await fetchEvents(CREATE_MULTISIG_POLL.event);
-          if (evt) {
-            createNewMoralisEntry(evt.result[0].data.pollIndex, description);
-            setSuccessfulTransaction(evt.result[0].transaction_hash);
-            onCancelModal();
-          }
-          fetchActivePolls();
-          return res;
-        } catch (error) {
-          setError((error[0] || error.message) ?? "Something went wrong");
-          return error;
-        }
-      }
-    },
-    [account, Moralis, fetchEvents, fetchActivePolls, createNewMoralisEntry]
-  );
+  const onCreateMultisigPoll = useCallback(async (_, args, description) => {
+    if (address) {
+      // try {
+      //   const options = multiSigOptions(
+      //     account,
+      //     CREATE_MULTISIG_POLL.functionName,
+      //     args
+      //   );
+      //   const res = await Moralis.executeFunction(options);
+      //   const evt = await fetchEvents(CREATE_MULTISIG_POLL.event);
+      //   if (evt) {
+      //     createNewMoralisEntry(evt.result[0].data.pollIndex, description);
+      //     setSuccessfulTransaction(evt.result[0].transaction_hash);
+      //     onCancelModal();
+      //   }
+      //   fetchActivePolls();
+      //   return res;
+      // } catch (error) {
+      //   setError((error[0] || error.message) ?? "Something went wrong");
+      //   return error;
+      // }
+      // }
+    }
+  }, []);
 
   const pollGrid = (polls) => (
     <Box display="flex" flexWrap="wrap">

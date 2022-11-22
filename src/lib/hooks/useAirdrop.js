@@ -1,6 +1,6 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { erc20Options } from "src/contracts/options";
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { useAccount } from "wagmi";
 
 const makeOptions = ({ account, addresses }) =>
   erc20Options(account, SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP, {
@@ -10,25 +10,25 @@ const makeOptions = ({ account, addresses }) =>
   });
 
 function useAirdrop() {
-  const { account } = useMoralis();
+  const { address } = useAccount();
 
-  const result = useWeb3ExecuteFunction(
-    makeOptions({ account, addresses: [] })
-  );
+  // const result = useWeb3ExecuteFunction(
+  //   makeOptions({ account: address, addresses: [] })
+  // );
 
-  return {
-    ...result,
-    runAirdrop: ({ addresses, onSuccess, onError }) => {
-      result.fetch({
-        params: makeOptions({
-          account,
-          addresses,
-        }),
-        onSuccess,
-        onError,
-      });
-    },
-  };
+  // return {
+  //   ...result,
+  //   runAirdrop: ({ addresses, onSuccess, onError }) => {
+  //     result.fetch({
+  //       params: makeOptions({
+  //         account: address,
+  //         addresses,
+  //       }),
+  //       onSuccess,
+  //       onError,
+  //     });
+  //   },
+  // };
 }
 
 export { useAirdrop };

@@ -1,11 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Logo from "../components/Logo";
-import { useMoralis } from "react-moralis";
 import { useEffect, useState } from "react";
 import CustomSnackbar from "src/components/CustomSnackbar";
-import { useChainChange } from "src/lib";
 import { NetworkTypes } from "src/types";
+import { useAccount, useNetwork } from "wagmi";
 
 const metamaskInstallationStatus = {
   PENDING: "pending",
@@ -21,11 +20,11 @@ const errorMessages = {
 };
 
 export default function LogoOnlyLayout() {
-  const { isAuthenticated, chainId } = useMoralis();
+  const { isConnected } = useAccount();
+  const { chain } = useNetwork();
   const [metamaskInstallation, setMetamaskInstallation] = useState(
     metamaskInstallationStatus.PENDING
   );
-  useChainChange();
 
   useEffect(() => {
     if (!window.ethereum) {
@@ -35,20 +34,25 @@ export default function LogoOnlyLayout() {
     }
   }, []);
 
-  if (isAuthenticated) {
+  console.log({
+    chain,
+    isConnected,
+  });
+
+  if (isConnected) {
     return <Navigate to="/app/dashboard" replace />;
   }
 
-  const isSnackbarOpen =
-    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED ||
-    (chainId && chainId !== process.env.REACT_APP_CHAIN);
+  // const isSnackbarOpen =
+  //   metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED ||
+  //   (chain?.id && chain?.id !== process.env.REACT_APP_CHAIN);
 
-  const message =
-    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
-      ? errorMessages["metamask"]
-      : chainId !== process.env.REACT_APP_CHAIN
-      ? errorMessages["chain"]
-      : "";
+  // const message =
+  //   metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
+  //     ? errorMessages["metamask"]
+  //     : chain?.id !== process.env.REACT_APP_CHAIN
+  //     ? errorMessages["chain"]
+  //     : "";
 
   return (
     <>
@@ -57,7 +61,7 @@ export default function LogoOnlyLayout() {
       </HeaderStyle>
 
       <Outlet />
-      <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" />
+      {/* <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" /> */}
     </>
   );
 }

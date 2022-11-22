@@ -1,6 +1,6 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { erc20Options } from "src/contracts/options";
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { useAccount } from "wagmi";
 
 const makeOptions = ({ account, address, amount }) =>
   erc20Options(account, SMART_CONTRACT_FUNCTIONS.TRANSFER, {
@@ -9,11 +9,12 @@ const makeOptions = ({ account, address, amount }) =>
   });
 
 function useTransfer({ address, amount = 0 } = {}) {
-  const { Moralis, account } = useMoralis();
+  const { address: account } = useAccount();
 
-  const result = useWeb3ExecuteFunction(
-    makeOptions({ account, address, amount: Moralis.Units.Token(amount, 18) })
-  );
+  const result = null;
+  // useWeb3ExecuteFunction(
+  //   makeOptions({ account, address, amount: Moralis.Units.Token(amount, 18) })
+  // );
 
   return {
     ...result,
@@ -22,7 +23,7 @@ function useTransfer({ address, amount = 0 } = {}) {
         params: makeOptions({
           account,
           address,
-          amount: Moralis.Units.Token(amount, 18),
+          amount: "", //Moralis.Units.Token(amount, 18),
         }),
         onSuccess,
         onError,
