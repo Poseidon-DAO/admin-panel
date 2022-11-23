@@ -8,8 +8,10 @@ import { baseEtherscan } from "src/types";
 import PollArgumentsModal from "./PollArgumentsModal";
 import CustomSnackbar from "./CustomSnackbar";
 import FreezeAlert from "./FreezeAlert";
+import { useAccount } from "wagmi";
 
 export default function FunctionsMenu({ availableFunctions }) {
+  const { address } = useAccount();
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
   // const Web3Api = useMoralisWeb3Api();
@@ -32,14 +34,14 @@ export default function FunctionsMenu({ availableFunctions }) {
   );
 
   const handleClick = (fn) => {
-    // if (account) {
-    //   if (fn.inputRequired) {
-    //     setModalProps(fn);
-    //     setModalActive(true);
-    //   } else {
-    //     handleExecuteFunction(fn);
-    //   }
-    // }
+    if (address) {
+      if (fn.inputRequired) {
+        setModalProps(fn);
+        setModalActive(true);
+      } else {
+        handleExecuteFunction(fn);
+      }
+    }
   };
 
   const onCancelModal = () => {
@@ -84,21 +86,19 @@ export default function FunctionsMenu({ availableFunctions }) {
           alignItems="center"
           sx={{ mb: 5 }}
         >
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            {availableFunctions.map((fn, i) => (
-              <Chip
-                key={i}
-                label={fn.name}
-                variant="outlined"
-                color={fn.functionName === "freeze" ? "error" : "primary"}
-                onClick={() =>
-                  fn.functionName === "freeze"
-                    ? setIsFreezeDialogOpen(true)
-                    : handleClick(fn)
-                }
-              />
-            ))}
-          </Stack>
+          {availableFunctions.map((fn, i) => (
+            <Chip
+              key={i}
+              label={fn.name}
+              variant="outlined"
+              color={fn.functionName === "freeze" ? "error" : "primary"}
+              onClick={() =>
+                fn.functionName === "freeze"
+                  ? setIsFreezeDialogOpen(true)
+                  : handleClick(fn)
+              }
+            />
+          ))}
         </Stack>
       </Container>
 
@@ -126,6 +126,7 @@ export default function FunctionsMenu({ availableFunctions }) {
         onClose={() => setError("")}
         message={error}
       />
+
       <CustomSnackbar
         isOpen={!!successfulTransaction.length}
         type="success"

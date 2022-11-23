@@ -1,9 +1,6 @@
-// components
 import Page from "../components/Page";
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 import FunctionsMenu from "src/components/FunctionsMenu";
-
-// ----------------------------------------------------------------------
 
 const availableFunctions = [
   {
