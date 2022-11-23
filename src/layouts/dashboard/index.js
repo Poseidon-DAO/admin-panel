@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
@@ -11,8 +12,6 @@ import {
 
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
-import { ActiveNetworkTypes } from "src/types";
-import { useAccount, useDisconnect } from "wagmi";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -21,35 +20,21 @@ export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
   const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
+  const { isFrozen } = useIsFrozen();
 
-  const { fetchIsFrozen, isFrozen } = useIsFrozen();
   const {
-    fetchPDNBalance,
     roundedBalance,
+    fetchPDNBalance,
     isLoading: isBalanceLoading,
     isFetching: isBalanceFetching,
   } = usePDNBalance();
+
   const {
-    fetchPDNSymbol,
     symbol,
     isLoading: isSymbolLoading,
     isFetching: isSymbolFetching,
   } = usePDNSymbol();
-  const { fetchIsUserAllowed, isAllowed } = useIsUserAllowed();
-
-  useEffect(() => {
-    if (!isConnected) {
-      return;
-    }
-
-    fetchPDNBalance();
-    fetchPDNSymbol();
-    fetchIsFrozen();
-    fetchIsUserAllowed();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected]);
+  const { isAllowed } = useIsUserAllowed();
 
   if (!isAllowed) {
     return <Navigate to="/forbidden" />;

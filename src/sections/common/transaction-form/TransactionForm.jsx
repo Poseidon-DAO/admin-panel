@@ -5,36 +5,45 @@ import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 
 TransactionForm.defaultProps = {
-  resetOnSubmit: false,
   column: false,
   maxAmountButton: false,
   loading: false,
   buttonProps: {
     title: "",
   },
+  formState: {
+    to: "",
+    amount: "",
+  },
 };
 
 function TransactionForm({
   onSubmit,
+  onChange,
   buttonProps,
-  resetOnSubmit,
   column,
   maxAmountButton,
   loading,
+  formState: { to, amount },
 }) {
   const { balance } = useOutletContext();
 
-  const [address, setAddress] = useState("");
-  const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({
-    address: "",
+    to: "",
     amount: "",
   });
 
   const handleInputChange =
-    (setter, asNumber = false) =>
+    (asNumber = false) =>
     (event) => {
-      setter(asNumber ? event.target.valueAsNumber : event.target.value);
+      onChange({
+        to,
+        amount,
+        [event.target.name]:
+          !!asNumber && !!event.target.value
+            ? event.target.valueAsNumber
+            : event.target.value,
+      });
       setErrors((errors) => ({
         ...errors,
         [event.target.name]: "",
@@ -42,10 +51,10 @@ function TransactionForm({
     };
 
   function validate() {
-    if (!amount || !address) {
+    if (!amount || !to) {
       setErrors({
-        ...(!address && {
-          address: "Please provide an address!",
+        ...(!to && {
+          to: "Please provide an address!",
         }),
         ...(!amount && {
           amount: "Please provide an amount!",
@@ -55,7 +64,7 @@ function TransactionForm({
       return false;
     }
 
-    if (!web3.utils.isAddress(address)) {
+    if (!web3.utils.isAddress(to)) {
       setErrors({
         ...errors,
         address: "Please provide a valid address!",
@@ -67,13 +76,8 @@ function TransactionForm({
     return true;
   }
 
-  function reset() {
-    setAddress("");
-    setAmount("");
-  }
-
   function handleMaxValueSet() {
-    setAmount(balance);
+    onChange({ to, amount: Number(balance) });
   }
 
   function handleSubmit(event) {
@@ -83,11 +87,7 @@ function TransactionForm({
 
     if (!isValid) return;
 
-    onSubmit?.({ address, amount }, reset);
-
-    if (resetOnSubmit) {
-      reset();
-    }
+    onSubmit?.({ to, amount });
   }
 
   function renderSubmitButton({ element, tooltip }) {
@@ -112,10 +112,10 @@ function TransactionForm({
       >
         <Grid item xs={9}>
           <TextField
-            name="address"
-            value={address}
+            name="to"
+            value={to}
             disabled={loading}
-            onChange={handleInputChange(setAddress)}
+            onChange={handleInputChange()}
             placeholder="0x850EdEfE0A1d573057a695B870Ada74116F8E3d0"
             label="Address"
             autoComplete="off"
@@ -131,7 +131,7 @@ function TransactionForm({
             name="amount"
             value={amount}
             disabled={loading}
-            onChange={handleInputChange(setAmount, true)}
+            onChange={handleInputChange(true)}
             placeholder="7"
             label="Amount"
             type="number"
@@ -174,7 +174,7 @@ function TransactionForm({
                 {title || "Add"}
               </LoadingButton>
             ),
-            tooltip: balance < amount,
+            tooltip: amount > balance,
           })}
         </Grid>
       </Grid>

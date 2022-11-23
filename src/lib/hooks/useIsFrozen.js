@@ -1,7 +1,7 @@
 import { accessibilityOptions } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
-import { useAccount } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 
 function useIsFrozen({ account } = {}) {
   const { address } = useAccount();
@@ -11,12 +11,13 @@ function useIsFrozen({ account } = {}) {
     SMART_CONTRACT_FUNCTIONS.CHECK_IS_FROZEN
   );
 
-  const result = null; // useWeb3ExecuteFunction(options);
+  const query = useContractRead({ ...options });
 
   return {
-    ...result,
-    isFrozen: result.data,
-    fetchIsFrozen: result.fetch,
+    ...query,
+    isFrozen: query.data,
+    isFrozenStatus: query.status,
+    isFrozenError: query.error,
   };
 }
 

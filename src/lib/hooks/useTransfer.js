@@ -1,34 +1,33 @@
+import { ethers } from "ethers";
 import { erc20Options } from "src/contracts/options";
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
-import { useAccount } from "wagmi";
-
-const makeOptions = ({ account, address, amount }) =>
-  erc20Options(account, SMART_CONTRACT_FUNCTIONS.TRANSFER, {
-    to: address,
-    amount,
-  });
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 
 function useTransfer({ address, amount = 0 } = {}) {
-  const { address: account } = useAccount();
+  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.TRANSFER);
 
-  const result = null;
-  // useWeb3ExecuteFunction(
-  //   makeOptions({ account, address, amount: Moralis.Units.Token(amount, 18) })
-  // );
+  const { config } = usePrepareContractWrite({
+    ...options,
+    enabled: !!address && !!amount,
+    args: [address, ethers.utils.parseUnits(amount.toString() || "0", 18)],
+  });
+
+  const { data, write, isFetching } = useContractWrite(config);
+
+  const { isSuccess, status } = useWaitForTransaction({
+    hash: data?.hash,
+  });
 
   return {
-    ...result,
-    transfer: ({ address, amount, onSuccess, onError }) => {
-      result.fetch({
-        params: makeOptions({
-          account,
-          address,
-          amount: "", //Moralis.Units.Token(amount, 18),
-        }),
-        onSuccess,
-        onError,
-      });
-    },
+    transfer: write,
+    transferData: data,
+    isTransferSuccess: isSuccess,
+    isFetchingTransfer: isFetching,
+    transferStatus: status,
   };
 }
 

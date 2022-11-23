@@ -100,7 +100,7 @@ export default function Airdrop() {
         <TransactionForm
           onSubmit={handleAddressAdd}
           loading={isFetching || isLoading || isVerifying}
-          resetOnSubmit
+          // resetOnSubmit
         />
 
         {!!airdropAddresses.length && (

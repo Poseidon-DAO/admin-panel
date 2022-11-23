@@ -1,16 +1,16 @@
 import { erc20Options } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { useContractRead } from "wagmi";
 
 function usePDNSymbol() {
-  const options = erc20Options(null, SMART_CONTRACT_FUNCTIONS.SYMBOL);
+  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.SYMBOL);
 
-  const result = null; //useWeb3ExecuteFunction(options);
+  const query = useContractRead({ ...options });
 
   return {
-    ...result,
-    symbol: result.data,
-    fetchPDNSymbol: result.fetch,
+    ...query,
+    symbol: query.data,
   };
 }
 

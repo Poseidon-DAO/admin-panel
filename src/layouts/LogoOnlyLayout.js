@@ -34,11 +34,6 @@ export default function LogoOnlyLayout() {
     }
   }, []);
 
-  console.log({
-    chain,
-    isConnected,
-  });
-
   if (isConnected) {
     return <Navigate to="/app/dashboard" replace />;
   }
