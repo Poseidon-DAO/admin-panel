@@ -7,7 +7,7 @@ const availableFunctions = [
     name: "Freeze DAO",
     functionName: SMART_CONTRACT_FUNCTIONS.FREEZE_DAO,
     args: {},
-    event: SMART_CONTRACT_FUNCTIONS.FREEZE_DAO,
+    event: null,
   },
 ];
 

@@ -1,4 +1,5 @@
 export * from "./useAirdrop";
+export * from "./useFreeze";
 export * from "./useIsFrozen";
 export * from "./useIsUserAllowed";
 export * from "./usePDNBalance";
