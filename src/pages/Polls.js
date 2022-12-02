@@ -1,4 +1,3 @@
-// components
 import Page from "../components/Page";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -7,7 +6,6 @@ import { Box, Container, Grid, Typography } from "@mui/material";
 import PollArgumentsModal from "src/components/PollArgumentsModal";
 import CustomSnackbar from "src/components/CustomSnackbar";
 import { baseEtherscan } from "src/types";
-import { useAccount } from "wagmi";
 import { usePolls } from "src/lib";
 import { LoadingButton } from "@mui/lab";
 import Iconify from "src/components/Iconify";
@@ -36,9 +34,6 @@ const CREATE_MULTISIG_POLL = {
 };
 
 export default function Polls() {
-  const [error, setError] = useState("");
-  const [successfulTransaction, setSuccessfulTransaction] = useState("");
-
   const [modalActive, setModalActive] = useState(false);
   const [modalProps, setModalProps] = useState(null);
 
@@ -47,12 +42,13 @@ export default function Polls() {
   const debouncedPollTypeId = useDebounce(pollTypeID);
   const debouncedVoteReceiverAddress = useDebounce(voteReceiverAddress);
 
-  const { votedPolls, pendingPolls, isLoading } = usePolls();
+  const { votedPolls, pendingPolls, isLoading, pollsError, currentVoteError } =
+    usePolls();
 
   const {
     createPoll,
-    pollCreationStatus,
     pollCreationResult,
+    pollCreationStatus,
     pollCreationError,
     isPollCreationFetching,
   } = useCreatePoll({
@@ -61,14 +57,9 @@ export default function Polls() {
 
   useEffect(() => {
     if (pollCreationStatus === "success") {
-      setSuccessfulTransaction(pollCreationResult.hash);
       handleModalClose();
     }
-
-    if (pollCreationStatus === "error") {
-      setError(pollCreationError.message || "Something went wrong");
-    }
-  }, [pollCreationStatus, pollCreationResult, pollCreationError]);
+  }, [pollCreationStatus]);
 
   function handleModalClose() {
     setModalActive(false);
@@ -129,7 +120,7 @@ export default function Polls() {
           fnc={modalProps}
         />
 
-        <h3>Active Polls</h3>
+        <Typography variant="h5">Active Polls</Typography>
         {!!pendingPolls.length ? (
           <Box sx={{ flexGrow: 1 }}>
             <PollsList polls={pendingPolls} />
@@ -138,7 +129,7 @@ export default function Polls() {
           <Typography>There are no pending polls at the moment.</Typography>
         )}
 
-        <h3>Voted Polls</h3>
+        <Typography variant="h5">Voted Polls</Typography>
         {!!votedPolls.length ? (
           <Box sx={{ flexGrow: 1 }}>
             <PollsList polls={votedPolls} />
@@ -149,34 +140,37 @@ export default function Polls() {
             container
             justifyContent="center"
             alignItems="center"
-            border="1px solid red"
           >
-            <Typography>There are no votted polls at the moment.</Typography>
+            <Typography variant="h5">
+              There are no votted polls at the moment.
+            </Typography>
           </Grid>
         )}
 
         <CustomSnackbar
-          isOpen={error.length > 0}
+          isOpen={!!pollCreationError || !!pollsError || !!currentVoteError}
           type="error"
-          onClose={() => setError("")}
-          message={error}
+          message={
+            pollCreationError?.message ||
+            pollsError?.message ||
+            currentVoteError?.message
+          }
         />
 
         <CustomSnackbar
-          isOpen={!!successfulTransaction.length}
+          isOpen={pollCreationStatus === "success"}
           type="success"
-          onClose={() => setSuccessfulTransaction("")}
           message={
             <Typography>
               The transaction was successful! Hash:{" "}
               <a
                 target="_blank"
                 rel="noreferrer"
-                href={baseEtherscan + successfulTransaction}
+                href={baseEtherscan + pollCreationResult?.hash}
               >
-                {successfulTransaction.slice(0, 8) +
+                {pollCreationResult?.hash.slice(0, 8) +
                   "..." +
-                  successfulTransaction?.slice(-8)}
+                  pollCreationResult?.hash?.slice(-8)}
               </a>
             </Typography>
           }

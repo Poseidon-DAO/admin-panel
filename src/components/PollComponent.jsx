@@ -7,32 +7,61 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import { useEffect } from "react";
 import Countdown from "react-countdown";
+import {
+  useMultisigLength,
+  usePollExpirationBlock,
+  usePollMetadata,
+  useVote,
+} from "src/lib";
 import { PollTypes, VoteTypes } from "src/types";
+
 import Iconify from "./Iconify";
 
-export default function PollComponent({ onApprove, onDecline, poll }) {
-  const {
-    currentVote,
-    type,
-    expiration,
-    amountApprovedVoteReceiver,
-    multiSigLength,
-    description,
-  } = poll;
+export default function PollComponent({ poll }) {
+  const { currentVote, _hex } = poll;
+  const { type, amountApprovedVoteReceiver } = usePollMetadata({
+    pollId: _hex,
+  });
+  const { expirationBlock } = usePollExpirationBlock({ pollId: _hex });
+  const { multisigLength } = useMultisigLength();
+
+  const [voteValue, setVoteValue] = useState(null);
+  const { vote } = useVote({ pollIndex: _hex, vote: voteValue });
+
   const pollName = Object.keys(PollTypes).find(
     (key) => PollTypes[key] === `${type}`
   );
 
   const hasVoted = VoteTypes[currentVote] === false ? false : true;
 
+  useEffect(() => {
+    if (!!voteValue) {
+      vote?.();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voteValue]);
+
+  function handleApprove() {
+    setVoteValue(1);
+  }
+
+  function handleDecline() {
+    setVoteValue(0);
+  }
+
   return (
-    <Card sx={{ width: 250, minHeight: "100%" }}>
+    <Card sx={{ width: 260, minHeight: "100%" }}>
       <CardContent>
-        <h3>{pollName.toUpperCase()}</h3>
+        <Typography noWrap variant="h5" title={pollName.toUpperCase()}>
+          {pollName.toUpperCase()}
+        </Typography>
+
         <Typography variant="body2" color="textSecondary" component="p">
-          {description || "No description found"}
+          {"description" || "No description found"}
         </Typography>
         <Box
           display="flex"
@@ -44,7 +73,7 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
             <Typography sx={{ fontSize: 14, marginTop: ".5rem" }}>
               Expires in:
             </Typography>
-            <Countdown date={Date.now() + expiration} />
+            <Countdown date={Date.now() + expirationBlock} />
           </Box>
           <Divider orientation="vertical" flexItem />
           <Box>
@@ -52,7 +81,7 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
               Approved By:
             </Typography>
             <Typography sx={{ textAlign: "right" }}>
-              {amountApprovedVoteReceiver + "/" + multiSigLength}
+              {amountApprovedVoteReceiver + "/" + multisigLength}
             </Typography>
           </Box>
         </Box>
@@ -64,10 +93,14 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
             borderRadius={1}
             padding={1}
           >
-            <Button onClick={onApprove} variant="outlined">
+            <Button onClick={handleApprove} variant="outlined">
               Approve
             </Button>
-            <Button onClick={onDecline} color="error" sx={{ marginLeft: 5 }}>
+            <Button
+              onClick={handleDecline}
+              color="error"
+              sx={{ marginLeft: 5 }}
+            >
               Decline
             </Button>
           </Box>
