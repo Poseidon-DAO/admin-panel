@@ -15,8 +15,7 @@ function useIsUserAllowed() {
 
   return {
     ...query,
-    isAllowed: !!query.data || true,
-    fetchIsUserAllowed: query.fetch,
+    isAllowed: !!query.data,
   };
 }
 

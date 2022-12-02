@@ -6,11 +6,11 @@ import {
   CardContent,
   Typography,
   Divider,
-} from '@mui/material'
-import React from 'react'
-import Countdown from 'react-countdown'
-import { PollTypes, VoteTypes } from 'src/types'
-import Iconify from './Iconify'
+} from "@mui/material";
+import React from "react";
+import Countdown from "react-countdown";
+import { PollTypes, VoteTypes } from "src/types";
+import Iconify from "./Iconify";
 
 export default function PollComponent({ onApprove, onDecline, poll }) {
   const {
@@ -20,18 +20,19 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
     amountApprovedVoteReceiver,
     multiSigLength,
     description,
-  } = poll
+  } = poll;
   const pollName = Object.keys(PollTypes).find(
-    (key) => PollTypes[key] === `${type}`,
-  )
+    (key) => PollTypes[key] === `${type}`
+  );
 
-  const hasVoted = VoteTypes[currentVote] === false ? false : true
+  const hasVoted = VoteTypes[currentVote] === false ? false : true;
+
   return (
-    <Card sx={{ width: 250, minHeight: '100%' }}>
+    <Card sx={{ width: 250, minHeight: "100%" }}>
       <CardContent>
         <h3>{pollName.toUpperCase()}</h3>
         <Typography variant="body2" color="textSecondary" component="p">
-          {description || 'No description found'}
+          {description || "No description found"}
         </Typography>
         <Box
           display="flex"
@@ -40,18 +41,18 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
           marginY={1.5}
         >
           <Box>
-            <Typography sx={{ fontSize: 14, marginTop: '.5rem' }}>
+            <Typography sx={{ fontSize: 14, marginTop: ".5rem" }}>
               Expires in:
             </Typography>
             <Countdown date={Date.now() + expiration} />
           </Box>
           <Divider orientation="vertical" flexItem />
           <Box>
-            <Typography sx={{ fontSize: 14, marginTop: '.5rem' }}>
+            <Typography sx={{ fontSize: 14, marginTop: ".5rem" }}>
               Approved By:
             </Typography>
-            <Typography sx={{ textAlign: 'right' }}>
-              {amountApprovedVoteReceiver + '/' + multiSigLength}
+            <Typography sx={{ textAlign: "right" }}>
+              {amountApprovedVoteReceiver + "/" + multiSigLength}
             </Typography>
           </Box>
         </Box>
@@ -75,24 +76,24 @@ export default function PollComponent({ onApprove, onDecline, poll }) {
             <Iconify
               icon={
                 currentVote === 1
-                  ? 'teenyicons:tick-circle-solid'
-                  : 'material-symbols:cancel'
+                  ? "teenyicons:tick-circle-solid"
+                  : "material-symbols:cancel"
               }
               width={22}
               height={22}
-              color={currentVote === 1 ? 'green' : '#FE4842'}
-              style={{ position: 'absolute', top: 10, right: 10 }}
+              color={currentVote === 1 ? "green" : "#FE4842"}
+              style={{ position: "absolute", top: 10, right: 10 }}
             />
             <Chip
               label={`You ${VoteTypes[currentVote]}`}
               variant="outlined"
               color={
-                VoteTypes[currentVote] === 'Declined' ? 'error' : 'success'
+                VoteTypes[currentVote] === "Declined" ? "error" : "success"
               }
             />
           </Box>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

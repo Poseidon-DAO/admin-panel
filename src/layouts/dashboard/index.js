@@ -12,6 +12,7 @@ import {
 
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
+import { CircularProgress, Grid } from "@mui/material";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -34,7 +35,21 @@ export default function DashboardLayout() {
     isLoading: isSymbolLoading,
     isFetching: isSymbolFetching,
   } = usePDNSymbol();
-  const { isAllowed } = useIsUserAllowed();
+  const { isAllowed, isLoading } = useIsUserAllowed();
+
+  if (isLoading) {
+    return (
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        width="100vw"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Grid>
+    );
+  }
 
   if (!isAllowed) {
     return <Navigate to="/forbidden" />;

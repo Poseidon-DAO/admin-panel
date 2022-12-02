@@ -1,11 +1,20 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { Form, FormikProvider, useFormik } from 'formik';
+import PropTypes from "prop-types";
+import { useState } from "react";
+import { Form, FormikProvider, useFormik } from "formik";
 // @mui
-import { Card, Stack, Divider, Checkbox, MenuItem, IconButton, CardHeader, FormControlLabel } from '@mui/material';
+import {
+  Card,
+  Stack,
+  Divider,
+  Checkbox,
+  MenuItem,
+  IconButton,
+  CardHeader,
+  FormControlLabel,
+} from "@mui/material";
 // components
-import Iconify from '../../../components/Iconify';
-import MenuPopover from '../../../components/MenuPopover';
+import Iconify from "../../../components/Iconify";
+import MenuPopover from "../../../components/MenuPopover";
 
 // ----------------------------------------------------------------------
 
@@ -20,9 +29,7 @@ export default function AppTasks({ title, subheader, list, ...other }) {
     initialValues: {
       checked: [list[2].id],
     },
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: (values) => {},
   });
 
   const { values, handleSubmit } = formik;
@@ -34,7 +41,12 @@ export default function AppTasks({ title, subheader, list, ...other }) {
       <FormikProvider value={formik}>
         <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
           {list.map((task) => (
-            <TaskItem key={task.id} task={task} checked={values.checked.includes(task.id)} formik={formik} />
+            <TaskItem
+              key={task.id}
+              task={task}
+              checked={values.checked.includes(task.id)}
+              formik={formik}
+            />
           ))}
         </Form>
       </FormikProvider>
@@ -65,22 +77,18 @@ function TaskItem({ formik, task, checked, ...other }) {
 
   const handleMarkComplete = () => {
     handleCloseMenu();
-    console.log('MARK COMPLETE', task);
   };
 
   const handleShare = () => {
     handleCloseMenu();
-    console.log('SHARE', task);
   };
 
   const handleEdit = () => {
     handleCloseMenu();
-    console.log('EDIT', task);
   };
 
   const handleDelete = () => {
     handleCloseMenu();
-    console.log('DELETE', task);
   };
 
   return (
@@ -90,13 +98,20 @@ function TaskItem({ formik, task, checked, ...other }) {
         px: 2,
         py: 0.75,
         ...(checked && {
-          color: 'text.disabled',
-          textDecoration: 'line-through',
+          color: "text.disabled",
+          textDecoration: "line-through",
         }),
       }}
     >
       <FormControlLabel
-        control={<Checkbox {...getFieldProps('checked')} value={task.id} checked={checked} {...other} />}
+        control={
+          <Checkbox
+            {...getFieldProps("checked")}
+            value={task.id}
+            checked={checked}
+            {...other}
+          />
+        }
         label={task.label}
         sx={{ flexGrow: 1, m: 0 }}
       />
@@ -108,24 +123,24 @@ function TaskItem({ formik, task, checked, ...other }) {
         actions={
           <>
             <MenuItem onClick={handleMarkComplete}>
-              <Iconify icon={'eva:checkmark-circle-2-fill'} />
+              <Iconify icon={"eva:checkmark-circle-2-fill"} />
               Mark Complete
             </MenuItem>
 
             <MenuItem onClick={handleEdit}>
-              <Iconify icon={'eva:edit-fill'} />
+              <Iconify icon={"eva:edit-fill"} />
               Edit
             </MenuItem>
 
             <MenuItem onClick={handleShare}>
-              <Iconify icon={'eva:share-fill'} />
+              <Iconify icon={"eva:share-fill"} />
               Share
             </MenuItem>
 
-            <Divider sx={{ borderStyle: 'dashed' }} />
+            <Divider sx={{ borderStyle: "dashed" }} />
 
-            <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-              <Iconify icon={'eva:trash-2-outline'} />
+            <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
+              <Iconify icon={"eva:trash-2-outline"} />
               Delete
             </MenuItem>
           </>
@@ -147,8 +162,13 @@ MoreMenuButton.propTypes = {
 function MoreMenuButton({ actions, open, onOpen, onClose }) {
   return (
     <>
-      <IconButton size="large" color="inherit" sx={{ opacity: 0.48 }} onClick={onOpen}>
-        <Iconify icon={'eva:more-vertical-fill'} width={20} height={20} />
+      <IconButton
+        size="large"
+        color="inherit"
+        sx={{ opacity: 0.48 }}
+        onClick={onOpen}
+      >
+        <Iconify icon={"eva:more-vertical-fill"} width={20} height={20} />
       </IconButton>
 
       <MenuPopover
@@ -158,12 +178,12 @@ function MoreMenuButton({ actions, open, onOpen, onClose }) {
         arrow="right-top"
         sx={{
           mt: -0.5,
-          width: 'auto',
-          '& .MuiMenuItem-root': {
+          width: "auto",
+          "& .MuiMenuItem-root": {
             px: 1,
-            typography: 'body2',
+            typography: "body2",
             borderRadius: 0.75,
-            '& svg': { mr: 2, width: 20, height: 20 },
+            "& svg": { mr: 2, width: 20, height: 20 },
           },
         }}
       >
