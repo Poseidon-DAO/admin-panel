@@ -73,7 +73,7 @@
     "react-moralis": "1.4.0",
     "react-papaparse": "^4.1.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "4.0.3",
     "simplebar": "^5.3.6",
     "simplebar-react": "^2.3.6",
     "stream-browserify": "^3.0.0",
