@@ -17,6 +17,7 @@ export default function App() {
       >
         <ScrollToTop />
         <BaseOptionChartStyle />
+
         <Router />
       </MoralisProvider>
     </ThemeProvider>
