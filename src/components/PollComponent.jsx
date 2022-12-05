@@ -56,8 +56,8 @@ export default function PollComponent({ poll }) {
   return (
     <Card sx={{ width: 260, minHeight: "100%" }}>
       <CardContent>
-        <Typography noWrap variant="h5" title={pollName.toUpperCase()}>
-          {pollName.toUpperCase()}
+        <Typography noWrap variant="h5" title={pollName?.toUpperCase()}>
+          {pollName?.toUpperCase()}
         </Typography>
 
         <Typography variant="body2" color="textSecondary" component="p">
