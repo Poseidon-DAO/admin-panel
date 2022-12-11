@@ -52,12 +52,12 @@ export default function DashboardLayout() {
     );
   }
 
-  if (!isAllowed) {
-    return <Navigate to="/forbidden" />;
-  }
-
   if (!isConnected) {
     return <Navigate to="/" />;
+  }
+
+  if (!isAllowed) {
+    return <Navigate to="/forbidden" />;
   }
 
   return (
