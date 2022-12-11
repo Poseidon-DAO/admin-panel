@@ -35,6 +35,7 @@ export default function DashboardLayout() {
     isLoading: isSymbolLoading,
     isFetching: isSymbolFetching,
   } = usePDNSymbol();
+
   const { isAllowed, isLoading } = useIsUserAllowed();
 
   if (isLoading) {

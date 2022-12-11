@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { Form, FormikProvider, useFormik } from "formik";
-// @mui
+
 import {
   Card,
   Stack,
@@ -12,11 +12,8 @@ import {
   CardHeader,
   FormControlLabel,
 } from "@mui/material";
-// components
 import Iconify from "../../../components/Iconify";
 import MenuPopover from "../../../components/MenuPopover";
-
-// ----------------------------------------------------------------------
 
 AppTasks.propTypes = {
   title: PropTypes.string,
@@ -53,8 +50,6 @@ export default function AppTasks({ title, subheader, list, ...other }) {
     </Card>
   );
 }
-
-// ----------------------------------------------------------------------
 
 TaskItem.propTypes = {
   formik: PropTypes.object,
@@ -149,8 +144,6 @@ function TaskItem({ formik, task, checked, ...other }) {
     </Stack>
   );
 }
-
-// ----------------------------------------------------------------------
 
 MoreMenuButton.propTypes = {
   actions: PropTypes.node.isRequired,

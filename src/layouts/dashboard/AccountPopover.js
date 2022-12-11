@@ -28,7 +28,6 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    // setAuth({});
     disconnect();
   };
 
