@@ -1,39 +1,38 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { erc20Options } from "src/abis";
 
 import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import {
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 
-const makeOptions = ({ account, erc1155Address = null, ercId, ratio }) =>
-  erc20Options(account, SMART_CONTRACT_FUNCTIONS.SET_ERC_1155, {
-    _ERC1155Address: erc1155Address,
-    _ID_ERC1155: ercId,
-    _ratio: ratio,
+function useSetERC1155({ erc1155Address, ercId, ratio } = {}) {
+  const { address } = useAccount();
+
+  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.SET_ERC_1155, [
+    erc1155Address,
+    ercId,
+    ratio,
+  ]);
+
+  const { config } = usePrepareContractWrite({
+    ...options,
+    enabled: !!address && !!erc1155Address && !!ercId && !!ratio,
   });
 
-function useSetERC1155({ erc1155Address = null, ercId, ratio } = {}) {
-  const { account } = useMoralis();
+  const { data, write } = useContractWrite(config);
 
-  const result = useWeb3ExecuteFunction(
-    makeOptions({ account, erc1155Address, ercId, ratio })
-  );
+  const { isSuccess, status } = useWaitForTransaction({
+    hash: data?.hash,
+  });
 
   return {
-    ...result,
-    setERC1155: ({
-      erc1155Address,
-      ercId,
-      ratio,
-      onSuccess,
-      onError,
-      onComplete,
-    } = {}) => {
-      result.fetch({
-        params: makeOptions({ account, erc1155Address, ercId, ratio }),
-        onSuccess,
-        onError,
-        onComplete,
-      });
-    },
+    setERC1155: write,
+    setERC1155Data: data,
+    setERC1155Status: status,
+    isSetERC1155Status: isSuccess,
   };
 }
 
