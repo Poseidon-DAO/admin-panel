@@ -1,6 +1,6 @@
-import { erc20Options } from "src/abis";
+import { erc20Options } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 import {
   useAccount,
   useContractWrite,

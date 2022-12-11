@@ -1,8 +1,8 @@
 import { useContractRead } from "wagmi";
 
-import { erc20Options } from "src/abis";
+import { erc20Options } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
 function useERC1155Ratio() {
   const options = erc20Options(SMART_CONTRACT_FUNCTIONS.GET_RATIO);
@@ -10,8 +10,9 @@ function useERC1155Ratio() {
   const query = useContractRead({ ...options });
 
   return {
-    ...query,
     ratio: !!query.data ? Number(query.data) : null,
+    isFetchingRatio: query.isFetching,
+    isLoadingRatio: query.isLoading,
   };
 }
 

@@ -22,24 +22,9 @@ import { LoadingButton } from "@mui/lab";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 
 export default function TokenSettings() {
-  const {
-    fetchAddress,
-    address,
-    isFetching: isFetchingAddress,
-    isLoading: isLoadingAddress,
-  } = useERC1155Address();
-  const {
-    fetchId,
-    id,
-    isFetching: isFetchingId,
-    isLoading: isLoadingId,
-  } = useERC1155Id();
-  const {
-    fetchRatio,
-    ratio,
-    isFetching: isFetchingRatio,
-    isLoading: isLoadingRatio,
-  } = useERC1155Ratio();
+  const { address, isFetchingAddress, isLoadingAddress } = useERC1155Address();
+  const { id, isFetchingId, isLoadingId } = useERC1155Id();
+  const { ratio, isFetchingRatio, isLoadingRatio } = useERC1155Ratio();
 
   const theme = useTheme();
   const [isEditing, setEditing] = useState(false);
@@ -56,14 +41,6 @@ export default function TokenSettings() {
   useEffect(() => {
     setLocalRatio(ratio);
   }, [ratio]);
-
-  useEffect(() => {
-    fetchAddress();
-    fetchId();
-    fetchRatio();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   function handleEditClick(shouldEdit) {
     setEditing(shouldEdit);
@@ -82,7 +59,6 @@ export default function TokenSettings() {
     setVerifingTransaction(true);
     await transaction.wait();
     setVerifingTransaction(false);
-    fetchRatio();
   }
 
   async function handleTransactionError(error) {

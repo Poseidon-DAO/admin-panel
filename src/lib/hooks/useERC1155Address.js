@@ -1,6 +1,6 @@
-import { erc20Options } from "src/abis";
+import { erc20Options } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/smartContract";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 import { useContractRead } from "wagmi";
 
 function useERC1155Address() {
@@ -9,8 +9,9 @@ function useERC1155Address() {
   const query = useContractRead({ ...options });
 
   return {
-    ...query,
     address: query.data,
+    isFetchingAddress: query.isFetching,
+    isLoadingAddress: query.isLoading,
   };
 }
 

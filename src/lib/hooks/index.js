@@ -12,5 +12,6 @@ export * from "./usePDNSymbol";
 export * from "./usePollExpirationBlock";
 export * from "./usePollMetadata";
 export * from "./usePolls";
+export * from "./useSetERC1155";
 export * from "./useTransfer";
 export * from "./useVote";
