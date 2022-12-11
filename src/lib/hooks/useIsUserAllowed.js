@@ -1,22 +1,21 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { multiSigOptions } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { useAccount, useContractRead } from "wagmi";
 
-function useIsUserAllowed({ account } = {}) {
-  const { user } = useMoralis();
+function useIsUserAllowed() {
+  const { address } = useAccount();
 
   const options = multiSigOptions(
-    account || user?.get("ethAddress"),
-    SMART_CONTRACT_FUNCTIONS.GET_IS_MULTISIG_ADDRESS
+    SMART_CONTRACT_FUNCTIONS.GET_IS_MULTISIG_ADDRESS,
+    [address]
   );
 
-  const result = useWeb3ExecuteFunction(options);
+  const query = useContractRead({ ...options });
 
   return {
-    ...result,
-    isAllowed: result.data,
-    fetchIsUserAllowed: result.fetch,
+    ...query,
+    isAllowed: !!query.data,
   };
 }
 

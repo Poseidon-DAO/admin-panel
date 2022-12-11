@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import NotAllowed from "./pages/NotAllowed";
 import NotFound from "./pages/Page404";
 import DashboardApp from "./pages/DashboardApp";
-import Polls from "./pages/Polls";
+// import Polls from "./pages/Polls";
 import Airdrop from "./pages/Airdrop";
 import Transfer from "./pages/Transfer";
 import Settings from "./pages/Settings";
@@ -47,7 +47,7 @@ export default function Router() {
           path="accessibility"
           element={<Accessibility sectionTitle={sectionTitle} />}
         />
-        <Route path="polls" element={<Polls sectionTitle={sectionTitle} />} />
+        {/* <Route path="polls" element={<Polls sectionTitle={sectionTitle} />} /> */}
         <Route
           path="transfer"
           element={<Transfer sectionTitle={sectionTitle} />}

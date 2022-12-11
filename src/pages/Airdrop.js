@@ -1,9 +1,7 @@
+import { useEffect, useState } from "react";
 import { Container, Grid, Box } from "@mui/material";
 import { useOutletContext } from "react-router-dom";
-import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
-
-import { useAirdrop } from "src/lib";
 
 import AirdropTable from "src/sections/airdrop/table/Table";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
@@ -11,6 +9,8 @@ import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import PageTitle from "src/sections/common/page-title/PageTitle";
 import Page from "src/components/Page";
+
+import { useAirdrop } from "src/lib";
 
 const variant = {
   error: "error",
@@ -25,15 +25,25 @@ const messages = {
 };
 
 export default function Airdrop({ sectionTitle }) {
-  const { runAirdrop, isFetching, isLoading } = useAirdrop();
+  const [address, setAddress] = useState("");
+  const [amount, setAmount] = useState("");
 
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
 
+  const { runAirdrop, transferStatus } = useAirdrop({
+    accounts: airdropAddresses,
+  });
+
   const { refetchBalance } = useOutletContext();
 
-  function handleAddressAdd(address) {
-    setAirdropAddresses((prevAddresses) => [...prevAddresses, address]);
+  function handleAddressAdd({ to, amount }) {
+    setAirdropAddresses((prevAddresses) => [
+      ...prevAddresses,
+      { address: to, amount },
+    ]);
+    setAddress("");
+    setAmount("");
   }
 
   function handleCSVFileLoad(addresses, error) {
@@ -54,31 +64,36 @@ export default function Airdrop({ sectionTitle }) {
     );
   }
 
-  async function handleTransactionSuccess(transaction) {
-    setTransactionState("verifying");
-    await transaction.wait();
-    refetchBalance();
-    setTransactionState("success");
-    setAirdropAddresses([]);
-  }
+  useEffect(() => {
+    if (transferStatus === "error") {
+      setTransactionState("error");
+    }
 
-  function handleTransactionFailure() {
-    setTransactionState("error");
-  }
+    if (transferStatus === "success") {
+      refetchBalance();
+      setTransactionState("success");
+      setAirdropAddresses([]);
+      setAddress("");
+      setAmount("");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferStatus]);
 
   function handleSnackbarClose() {
     setTransactionState("");
   }
 
-  function handleAirdrop() {
-    runAirdrop({
-      addresses: airdropAddresses,
-      onSuccess: handleTransactionSuccess,
-      onError: handleTransactionFailure,
-    });
+  function handleFormStateChange(formState) {
+    setAddress(formState.to);
+    setAmount(formState.amount);
   }
 
-  const isVerifying = transactionState === "verifying";
+  function handleAirdrop() {
+    runAirdrop?.();
+  }
+
+  const isVerifying = transferStatus === "loading";
 
   return (
     <Page title="Airdrop">
@@ -93,15 +108,16 @@ export default function Airdrop({ sectionTitle }) {
               onFileLoad={handleCSVFileLoad}
               onFileRemove={handleCSVFileRemove}
               removeFileCondition={!airdropAddresses.length} //  in case user deletes all accounts from table we remove the file
-              disabled={isVerifying || isLoading || isFetching}
+              disabled={transferStatus === "loading" || isVerifying}
             />
           </Box>
         </Grid>
 
         <TransactionForm
+          formState={{ to: address, amount }}
+          onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
-          loading={isFetching || isLoading || isVerifying}
-          resetOnSubmit
+          loading={transferStatus === "loading" || isVerifying}
         />
 
         {!!airdropAddresses.length && (
@@ -117,8 +133,8 @@ export default function Airdrop({ sectionTitle }) {
             size="large"
             color="success"
             style={{ marginTop: 30, width: "100%", color: "white" }}
-            loading={isFetching || isLoading || isVerifying}
-            disabled={isFetching || isLoading || isVerifying}
+            loading={transferStatus === "loading" || isVerifying}
+            disabled={isVerifying}
             onClick={handleAirdrop}
           >
             Run Airdrop
@@ -126,12 +142,12 @@ export default function Airdrop({ sectionTitle }) {
         )}
       </Container>
 
-      {!!transactionState && (
+      {(!!transactionState || isVerifying) && (
         <TransactionSnackbar
-          variant={variant[transactionState]}
+          variant={variant[transactionState || "verifying"]}
           onClose={handleSnackbarClose}
-          message={messages[transactionState]}
-          duration={isVerifying ? 50 * 1000 : 3000}
+          message={messages[transactionState || "verifying"]}
+          duration={isVerifying ? 20 * 1000 : 3000}
         />
       )}
     </Page>

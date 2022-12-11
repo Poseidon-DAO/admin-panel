@@ -8,72 +8,74 @@ import {
   Select,
   TextField,
   Typography,
-} from '@mui/material'
-import React from 'react'
-import { useState } from 'react'
+} from "@mui/material";
+import React from "react";
+import { useState } from "react";
 
-const NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-}
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
 
 const DefaultArguments = {
   _pollTypeID: 0,
   _voteReceiverAddress: NULL_ADDRESS,
-}
+};
 
 export default function ArgumentsModal({
   open,
   handleClose,
   handleAccept,
+  handleChange,
   fnc,
 }) {
-  const [args, setArgs] = useState(DefaultArguments)
-  const [description, setDescription] = useState('')
+  const [args, setArgs] = useState(DefaultArguments);
+  const [description, setDescription] = useState("");
   const onSubmit = async () => {
     const fnArgs = {
       ...args,
       _voteReceiverAddress: args._voteReceiverAddress.length
         ? args._voteReceiverAddress
         : NULL_ADDRESS,
-    }
-    const res = await handleAccept(fnc, fnArgs, description)
-    return res
-  }
+    };
+    const res = await handleAccept(fnc, fnArgs, description);
+    return res;
+  };
 
   const onArgumentChange = (value, name) => {
     const newArgs = {
       ...args,
-    }
-    newArgs[name] = value
-    setArgs({ ...newArgs })
-  }
+    };
+    newArgs[name] = value;
+    setArgs({ ...newArgs });
+    handleChange(newArgs);
+  };
 
   const closeModal = () => {
-    setArgs(DefaultArguments)
-    handleClose()
-  }
+    setArgs(DefaultArguments);
+    handleClose();
+  };
 
   const PollTypeIdSelectField = (value, name) => (
     <MenuItem
       value={value}
-      onClick={() => onArgumentChange(+value, '_pollTypeID')}
+      onClick={() => onArgumentChange(+value, "_pollTypeID")}
     >
       {name}
     </MenuItem>
-  )
+  );
   return fnc !== null ? (
     <Modal
       open={open}
@@ -86,9 +88,9 @@ export default function ArgumentsModal({
           Input the arguments needed
         </Typography>
         {fnc.args.map(({ name, type }) => {
-          if (name === '_pollTypeID') {
+          if (name === "_pollTypeID") {
             return (
-              <FormControl fullWidth>
+              <FormControl fullWidth key={type}>
                 <InputLabel id="demo-simple-select-label">Poll Type</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -98,50 +100,50 @@ export default function ArgumentsModal({
                 >
                   {PollTypeIdSelectField(
                     process.env.REACT_APP_CHANGE_CREATOR,
-                    'Change Creator',
+                    "Change Creator"
                   )}
                   {PollTypeIdSelectField(
                     process.env.REACT_APP_DELETE_ADDRESS,
-                    'Delete Address',
+                    "Delete Address"
                   )}
                   {PollTypeIdSelectField(
                     process.env.REACT_APP_ADD_ADDRESS,
-                    'Add Address',
+                    "Add Address"
                   )}
                   {PollTypeIdSelectField(
                     process.env.REACT_APP_UNFREEZE,
-                    'Unfreeze',
+                    "Unfreeze"
                   )}
                   {PollTypeIdSelectField(
                     process.env.REACT_APP_CHANGE_OWNER,
-                    'Change Owner',
+                    "Change Owner"
                   )}
                 </Select>
               </FormControl>
-            )
+            );
           } else
             return (
-              <FormControl fullWidth>
+              <FormControl fullWidth key={type}>
                 <TextField
                   key={name}
-                  style={{ marginTop: '1rem' }}
+                  style={{ marginTop: "1rem" }}
                   type="text"
                   label={name}
                   variant="outlined"
-                  required={name === '_voteReceiverAddress' ? false : true}
+                  required={name === "_voteReceiverAddress" ? false : true}
                   onChange={(e) =>
                     onArgumentChange(
                       type === Number ? +e.target.value : e.target.value,
-                      name,
+                      name
                     )
                   }
                 />
               </FormControl>
-            )
+            );
         })}
         <FormControl fullWidth>
           <TextField
-            style={{ marginTop: '1rem' }}
+            style={{ marginTop: "1rem" }}
             type="text"
             label="Description"
             variant="outlined"
@@ -149,7 +151,7 @@ export default function ArgumentsModal({
           />
         </FormControl>
         <Button
-          sx={{ marginTop: '1rem' }}
+          sx={{ marginTop: "1rem" }}
           variant="contained"
           onClick={onSubmit}
         >
@@ -157,5 +159,5 @@ export default function ArgumentsModal({
         </Button>
       </Box>
     </Modal>
-  ) : null
+  ) : null;
 }

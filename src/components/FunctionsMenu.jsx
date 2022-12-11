@@ -1,11 +1,8 @@
+import { useState, useEffect } from "react";
 import { Chip, Container, Stack, Typography } from "@mui/material";
-import React, { useCallback, useState } from "react";
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
-import {
-  accessibilityEventsOptions,
-  accessibilityOptions,
-} from "src/contracts/options";
 import { baseEtherscan } from "src/types";
+import { useFreeze } from "src/lib";
+
 import PollArgumentsModal from "./PollArgumentsModal";
 import CustomSnackbar from "./CustomSnackbar";
 import FreezeAlert from "./FreezeAlert";
@@ -14,31 +11,29 @@ import PageTitle from "src/sections/common/page-title/PageTitle";
 export default function FunctionsMenu({ availableFunctions, sectionTitle }) {
   const [error, setError] = useState("");
   const [successfulTransaction, setSuccessfulTransaction] = useState("");
-  const Web3Api = useMoralisWeb3Api();
-  const { Moralis, account } = useMoralis();
   const [modalActive, setModalActive] = useState(false);
   const [modalProps, setModalProps] = useState(null);
   const [isFreezeDialogOpen, setIsFreezeDialogOpen] = useState(false);
 
-  const fetchEvents = useCallback(
-    async (event) => {
-      const options = accessibilityEventsOptions(event.name);
-      const res = await Web3Api.native.getContractEvents(options);
-      //What to do when we receive the events
-      console.log("Event fetch response: ", res);
-      return res;
-    },
-    [Web3Api]
-  );
+  const { freeze, freezeStatus, freezeData, freezeError } = useFreeze();
+
+  useEffect(() => {
+    if (freezeStatus === "success") {
+      setSuccessfulTransaction(freezeData?.hash);
+      onCancelModal();
+    }
+
+    if (freezeStatus === "error") {
+      setError(freezeError.message ?? "Something went wrong");
+    }
+  }, [freezeStatus, freezeData, freezeError]);
 
   const handleClick = (fn) => {
-    if (account) {
-      if (fn.inputRequired) {
-        setModalProps(fn);
-        setModalActive(true);
-      } else {
-        handleExecuteFunction(fn);
-      }
+    if (fn.inputRequired) {
+      setModalProps(fn);
+      setModalActive(true);
+    } else {
+      handleExecuteFunction(fn);
     }
   };
 
@@ -47,26 +42,17 @@ export default function FunctionsMenu({ availableFunctions, sectionTitle }) {
     setModalProps(null);
   };
 
-  const handleExecuteFunction = useCallback(
-    async (fn, args) => {
-      try {
-        const options = accessibilityOptions(account, fn.functionName, args);
-        const res = await Moralis.executeFunction(options);
-        if (fn.event) {
-          const evt = await fetchEvents(fn.event);
-          if (evt) {
-            setSuccessfulTransaction(evt.result[0].transaction_hash);
-            onCancelModal();
-          }
-        }
-        return res;
-      } catch (error) {
-        setError((error[0] || error.message) ?? "Something went wrong");
-        return error;
-      }
-    },
-    [Moralis, account, fetchEvents]
-  );
+  function handleFreezeClick(callback) {
+    if (callback.functionName === "freeze") {
+      return setIsFreezeDialogOpen(true);
+    }
+
+    handleClick(callback);
+  }
+
+  function handleExecuteFunction() {
+    freeze?.();
+  }
 
   return (
     <>
@@ -78,21 +64,15 @@ export default function FunctionsMenu({ availableFunctions, sectionTitle }) {
           alignItems="center"
           sx={{ mb: 5 }}
         >
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            {availableFunctions.map((fn, i) => (
-              <Chip
-                key={i}
-                label={fn.name}
-                variant="outlined"
-                color={fn.functionName === "freeze" ? "error" : "primary"}
-                onClick={() =>
-                  fn.functionName === "freeze"
-                    ? setIsFreezeDialogOpen(true)
-                    : handleClick(fn)
-                }
-              />
-            ))}
-          </Stack>
+          {availableFunctions.map((fn, i) => (
+            <Chip
+              key={i}
+              label={fn.name}
+              variant="outlined"
+              color={fn.functionName === "freeze" ? "error" : "primary"}
+              onClick={() => handleFreezeClick(fn)}
+            />
+          ))}
         </Stack>
       </Container>
 
@@ -120,6 +100,7 @@ export default function FunctionsMenu({ availableFunctions, sectionTitle }) {
         onClose={() => setError("")}
         message={error}
       />
+
       <CustomSnackbar
         isOpen={!!successfulTransaction.length}
         type="success"

@@ -13,11 +13,11 @@ const navConfig = [
     path: "/app/accessibility",
     icon: getIcon("akar-icons:key"),
   },
-  {
-    title: "Polls",
-    path: "/app/polls",
-    icon: getIcon("mdi:vote-outline"),
-  },
+  // {
+  //   title: "Polls",
+  //   path: "/app/polls",
+  //   icon: getIcon("mdi:vote-outline"),
+  // },
   {
     title: "Transfer",
     path: "/app/transfer",

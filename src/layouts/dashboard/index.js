@@ -1,99 +1,54 @@
-import { useState, useEffect } from "react";
-import { useMoralis } from "react-moralis";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
 import {
-  useAccountChange,
-  useChainChange,
   useIsFrozen,
   useIsUserAllowed,
   usePDNBalance,
   usePDNSymbol,
 } from "src/lib";
 
+import { FullPageLoader } from "src/components/FullPageLoader";
+
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
-import { ActiveNetworkTypes } from "src/types";
-import { FullPageLoader } from "src/components/FullPageLoader";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
 
 export default function DashboardLayout({ activeSectionTitle }) {
   const [open, setOpen] = useState(false);
-  const {
-    account,
-    isAuthenticated,
-    enableWeb3,
-    isWeb3Enabled,
-    logout,
-    isAuthUndefined,
-  } = useMoralis();
+
+  const { address, isConnected } = useAccount();
+  const { isFrozen } = useIsFrozen();
 
   const {
-    fetchIsFrozen,
-    isFrozen,
-    isFetching: isFetchingFrozen,
-    isLoading: isLoadingFrozen,
-  } = useIsFrozen();
-  const {
-    fetchPDNBalance,
     roundedBalance,
+    fetchPDNBalance,
     isLoading: isBalanceLoading,
     isFetching: isBalanceFetching,
   } = usePDNBalance();
+
   const {
-    fetchPDNSymbol,
     symbol,
     isLoading: isSymbolLoading,
     isFetching: isSymbolFetching,
   } = usePDNSymbol();
-  const {
-    fetchIsUserAllowed,
-    isAllowed,
-    isLoading: isLoadingUserAllowed,
-    isFetching: isFetchingUserAllowed,
-  } = useIsUserAllowed();
 
-  useAccountChange({ onChange: logout });
-  useChainChange({
-    onChange: (chainId) => {
-      if (!!ActiveNetworkTypes[chainId]) return;
+  const { isAllowed, isLoading } = useIsUserAllowed();
 
-      logout();
-    },
-  });
-
-  useEffect(() => {
-    if (!isWeb3Enabled) {
-      return enableWeb3();
-    }
-
-    fetchPDNBalance();
-    fetchPDNSymbol();
-    fetchIsFrozen();
-    fetchIsUserAllowed();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isWeb3Enabled]);
-
-  const showSpinner =
-    isLoadingUserAllowed ||
-    isFetchingUserAllowed ||
-    isFetchingFrozen ||
-    isLoadingFrozen;
-
-  if (showSpinner) {
+  if (isLoading) {
     return <FullPageLoader />;
+  }
+
+  if (!isConnected) {
+    return <Navigate to="/" />;
   }
 
   if (!isAllowed && isAllowed !== null) {
     return <Navigate to="/forbidden" />;
-  }
-
-  if (!isAuthenticated && !isAuthUndefined) {
-    return <Navigate to="/" />;
   }
 
   return (
@@ -107,7 +62,7 @@ export default function DashboardLayout({ activeSectionTitle }) {
         isSidebarOpen={open}
         onSidebarClose={() => setOpen(false)}
         accountInfo={{
-          address: account,
+          address,
           balance: roundedBalance,
           symbol,
           isLoading:

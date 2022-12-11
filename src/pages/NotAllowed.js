@@ -2,14 +2,14 @@ import { Box, Button, Typography } from "@mui/material";
 import Page from "../components/Page";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
-import { useMoralis } from "react-moralis";
+import { useDisconnect } from "wagmi";
 
 export default function NotAllowed() {
   const navigate = useNavigate();
-  const { logout } = useMoralis();
+  const { disconnect } = useDisconnect();
 
   const returnToLogin = () => {
-    logout();
+    disconnect();
     navigate("/login");
   };
 

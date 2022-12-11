@@ -27,7 +27,7 @@ DashboardSidebar.propTypes = {
   onSidebarClose: PropTypes.func,
   accountInfo: PropTypes.shape({
     address: PropTypes.string,
-    balance: PropTypes.number,
+    balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     symbol: PropTypes.string,
   }),
 };
