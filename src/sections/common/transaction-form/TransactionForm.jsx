@@ -90,8 +90,8 @@ function TransactionForm({
     onSubmit?.({ to, amount });
   }
 
-  function renderSubmitButton({ element, tooltip }) {
-    if (!tooltip) return element;
+  function renderSubmitButton({ element, showTooltip }) {
+    if (!showTooltip) return element;
 
     return (
       <Tooltip title="Insufficient funds">
@@ -126,7 +126,7 @@ function TransactionForm({
           />
         </Grid>
 
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           <TextField
             name="amount"
             value={amount}
@@ -174,7 +174,7 @@ function TransactionForm({
                 {title || "Add"}
               </LoadingButton>
             ),
-            tooltip: amount > balance,
+            showTooltip: balance < amount,
           })}
         </Grid>
       </Grid>

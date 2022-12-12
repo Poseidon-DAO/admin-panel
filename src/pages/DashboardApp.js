@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 
 import { useTheme } from "@mui/material/styles";
-import { Grid, Container, Typography } from "@mui/material";
+import { Grid, Container } from "@mui/material";
 
-import Page from "../components/Page";
-import Iconify from "../components/Iconify";
+import Page from "src/components/Page";
+import Iconify from "src/components/Iconify";
 
 import {
   AppTasks,
@@ -16,17 +16,17 @@ import {
   AppWidgetSummary,
   AppCurrentSubject,
   AppConversionRates,
-} from "../sections/@dashboard/app";
+} from "src/sections/@dashboard/app";
 
-export default function DashboardApp() {
+import PageTitle from "src/sections/common/page-title/PageTitle";
+
+export default function DashboardApp({ sectionTitle }) {
   const theme = useTheme();
 
   return (
     <Page title="Dashboard">
       <Container maxWidth="xl">
-        <Typography variant="h4" sx={{ mb: 5 }}>
-          Hi, Welcome back
-        </Typography>
+        <PageTitle>{sectionTitle}</PageTitle>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>

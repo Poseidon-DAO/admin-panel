@@ -17,16 +17,19 @@ export default function Login() {
 
         {mdUp && (
           <SectionStyle square>
-            <Container maxWidth="sm">
+            <Container maxWidth="xl">
               <ContentStyle>
                 <Typography variant="h1" color="white">
                   Welcome Back
                 </Typography>
-                <Typography color="white" variant="h3">
-                  Connect Metamask to access the admin panel
+                <Typography color="white" variant="h4">
+                  Connect Metamask <br /> to access the admin panel
+                </Typography>
+                <Typography color="white" variant="h3" marginTop={4}>
+                  ⬇
                 </Typography>
 
-                <Box marginTop={4}>
+                <Box>
                   <AuthMetamask />
                 </Box>
               </ContentStyle>
@@ -52,11 +55,10 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   position: "absolute",
-  padding: theme.spacing(3),
   justifyContent: "space-between",
+  padding: `0 ${theme.spacing(3)}`,
   [theme.breakpoints.up("md")]: {
     alignItems: "flex-start",
-    padding: theme.spacing(7, 5, 0, 7),
   },
 }));
 
@@ -73,7 +75,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
-  maxWidth: 480,
+  maxWidth: 500,
   margin: "auto",
   height: "100%",
   textAlign: "center",

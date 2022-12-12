@@ -127,7 +127,6 @@ export default function DashboardSidebar({
             sx: {
               width: DRAWER_WIDTH,
               bgcolor: "background.default",
-              borderRightStyle: "dashed",
             },
           }}
         >

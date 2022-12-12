@@ -13,6 +13,7 @@ import { useCreatePoll } from "src/lib/hooks/useCreatePoll";
 import { useDebounce } from "src/hooks/useDebounce";
 import { PollsList } from "src/sections/polls/polls-list";
 import { FullPageLoader } from "src/components/FullPageLoader";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
 const CREATE_MULTISIG_POLL = {
   name: "Create Poll",
@@ -33,7 +34,7 @@ const CREATE_MULTISIG_POLL = {
   },
 };
 
-export default function Polls() {
+export default function Polls({ sectionTitle }) {
   const [modalActive, setModalActive] = useState(false);
   const [modalProps, setModalProps] = useState(null);
 
@@ -86,12 +87,10 @@ export default function Polls() {
 
   return (
     <Page title="Active Polls">
-      <Container>
+      <Container maxWidth="xl">
         <Grid container wrap="nowrap" justifyContent="space-between">
           <Box width="80%">
-            <Typography variant="h3" sx={{ mb: 5 }}>
-              List of Polls
-            </Typography>
+            <PageTitle>{sectionTitle}</PageTitle>
           </Box>
 
           <Box paddingTop={1}>

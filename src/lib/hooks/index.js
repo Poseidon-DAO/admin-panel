@@ -1,5 +1,8 @@
 export * from "./useAirdrop";
 export * from "./useCreatePoll";
+export * from "./useERC1155Address";
+export * from "./useERC1155Id";
+export * from "./useERC1155Ratio";
 export * from "./useFreeze";
 export * from "./useIsFrozen";
 export * from "./useIsUserAllowed";
@@ -9,5 +12,6 @@ export * from "./usePDNSymbol";
 export * from "./usePollExpirationBlock";
 export * from "./usePollMetadata";
 export * from "./usePolls";
+export * from "./useSetERC1155";
 export * from "./useTransfer";
 export * from "./useVote";

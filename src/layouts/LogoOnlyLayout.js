@@ -1,10 +1,9 @@
+import { useAccount } from "wagmi";
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Logo from "../components/Logo";
 import { useEffect, useState } from "react";
 import CustomSnackbar from "src/components/CustomSnackbar";
-import { NetworkTypes } from "src/types";
-import { useAccount, useNetwork } from "wagmi";
 
 const metamaskInstallationStatus = {
   PENDING: "pending",
@@ -12,16 +11,8 @@ const metamaskInstallationStatus = {
   NOT_INSTALLED: "not-installed",
 };
 
-const errorMessages = {
-  metamask: "Please install Metamask to continue.",
-  chain: `Please change your network to ${
-    NetworkTypes[process.env.REACT_APP_CHAIN]
-  }`,
-};
-
 export default function LogoOnlyLayout() {
   const { isConnected } = useAccount();
-  const { chain } = useNetwork();
   const [metamaskInstallation, setMetamaskInstallation] = useState(
     metamaskInstallationStatus.PENDING
   );
@@ -38,16 +29,13 @@ export default function LogoOnlyLayout() {
     return <Navigate to="/app/dashboard" replace />;
   }
 
-  // const isSnackbarOpen =
-  //   metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED ||
-  //   (chain?.id && chain?.id !== process.env.REACT_APP_CHAIN);
+  const isSnackbarOpen =
+    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED;
 
-  // const message =
-  //   metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
-  //     ? errorMessages["metamask"]
-  //     : chain?.id !== process.env.REACT_APP_CHAIN
-  //     ? errorMessages["chain"]
-  //     : "";
+  const message =
+    metamaskInstallation === metamaskInstallationStatus.NOT_INSTALLED
+      ? "Please install Metamask to continue."
+      : "";
 
   return (
     <>
@@ -56,7 +44,7 @@ export default function LogoOnlyLayout() {
       </HeaderStyle>
 
       <Outlet />
-      {/* <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" /> */}
+      <CustomSnackbar isOpen={isSnackbarOpen} message={message} type="error" />
     </>
   );
 }

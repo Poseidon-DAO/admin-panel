@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Container, Typography } from "@mui/material";
+import { Container } from "@mui/material";
 
 import { useTransfer } from "src/lib";
 import { useDebounce } from "src/hooks/useDebounce";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
+import PageTitle from "src/sections/common/page-title/PageTitle";
 
 import Page from "../components/Page";
 
-export default function Transfer() {
+export default function Transfer({ sectionTitle }) {
   const [to, setTo] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -54,11 +55,9 @@ export default function Transfer() {
   }
 
   return (
-    <Page title="Dashboard: Token transfer">
-      <Container>
-        <Typography variant="h3" sx={{ mb: 5 }}>
-          Transfer tokens
-        </Typography>
+    <Page title="Transfer">
+      <Container maxWidth="xl">
+        <PageTitle>{sectionTitle}</PageTitle>
 
         <TransactionForm
           formState={{ to, amount }}

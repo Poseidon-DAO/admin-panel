@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
@@ -10,17 +10,21 @@ import {
   usePDNSymbol,
 } from "src/lib";
 
+import { FullPageLoader } from "src/components/FullPageLoader";
+
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
-import { CircularProgress, Grid } from "@mui/material";
+import CustomSnackbar from "src/components/CustomSnackbar";
+import { NetworkTypes } from "src/types";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
 
-export default function DashboardLayout() {
+export default function DashboardLayout({ activeSectionTitle }) {
   const [open, setOpen] = useState(false);
 
   const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const { isFrozen } = useIsFrozen();
 
   const {
@@ -39,32 +43,23 @@ export default function DashboardLayout() {
   const { isAllowed, isLoading } = useIsUserAllowed();
 
   if (isLoading) {
-    return (
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        width="100vw"
-        height="100vh"
-      >
-        <CircularProgress />
-      </Grid>
-    );
+    return <FullPageLoader />;
   }
 
   if (!isConnected) {
     return <Navigate to="/" />;
   }
 
-  if (!isAllowed) {
+  if (!isAllowed && isAllowed !== null) {
     return <Navigate to="/forbidden" />;
   }
 
   return (
     <RootStyle>
       <DashboardNavbar
-        onOpenSidebar={() => setOpen(true)}
+        activeSectionTitle={activeSectionTitle}
         isFrozen={isFrozen}
+        onOpenSidebar={() => setOpen(true)}
       />
       <DashboardSidebar
         isSidebarOpen={open}
@@ -87,6 +82,14 @@ export default function DashboardLayout() {
             balance: roundedBalance,
             symbol,
           }}
+        />
+
+        <CustomSnackbar
+          isOpen={process.env.REACT_APP_CHAIN !== `0x${chain?.id}`}
+          type="error"
+          message={`Please switch to ${NetworkTypes[
+            process.env.REACT_APP_CHAIN
+          ].toLowerCase()} network!`}
         />
       </MainStyle>
     </RootStyle>

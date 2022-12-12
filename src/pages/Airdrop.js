@@ -1,13 +1,16 @@
-import { Container, Grid, Typography, Box } from "@mui/material";
-import Page from "../components/Page";
 import { useEffect, useState } from "react";
+import { Container, Grid, Box } from "@mui/material";
+import { useOutletContext } from "react-router-dom";
+import { LoadingButton } from "@mui/lab";
+
 import AirdropTable from "src/sections/airdrop/table/Table";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
-import { useAirdrop } from "src/lib";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
-import { LoadingButton } from "@mui/lab";
-import { useOutletContext } from "react-router-dom";
+import PageTitle from "src/sections/common/page-title/PageTitle";
+import Page from "src/components/Page";
+
+import { useAirdrop } from "src/lib";
 
 const variant = {
   error: "error",
@@ -21,7 +24,7 @@ const messages = {
   verifying: "Verifying transaction...",
 };
 
-export default function Airdrop() {
+export default function Airdrop({ sectionTitle }) {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
@@ -93,13 +96,11 @@ export default function Airdrop() {
   const isVerifying = transferStatus === "loading";
 
   return (
-    <Page title="Dashboard: Token">
-      <Container>
+    <Page title="Airdrop">
+      <Container maxWidth="xl">
         <Grid container wrap="nowrap" justifyContent="space-between">
           <Box width="80%">
-            <Typography variant="h3" sx={{ mb: 5 }}>
-              Create Airdrop
-            </Typography>
+            <PageTitle>{sectionTitle}</PageTitle>
           </Box>
 
           <Box paddingTop={1}>

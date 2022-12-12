@@ -1,6 +1,6 @@
-const { Grid, CircularProgress } = require("@mui/material");
+import { CircularProgress, Grid } from "@mui/material";
 
-const FullPageLoader = () => {
+function FullPageLoader() {
   return (
     <Grid
       container
@@ -9,9 +9,9 @@ const FullPageLoader = () => {
       width="100%"
       height="100%"
     >
-      <CircularProgress />
+      <CircularProgress size={70} />
     </Grid>
   );
-};
+}
 
 export { FullPageLoader };

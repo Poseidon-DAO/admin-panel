@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
-import { IconButton, Snackbar, Alert } from "@mui/material";
+import {
+  IconButton,
+  Snackbar,
+  Alert,
+  CircularProgress,
+  Grid,
+} from "@mui/material";
 import Iconify from "src/components/Iconify";
 
 TransactionSnackbar.defaultProps = {
   message: "",
   variant: "success",
   onClose: () => {},
+  loading: false,
 };
 
-function TransactionSnackbar({ message, variant, onClose, duration }) {
+function TransactionSnackbar({ message, variant, onClose, duration, loading }) {
   const [open, setOpen] = useState(true);
 
   const isError = variant === "error";
@@ -23,32 +30,33 @@ function TransactionSnackbar({ message, variant, onClose, duration }) {
     return () => setOpen(false);
   }, []);
 
-  const action = (
+  const action = loading ? (
+    <Grid container alignItems="center" pt="5px" pr={1}>
+      <CircularProgress size={18} color="inherit" />
+    </Grid>
+  ) : (
     <IconButton
       size="small"
       aria-label="close"
       color="inherit"
       onClick={handleClose}
     >
-      <IconButton aria-label="delete" size="small">
-        <Iconify icon="bi:x-lg" />
-      </IconButton>
+      <Iconify icon="bi:x-lg" />
     </IconButton>
   );
 
   return (
     <Snackbar
       open={open}
-      autoHideDuration={duration || 3000}
+      autoHideDuration={duration === null ? null : 3000}
       onClose={handleClose}
-      action={action}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
       <Alert
-        onClose={handleClose}
         elevation={6}
         variant="filled"
         severity={variant}
+        action={action}
         sx={{ width: "100%", color: "white" }}
       >
         {message ||
