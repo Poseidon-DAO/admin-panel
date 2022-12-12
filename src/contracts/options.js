@@ -13,14 +13,12 @@ export const erc20Address = process.env.REACT_APP_ERC20PDN;
 
 const getTopicHash = (string) => keccak256(toUtf8Bytes(string));
 
-export const multiSigOptions = (address, functionName, args) => {
-  const params = { ...args, _address: address };
+export const multiSigOptions = (functionName, args = []) => {
   return {
-    contractAddress: multiSigAddress,
+    address: multiSigAddress,
     functionName: functionName,
     abi: multiSigABI,
-    params,
-    msgValue: 0,
+    args,
   };
 };
 
@@ -40,13 +38,11 @@ export const multiSigEventsOptions = (name, address, args) => {
 };
 
 export const accessibilityOptions = (address, functionName, args) => {
-  const params = { ...args, _address: address };
   return {
-    contractAddress: accessibilityAdress,
+    address: accessibilityAdress,
     functionName: functionName,
     abi: accessibilityABI,
-    params,
-    msgValue: 0,
+    args,
   };
 };
 
@@ -63,13 +59,11 @@ export const accessibilityEventsOptions = (name) => {
   };
 };
 
-export const erc20Options = (address, functionName, args = {}) => {
-  const params = { ...args, _address: address };
-
+export const erc20Options = (functionName, args = []) => {
   return {
-    contractAddress: erc20Address,
+    address: erc20Address,
     functionName: functionName,
     abi: erc20ABI,
-    params,
+    args,
   };
 };

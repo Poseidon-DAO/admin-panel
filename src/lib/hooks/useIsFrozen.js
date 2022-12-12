@@ -1,22 +1,23 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { accessibilityOptions } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { useAccount, useContractRead } from "wagmi";
 
 function useIsFrozen({ account } = {}) {
-  const { user } = useMoralis();
+  const { address } = useAccount();
 
   const options = accessibilityOptions(
-    account || user?.get("ethAddress"),
+    account || address,
     SMART_CONTRACT_FUNCTIONS.CHECK_IS_FROZEN
   );
 
-  const result = useWeb3ExecuteFunction(options);
+  const query = useContractRead({ ...options });
 
   return {
-    ...result,
-    isFrozen: result.data,
-    fetchIsFrozen: result.fetch,
+    ...query,
+    isFrozen: query.data,
+    isFrozenStatus: query.status,
+    isFrozenError: query.error,
   };
 }
 

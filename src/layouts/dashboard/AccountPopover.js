@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { alpha } from "@mui/material/styles";
+import { useDisconnect } from "wagmi";
 import {
   Box,
   Divider,
@@ -10,14 +11,13 @@ import {
 } from "@mui/material";
 import MenuPopover from "../../components/MenuPopover";
 import account from "../../_mock/account";
-import { useMoralis } from "react-moralis";
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
 
   const [open, setOpen] = useState(null);
 
-  const { logout } = useMoralis();
+  const { disconnect } = useDisconnect();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -28,8 +28,7 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    // setAuth({});
-    logout();
+    disconnect();
   };
 
   return (

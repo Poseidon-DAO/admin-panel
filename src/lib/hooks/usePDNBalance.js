@@ -1,26 +1,23 @@
-import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
+import { utils } from "ethers";
 import { erc20Options } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { useAccount, useContractRead } from "wagmi";
 
 function usePDNBalance({ account: userAccount } = {}) {
-  const { Moralis, user } = useMoralis();
+  const { address } = useAccount();
 
-  const account = userAccount || user?.get("ethAddress");
+  const account = userAccount || address;
 
-  const options = erc20Options(account, SMART_CONTRACT_FUNCTIONS.PDN_BALANCE, {
-    account,
-  });
+  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.PDN_BALANCE, [account]);
 
-  const result = useWeb3ExecuteFunction(options);
+  const query = useContractRead({ ...options });
 
   return {
-    ...result,
-    balance: !!result?.data ? Number(result.data) : null,
-    roundedBalance: !!result?.data
-      ? Number(Moralis.Units.FromWei(result.data))
-      : null,
-    fetchPDNBalance: result.fetch,
+    ...query,
+    balance: !!query?.data ? Number(query.data) : null,
+    roundedBalance: query.data ? utils.formatEther(query.data) : query.data,
+    fetchPDNBalance: query.refetch,
   };
 }
 
