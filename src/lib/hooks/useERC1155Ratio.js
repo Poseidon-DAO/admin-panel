@@ -7,7 +7,7 @@ import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 function useERC1155Ratio() {
   const options = erc20Options(SMART_CONTRACT_FUNCTIONS.GET_RATIO);
 
-  const query = useContractRead({ ...options });
+  const query = useContractRead({ ...options, watch: true });
 
   return {
     ratio: !!query.data ? Number(query.data) : null,

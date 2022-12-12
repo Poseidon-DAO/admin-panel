@@ -22,17 +22,17 @@ import { LoadingButton } from "@mui/lab";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 
 export default function TokenSettings() {
-  const { address, isFetchingAddress, isLoadingAddress } = useERC1155Address();
-  const { id, isFetchingId, isLoadingId } = useERC1155Id();
-  const { ratio, isFetchingRatio, isLoadingRatio } = useERC1155Ratio();
-
   const theme = useTheme();
+
+  const { ratio } = useERC1155Ratio();
+  const { address } = useERC1155Address();
+  const { id } = useERC1155Id();
+
   const [isEditing, setEditing] = useState(false);
   const [localRatio, setLocalRatio] = useState(ratio);
   const [transactionState, setTransactionState] = useState("");
-  const [isVerifingTransaction, setVerifingTransaction] = useState(null);
 
-  const { setERC1155, isFetching, isLoading } = useSetERC1155({
+  const { setERC1155, setERC1155Status } = useSetERC1155({
     erc1155Address: address,
     ercId: id,
     ratio: localRatio,
@@ -41,6 +41,20 @@ export default function TokenSettings() {
   useEffect(() => {
     setLocalRatio(ratio);
   }, [ratio]);
+
+  useEffect(() => {
+    if (setERC1155Status === "error") {
+      setTransactionState("error");
+    }
+
+    if (setERC1155Status === "loading") {
+      setTransactionState("info");
+    }
+
+    if (setERC1155Status === "success") {
+      setTransactionState("success");
+    }
+  }, [setERC1155Status]);
 
   function handleEditClick(shouldEdit) {
     setEditing(shouldEdit);
@@ -54,41 +68,16 @@ export default function TokenSettings() {
     setLocalRatio(ratio);
   }
 
-  async function handleTransactionSuccess(transaction) {
-    setTransactionState("success");
-    setVerifingTransaction(true);
-    await transaction.wait();
-    setVerifingTransaction(false);
-  }
-
-  async function handleTransactionError(error) {
-    console.error(error);
-    setTransactionState("error");
-  }
-
   function handleSnackbarClose() {
     setTransactionState("");
   }
 
   async function handleSave() {
-    setERC1155({
-      erc1155Address: address,
-      ercId: id,
-      ratio: localRatio,
-      onSuccess: handleTransactionSuccess,
-      onError: handleTransactionError,
-    });
+    setERC1155();
+    handleEditClick(false);
   }
 
-  const showSpinner =
-    isFetchingAddress ||
-    isLoadingAddress ||
-    isFetchingId ||
-    isLoadingId ||
-    isFetchingRatio ||
-    isLoadingRatio;
-
-  if (showSpinner) {
+  if (setERC1155Status === "loading") {
     return (
       <Box textAlign="center" mt={2}>
         <CircularProgress />
@@ -156,7 +145,7 @@ export default function TokenSettings() {
             variant="outlined"
             color="error"
             onClick={handleDecline}
-            disabled={isFetching || isLoading || isVerifingTransaction}
+            disabled={setERC1155Status === "loading"}
           >
             Decline
           </Button>
@@ -166,8 +155,8 @@ export default function TokenSettings() {
             variant="contained"
             sx={{ marginLeft: 1 }}
             onClick={handleSave}
-            loading={isFetching || isLoading || isVerifingTransaction}
-            disabled={isFetching || isLoading || isVerifingTransaction}
+            loading={setERC1155Status === "loading"}
+            disabled={setERC1155Status === "loading"}
           >
             Save changes
           </LoadingButton>
@@ -177,12 +166,13 @@ export default function TokenSettings() {
       {!!transactionState && (
         <TransactionSnackbar
           message={
-            isVerifingTransaction && "The transaction is being verified!"
+            setERC1155Status === "loading" &&
+            "The transaction is being verified!"
           }
           variant={transactionState}
           onClose={handleSnackbarClose}
-          loading={!!isVerifingTransaction}
-          duration={isVerifingTransaction ? null : 3000}
+          loading={setERC1155Status === "loading"}
+          duration={setERC1155Status === "loading" ? null : 3000}
         />
       )}
     </Box>

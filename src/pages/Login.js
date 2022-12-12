@@ -22,11 +22,14 @@ export default function Login() {
                 <Typography variant="h1" color="white">
                   Welcome Back
                 </Typography>
-                <Typography color="white" variant="h3">
+                <Typography color="white" variant="h4">
                   Connect Metamask to access the admin panel
                 </Typography>
+                <Typography color="white" variant="h3" marginTop={4}>
+                  ⬇
+                </Typography>
 
-                <Box marginTop={4}>
+                <Box>
                   <AuthMetamask />
                 </Box>
               </ContentStyle>
@@ -52,11 +55,9 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   position: "absolute",
-  padding: theme.spacing(3),
   justifyContent: "space-between",
   [theme.breakpoints.up("md")]: {
     alignItems: "flex-start",
-    padding: theme.spacing(7, 5, 0, 7),
   },
 }));
 
@@ -73,7 +74,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
-  maxWidth: 480,
+  maxWidth: 500,
   margin: "auto",
   height: "100%",
   textAlign: "center",

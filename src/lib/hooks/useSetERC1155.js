@@ -32,7 +32,7 @@ function useSetERC1155({ erc1155Address, ercId, ratio } = {}) {
     setERC1155: write,
     setERC1155Data: data,
     setERC1155Status: status,
-    isSetERC1155Status: isSuccess,
+    isSetERC1155Success: isSuccess,
   };
 }
 
