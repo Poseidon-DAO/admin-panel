@@ -11,10 +11,18 @@ export default function AuthMetamask() {
   };
 
   return (
-    <>
-      <Button onClick={handleLogin} color="inherit" variant="text">
-        <img src={metamask} alt="metamask" width="200" />
-      </Button>
-    </>
+    <Button
+      onClick={handleLogin}
+      color="inherit"
+      variant="text"
+      sx={{
+        transition: "transform .4s",
+        ":hover": {
+          transform: "scale(1.05)",
+        },
+      }}
+    >
+      <img src={metamask} alt="metamask" width="200" />
+    </Button>
   );
 }
