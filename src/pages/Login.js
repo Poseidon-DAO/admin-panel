@@ -23,7 +23,7 @@ export default function Login() {
                   Welcome Back
                 </Typography>
                 <Typography color="white" variant="h4">
-                  Connect Metamask to access the admin panel
+                  Connect Metamask <br /> to access the admin panel
                 </Typography>
                 <Typography color="white" variant="h3" marginTop={4}>
                   ⬇
@@ -56,6 +56,7 @@ const HeaderStyle = styled("header")(({ theme }) => ({
   alignItems: "center",
   position: "absolute",
   justifyContent: "space-between",
+  padding: `0 ${theme.spacing(3)}`,
   [theme.breakpoints.up("md")]: {
     alignItems: "flex-start",
   },

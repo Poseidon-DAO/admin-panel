@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { Navigate, Outlet } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 
@@ -14,6 +14,8 @@ import { FullPageLoader } from "src/components/FullPageLoader";
 
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
+import CustomSnackbar from "src/components/CustomSnackbar";
+import { NetworkTypes } from "src/types";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;
@@ -22,6 +24,7 @@ export default function DashboardLayout({ activeSectionTitle }) {
   const [open, setOpen] = useState(false);
 
   const { address, isConnected } = useAccount();
+  const { chain } = useNetwork();
   const { isFrozen } = useIsFrozen();
 
   const {
@@ -79,6 +82,14 @@ export default function DashboardLayout({ activeSectionTitle }) {
             balance: roundedBalance,
             symbol,
           }}
+        />
+
+        <CustomSnackbar
+          isOpen={process.env.REACT_APP_CHAIN !== `0x${chain?.id}`}
+          type="error"
+          message={`Please switch to ${NetworkTypes[
+            process.env.REACT_APP_CHAIN
+          ].toLowerCase()} network!`}
         />
       </MainStyle>
     </RootStyle>

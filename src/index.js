@@ -12,8 +12,15 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import reportWebVitals from "./reportWebVitals";
 
+const chainFromEnv = process.env.REACT_APP_CHAIN;
+
+const chainToUse = {
+  "0x5": chain.goerli,
+  "0x1": chain.mainnet,
+}[chainFromEnv];
+
 const { provider } = configureChains(
-  [chain.goerli],
+  [chainToUse || chain.mainnet],
   [alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID })]
 );
 
