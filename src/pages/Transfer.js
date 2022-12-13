@@ -7,6 +7,7 @@ import { useDebounce } from "src/hooks/useDebounce";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import PageTitle from "src/sections/common/page-title/PageTitle";
+import { getTransactionLink } from "src/utils/getTransactionLink";
 
 import Page from "../components/Page";
 
@@ -17,10 +18,11 @@ export default function Transfer({ sectionTitle }) {
   const debouncedTo = useDebounce(to);
   const debouncedAmount = useDebounce(amount);
 
-  const { transfer, isFetchingTransfer, transferStatus } = useTransfer({
-    address: debouncedTo,
-    amount: debouncedAmount,
-  });
+  const { transfer, transferData, isFetchingTransfer, transferStatus } =
+    useTransfer({
+      address: debouncedTo,
+      amount: debouncedAmount,
+    });
   const [transactionState, setTransactionState] = useState("");
   const { refetchBalance } = useOutletContext();
 
@@ -29,6 +31,10 @@ export default function Transfer({ sectionTitle }) {
   useEffect(() => {
     if (transferStatus === "error") {
       setTransactionState("error");
+    }
+
+    if (transferStatus === "loading") {
+      setTransactionState("info");
     }
 
     if (transferStatus === "success") {
@@ -74,10 +80,12 @@ export default function Transfer({ sectionTitle }) {
 
       {(!!transactionState || isVerifying) && (
         <TransactionSnackbar
-          variant={transactionState || "info"}
+          variant={transactionState}
           onClose={handleSnackbarClose}
-          message={isVerifying ? "Verifying transaction...." : ""}
-          duration={isVerifying ? 20 * 1000 : 3000}
+          message={isVerifying ? "The transaction is being verified!" : ""}
+          duration={isVerifying ? null : 3000}
+          loading={isVerifying}
+          etherscanLink={getTransactionLink(transferData?.hash)}
         />
       )}
     </Page>

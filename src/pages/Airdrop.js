@@ -11,6 +11,7 @@ import PageTitle from "src/sections/common/page-title/PageTitle";
 import Page from "src/components/Page";
 
 import { useAirdrop } from "src/lib";
+import { getTransactionLink } from "src/utils/getTransactionLink";
 
 const variant = {
   error: "error",
@@ -21,7 +22,7 @@ const variant = {
 
 const messages = {
   fileError: "Wrong data format on file!",
-  verifying: "Verifying transaction...",
+  verifying: "The transaction is being verified!",
 };
 
 export default function Airdrop({ sectionTitle }) {
@@ -31,7 +32,7 @@ export default function Airdrop({ sectionTitle }) {
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
 
-  const { runAirdrop, transferStatus } = useAirdrop({
+  const { runAirdrop, airdropData, transferStatus } = useAirdrop({
     accounts: airdropAddresses,
   });
 
@@ -144,10 +145,16 @@ export default function Airdrop({ sectionTitle }) {
 
       {(!!transactionState || isVerifying) && (
         <TransactionSnackbar
-          variant={variant[transactionState || "verifying"]}
+          variant={
+            isVerifying ? variant["verifying"] : variant[transactionState]
+          }
+          message={
+            isVerifying ? messages["verifying"] : messages[transactionState]
+          }
           onClose={handleSnackbarClose}
-          message={messages[transactionState || "verifying"]}
-          duration={isVerifying ? 20 * 1000 : 3000}
+          loading={isVerifying}
+          duration={isVerifying ? null : 3000}
+          etherscanLink={getTransactionLink(airdropData?.hash)}
         />
       )}
     </Page>
