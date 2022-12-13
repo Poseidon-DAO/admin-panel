@@ -20,6 +20,7 @@ import {
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
+import { getTransactionLink } from "src/utils/getTransactionLink";
 
 export default function TokenSettings() {
   const theme = useTheme();
@@ -32,7 +33,7 @@ export default function TokenSettings() {
   const [localRatio, setLocalRatio] = useState(ratio);
   const [transactionState, setTransactionState] = useState("");
 
-  const { setERC1155, setERC1155Status } = useSetERC1155({
+  const { setERC1155, setERC1155Data, setERC1155Status } = useSetERC1155({
     erc1155Address: address,
     ercId: id,
     ratio: localRatio,
@@ -81,6 +82,14 @@ export default function TokenSettings() {
     return (
       <Box textAlign="center" mt={2}>
         <CircularProgress />
+        <TransactionSnackbar
+          message="The transaction is being verified!"
+          variant={transactionState}
+          onClose={handleSnackbarClose}
+          duration={null}
+          etherscanLink={getTransactionLink(setERC1155Data?.hash)}
+          loading
+        />
       </Box>
     );
   }
@@ -165,14 +174,10 @@ export default function TokenSettings() {
 
       {!!transactionState && (
         <TransactionSnackbar
-          message={
-            setERC1155Status === "loading" &&
-            "The transaction is being verified!"
-          }
           variant={transactionState}
           onClose={handleSnackbarClose}
-          loading={setERC1155Status === "loading"}
-          duration={setERC1155Status === "loading" ? null : 3000}
+          duration={3000}
+          etherscanLink={getTransactionLink(setERC1155Data?.hash)}
         />
       )}
     </Box>
