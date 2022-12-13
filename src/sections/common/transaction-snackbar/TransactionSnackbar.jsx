@@ -5,17 +5,18 @@ import {
   Alert,
   CircularProgress,
   Grid,
+  Link,
 } from "@mui/material";
 import Iconify from "src/components/Iconify";
 
-TransactionSnackbar.defaultProps = {
-  message: "",
-  variant: "success",
-  onClose: () => {},
-  loading: false,
-};
-
-function TransactionSnackbar({ message, variant, onClose, duration, loading }) {
+function TransactionSnackbar({
+  message = "",
+  variant = "success",
+  onClose = () => {},
+  duration,
+  loading = false,
+  etherscanLink = "",
+}) {
   const [open, setOpen] = useState(true);
 
   const isError = variant === "error";
@@ -57,10 +58,22 @@ function TransactionSnackbar({ message, variant, onClose, duration, loading }) {
         variant="filled"
         severity={variant}
         action={action}
-        sx={{ width: "100%", color: "white" }}
+        sx={{
+          width: "100%",
+          color: "white",
+          textAlign: "left",
+        }}
       >
         {message ||
           (isError ? "Transaction failed" : "Transaction was successful")}
+
+        <br />
+
+        {!!etherscanLink && (
+          <Link href={etherscanLink} target="_blank">
+            {etherscanLink.substring(0, 32)}...
+          </Link>
+        )}
       </Alert>
     </Snackbar>
   );
