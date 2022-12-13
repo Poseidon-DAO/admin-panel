@@ -1,17 +1,9 @@
 import { useConnect } from "wagmi";
 import { styled } from "@mui/material/styles";
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Button, Card, Container, Typography, useTheme } from "@mui/material";
 
 import Page from "../components/Page";
 import Logo from "../components/Logo";
-import AuthMetamask from "../sections/auth/AuthMetamask";
 
 import metamask from "../assets/metamask-logo.png";
 
@@ -28,25 +20,7 @@ export default function Login() {
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
-          <Box>
-            <Logo disabledLink />
-          </Box>
-          <Box>
-            <Button
-              onClick={handleLogin}
-              variant="contained"
-              size="large"
-              color="inherit"
-              sx={{
-                minWidth: 120,
-                fontSize: 18,
-                color: theme.palette.primary.main,
-              }}
-              endIcon={<img src={metamask} alt="metamask" width="24" />}
-            >
-              Connect
-            </Button>
-          </Box>
+          <Logo disabledLink />
         </HeaderStyle>
 
         <SectionStyle square>
@@ -63,13 +37,25 @@ export default function Login() {
               >
                 Connect Metamask <br /> to access the admin panel
               </Typography>
-              <Typography color="white" variant="h3" marginTop={4}>
+              <Typography color="white" variant="h3" margin="8px 0">
                 ⬇
               </Typography>
 
-              <Box>
-                <AuthMetamask />
-              </Box>
+              <Button
+                onClick={handleLogin}
+                variant="contained"
+                size="large"
+                color="inherit"
+                sx={{
+                  minWidth: 150,
+                  minHeight: 60,
+                  fontSize: 22,
+                  color: theme.palette.primary.main,
+                }}
+                endIcon={<img src={metamask} alt="metamask" width="28" />}
+              >
+                Connect
+              </Button>
             </ContentStyle>
           </Container>
         </SectionStyle>
