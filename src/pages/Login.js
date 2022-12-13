@@ -1,12 +1,20 @@
+import { useConnect } from "wagmi";
 import { styled } from "@mui/material/styles";
-import { Box, Card, Container, Typography } from "@mui/material";
-import useResponsive from "../hooks/useResponsive";
+import { Button, Card, Container, Typography, useTheme } from "@mui/material";
+
 import Page from "../components/Page";
 import Logo from "../components/Logo";
-import AuthMetamask from "../sections/auth/AuthMetamask";
+
+import metamask from "../assets/metamask-logo.png";
 
 export default function Login() {
-  const mdUp = useResponsive("up", "md");
+  const theme = useTheme();
+
+  const { connect, connectors } = useConnect();
+
+  const handleLogin = () => {
+    connect({ connector: connectors[0] });
+  };
 
   return (
     <Page title="Login">
@@ -15,27 +23,42 @@ export default function Login() {
           <Logo disabledLink />
         </HeaderStyle>
 
-        {mdUp && (
-          <SectionStyle square>
-            <Container maxWidth="xl">
-              <ContentStyle>
-                <Typography variant="h1" color="white">
-                  Welcome Back
-                </Typography>
-                <Typography color="white" variant="h4">
-                  Connect Metamask <br /> to access the admin panel
-                </Typography>
-                <Typography color="white" variant="h3" marginTop={4}>
-                  ⬇
-                </Typography>
+        <SectionStyle square>
+          <Container maxWidth="xl">
+            <ContentStyle>
+              <Typography variant="h1" color="white">
+                Welcome Back
+              </Typography>
+              <Typography
+                color="white"
+                variant="h4"
+                marginTop={4}
+                lineHeight="1.3"
+              >
+                Connect Metamask <br /> to access the admin panel
+              </Typography>
+              <Typography color="white" variant="h3" margin="8px 0">
+                ⬇
+              </Typography>
 
-                <Box>
-                  <AuthMetamask />
-                </Box>
-              </ContentStyle>
-            </Container>
-          </SectionStyle>
-        )}
+              <Button
+                onClick={handleLogin}
+                variant="contained"
+                size="large"
+                color="inherit"
+                sx={{
+                  minWidth: 150,
+                  minHeight: 60,
+                  fontSize: 22,
+                  color: theme.palette.primary.main,
+                }}
+                endIcon={<img src={metamask} alt="metamask" width="28" />}
+              >
+                Connect
+              </Button>
+            </ContentStyle>
+          </Container>
+        </SectionStyle>
       </RootStyle>
     </Page>
   );
@@ -48,18 +71,15 @@ const RootStyle = styled("div")(({ theme }) => ({
 }));
 
 const HeaderStyle = styled("header")(({ theme }) => ({
+  width: "100%",
+  position: "absolute",
   top: 0,
   zIndex: 9,
   lineHeight: 0,
-  width: "100%",
   display: "flex",
   alignItems: "center",
-  position: "absolute",
   justifyContent: "space-between",
-  padding: `0 ${theme.spacing(3)}`,
-  [theme.breakpoints.up("md")]: {
-    alignItems: "flex-start",
-  },
+  padding: `0 ${theme.spacing(8)}`,
 }));
 
 const SectionStyle = styled(Card)(({ theme }) => ({
