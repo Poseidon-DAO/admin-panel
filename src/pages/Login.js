@@ -47,14 +47,14 @@ export default function Login() {
                 size="large"
                 color="inherit"
                 sx={{
-                  minWidth: 150,
-                  minHeight: 60,
-                  fontSize: 22,
+                  minWidth: 260,
+                  minHeight: 100,
+                  fontSize: 30,
                   color: theme.palette.primary.main,
                 }}
-                endIcon={<img src={metamask} alt="metamask" width="28" />}
+                endIcon={<img src={metamask} alt="metamask" width="40" />}
               >
-                Connect
+                CONNECT
               </Button>
             </ContentStyle>
           </Container>
