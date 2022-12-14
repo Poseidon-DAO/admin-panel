@@ -75,7 +75,7 @@ export default function DashboardLayout({ activeSectionTitle }) {
             isSymbolFetching,
         }}
       />
-      <MainStyle>
+      <MainStyle $isFrozen={isFrozen}>
         <Outlet
           context={{
             refetchBalance: fetchPDNBalance,
@@ -103,15 +103,15 @@ const RootStyle = styled("div")({
 });
 
 const MainStyle = styled("div", {
-  shouldForwardProp: (props) => props !== "isFrozen",
-})(({ theme, isFrozen }) => ({
+  shouldForwardProp: (props) => props !== "$isFrozen",
+})(({ theme, $isFrozen }) => ({
   flexGrow: 1,
   overflow: "auto",
   minHeight: "100%",
   paddingTop: APP_BAR_MOBILE + 24,
   paddingBottom: theme.spacing(10),
   [theme.breakpoints.up("lg")]: {
-    paddingTop: APP_BAR_DESKTOP + 24 + (isFrozen ? 25 : 0),
+    paddingTop: APP_BAR_DESKTOP + 24 + ($isFrozen ? 25 : 0),
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
   },
