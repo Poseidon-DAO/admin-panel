@@ -7,10 +7,10 @@ import {
 import { accessibilityOptions } from "src/contracts/options";
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
-function useFreeze() {
+function useFreeze({ enabled = true }) {
   const options = accessibilityOptions(SMART_CONTRACT_FUNCTIONS.FREEZE_DAO);
 
-  const { config } = usePrepareContractWrite({ ...options });
+  const { config } = usePrepareContractWrite({ ...options, enabled });
 
   const { data, write } = useContractWrite(config);
 

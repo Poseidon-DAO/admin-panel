@@ -26,7 +26,7 @@ function TransactionForm({
 }) {
   const { balance } = useOutletContext();
   const { to, amount, vestingAmount } = formState;
-  const [vesting, setVesting] = useState(vestingAvailable);
+  const [vesting, setVesting] = useState(false);
 
   const [errors, setErrors] = useState({
     to: "",

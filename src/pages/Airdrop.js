@@ -30,7 +30,7 @@ export default function Airdrop({ sectionTitle }) {
   const [amount, setAmount] = useState("");
   const [vestingAmount, setVestingAmount] = useState("");
 
-  const [isVestingActive, setVestingActive] = useState(true);
+  const [isVestingActive, setVestingActive] = useState("");
 
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
