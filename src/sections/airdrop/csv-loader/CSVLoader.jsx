@@ -19,7 +19,7 @@ function CSVLoader({
   onFileRemove,
   removeFileCondition,
   disabled = false,
-  vestingAvailable = false,
+  isVestingActive = false,
 }) {
   const { CSVReader } = useCSVReader();
   const deleteButtonRef = useRef();
@@ -43,7 +43,7 @@ function CSVLoader({
         const formatedData = data.map(([address, amount, blocks]) => ({
           address,
           amount: Number(amount),
-          ...(vestingAvailable && { vestingAmount: Number(blocks) }),
+          ...(isVestingActive && { vestingAmount: Number(blocks) }),
         }));
 
         const isDataValid = formatedData.every(
@@ -51,7 +51,7 @@ function CSVLoader({
             return (
               !web3.utils.isAddress(address) &&
               !isNaN(amount) &&
-              !!vestingAvailable &&
+              !!isVestingActive &&
               !isNaN(vestingAmount)
             );
           }
@@ -108,7 +108,9 @@ function CSVLoader({
               ) : (
                 <Grid container alignItems="center" wrap="nowrap">
                   <CustomTooltip
-                    title={<DataFormatNotice vestingAvailable />}
+                    title={
+                      <DataFormatNotice isVestingActive={isVestingActive} />
+                    }
                     arrow
                   >
                     <IconButton

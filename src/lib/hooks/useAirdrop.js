@@ -5,20 +5,34 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+import { ethers } from "ethers";
 
-function useAirdrop({ accounts }) {
-  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP);
+function useAirdrop({ accounts, isVestingActive = null }) {
+  const options = erc20Options(
+    isVestingActive
+      ? SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP_VESTING
+      : SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP
+  );
+
+  const args = isVestingActive
+    ? [
+        accounts.map((account) => account.address),
+        accounts.map((account) =>
+          ethers.utils.parseUnits(account.amount.toString() || "0", 18)
+        ),
+        accounts.map((account) => account.vestingAmount),
+      ]
+    : [
+        accounts.map((account) => account.address),
+        accounts.map((account) =>
+          ethers.utils.parseUnits(account.amount.toString() || "0", 18)
+        ),
+      ];
 
   const { config } = usePrepareContractWrite({
     ...options,
     enabled: !!accounts.length,
-    args: !!accounts.length
-      ? [
-          accounts.map((account) => account.address),
-          accounts.map((account) => account.amount),
-          18,
-        ]
-      : [],
+    args: !!accounts.length ? args : [],
   });
 
   const { data, write } = useContractWrite(config);

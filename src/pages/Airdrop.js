@@ -30,14 +30,21 @@ export default function Airdrop({ sectionTitle }) {
   const [amount, setAmount] = useState("");
   const [vestingAmount, setVestingAmount] = useState("");
 
+  const [isVestingActive, setVestingActive] = useState(true);
+
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
 
   const { runAirdrop, airdropData, transferStatus } = useAirdrop({
     accounts: airdropAddresses,
+    isVestingActive: !!isVestingActive,
   });
 
   const { refetchBalance } = useOutletContext();
+
+  useEffect(() => {
+    setAirdropAddresses([]);
+  }, [isVestingActive]);
 
   function handleAddressAdd({ to, amount, vestingAmount }) {
     setAirdropAddresses((prevAddresses) => [
@@ -110,7 +117,7 @@ export default function Airdrop({ sectionTitle }) {
 
           <Box paddingTop={1}>
             <CSVLoader
-              vestingAvailable
+              isVestingActive={isVestingActive}
               onFileLoad={handleCSVFileLoad}
               onFileRemove={handleCSVFileRemove}
               removeFileCondition={!airdropAddresses.length} //  in case user deletes all accounts from table we remove the file
@@ -122,13 +129,15 @@ export default function Airdrop({ sectionTitle }) {
         <TransactionForm
           vestingAvailable
           formState={{ to: address, amount, vestingAmount }}
+          loading={transferStatus === "loading" || isVerifying}
+          onVestingChange={(vestingState) => setVestingActive(vestingState)}
           onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
-          loading={transferStatus === "loading" || isVerifying}
         />
 
         {!!airdropAddresses.length && (
           <AirdropTable
+            isVestingActive={isVestingActive}
             rows={airdropAddresses}
             onRowsDelete={handleRemoveRows}
           />

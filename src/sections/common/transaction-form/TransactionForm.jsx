@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   TextField,
@@ -22,6 +22,7 @@ function TransactionForm({
   loading = false,
   formState = { to: "", amount: "", vestingAmount: "" },
   vestingAvailable = false,
+  onVestingChange,
 }) {
   const { balance } = useOutletContext();
   const { to, amount, vestingAmount } = formState;
@@ -32,6 +33,12 @@ function TransactionForm({
     amount: "",
     vestingAmount: "",
   });
+
+  useEffect(() => {
+    onVestingChange?.(vesting);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vesting]);
 
   const handleInputChange =
     (asNumber = false) =>
@@ -233,6 +240,7 @@ function TransactionForm({
             >
               <FormControlLabel
                 style={{ marginRight: 0 }}
+                disabled={loading}
                 control={
                   <Switch checked={vesting} onChange={handleVestingChange} />
                 }
