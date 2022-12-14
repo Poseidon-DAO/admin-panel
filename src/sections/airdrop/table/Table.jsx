@@ -47,11 +47,18 @@ const headCells = [
     numeric: true,
     label: "Amount",
   },
+  {
+    id: "vestingAmount",
+    numeric: true,
+    label: "Blocks",
+  },
 ];
 
 function Table({ rows, onSelectChange, onRowsDelete }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchRows, setSearchRows] = useState(rows);
+
+  console.log({ searchRows });
 
   useEffect(() => {
     setSearchRows(rows);
@@ -203,7 +210,8 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
                     align="left"
                     sortDirection={orderBy === headCell.id ? order : false}
                   >
-                    {headCell.id === "amount" ? (
+                    {headCell.id === "amount" ||
+                    headCell.id === "vestingAmount" ? (
                       <TableSortLabel
                         active={orderBy === headCell.id}
                         direction={orderBy === headCell.id ? order : "asc"}
@@ -250,6 +258,7 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
 
                       <TableCell align="left">{row.address}</TableCell>
                       <TableCell align="left">{row.amount}</TableCell>
+                      <TableCell align="left">{row.vestingAmount}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -28,6 +28,7 @@ const messages = {
 export default function Airdrop({ sectionTitle }) {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
+  const [vestingAmount, setVestingAmount] = useState("");
 
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
@@ -38,13 +39,14 @@ export default function Airdrop({ sectionTitle }) {
 
   const { refetchBalance } = useOutletContext();
 
-  function handleAddressAdd({ to, amount }) {
+  function handleAddressAdd({ to, amount, vestingAmount }) {
     setAirdropAddresses((prevAddresses) => [
       ...prevAddresses,
-      { address: to, amount },
+      { address: to, amount, vestingAmount },
     ]);
     setAddress("");
     setAmount("");
+    setVestingAmount("");
   }
 
   function handleCSVFileLoad(addresses, error) {
@@ -76,6 +78,7 @@ export default function Airdrop({ sectionTitle }) {
       setAirdropAddresses([]);
       setAddress("");
       setAmount("");
+      setVestingAmount("");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,6 +91,7 @@ export default function Airdrop({ sectionTitle }) {
   function handleFormStateChange(formState) {
     setAddress(formState.to);
     setAmount(formState.amount);
+    setVestingAmount(formState.vestingAmount);
   }
 
   function handleAirdrop() {
@@ -106,6 +110,7 @@ export default function Airdrop({ sectionTitle }) {
 
           <Box paddingTop={1}>
             <CSVLoader
+              vestingAvailable
               onFileLoad={handleCSVFileLoad}
               onFileRemove={handleCSVFileRemove}
               removeFileCondition={!airdropAddresses.length} //  in case user deletes all accounts from table we remove the file
@@ -115,7 +120,8 @@ export default function Airdrop({ sectionTitle }) {
         </Grid>
 
         <TransactionForm
-          formState={{ to: address, amount }}
+          vestingAvailable
+          formState={{ to: address, amount, vestingAmount }}
           onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
           loading={transferStatus === "loading" || isVerifying}

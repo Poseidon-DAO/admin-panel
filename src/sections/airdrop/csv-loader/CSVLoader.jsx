@@ -19,6 +19,7 @@ function CSVLoader({
   onFileRemove,
   removeFileCondition,
   disabled = false,
+  vestingAvailable = false,
 }) {
   const { CSVReader } = useCSVReader();
   const deleteButtonRef = useRef();
@@ -39,14 +40,22 @@ function CSVLoader({
       onUploadAccepted={(results) => {
         const { data } = results;
 
-        const formatedData = data.map(([address, amount]) => ({
+        const formatedData = data.map(([address, amount, blocks]) => ({
           address,
           amount: Number(amount),
+          ...(vestingAvailable && { vestingAmount: Number(blocks) }),
         }));
 
-        const isDataValid = formatedData.every(({ address, amount }) => {
-          return !web3.utils.isAddress(address) && !isNaN(amount);
-        });
+        const isDataValid = formatedData.every(
+          ({ address, amount, vestingAmount }) => {
+            return (
+              !web3.utils.isAddress(address) &&
+              !isNaN(amount) &&
+              !!vestingAvailable &&
+              !isNaN(vestingAmount)
+            );
+          }
+        );
 
         if (!isDataValid) {
           deleteButtonRef?.current?.click();
@@ -98,7 +107,10 @@ function CSVLoader({
                 </Wrapper>
               ) : (
                 <Grid container alignItems="center" wrap="nowrap">
-                  <CustomTooltip title={<DataFormatNotice />} arrow>
+                  <CustomTooltip
+                    title={<DataFormatNotice vestingAvailable />}
+                    arrow
+                  >
                     <IconButton
                       style={{ margin: "0 5px", cursor: "help" }}
                       disableTouchRipple

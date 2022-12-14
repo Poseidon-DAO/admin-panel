@@ -1,36 +1,36 @@
 import { useState } from "react";
-import { Grid, TextField, Button, Tooltip } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Button,
+  Tooltip,
+  Switch,
+  FormControlLabel,
+  Box,
+  Typography,
+} from "@mui/material";
 import web3 from "web3";
 import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 
-TransactionForm.defaultProps = {
-  column: false,
-  maxAmountButton: false,
-  loading: false,
-  buttonProps: {
-    title: "",
-  },
-  formState: {
-    to: "",
-    amount: "",
-  },
-};
-
 function TransactionForm({
   onSubmit,
   onChange,
-  buttonProps,
-  column,
-  maxAmountButton,
-  loading,
-  formState: { to, amount },
+  buttonProps = { title: "" },
+  column = false,
+  maxAmountButton = false,
+  loading = false,
+  formState = { to: "", amount: "", vestingAmount: "" },
+  vestingAvailable = false,
 }) {
   const { balance } = useOutletContext();
+  const { to, amount, vestingAmount } = formState;
+  const [vesting, setVesting] = useState(vestingAvailable);
 
   const [errors, setErrors] = useState({
     to: "",
     amount: "",
+    vestingAmount: "",
   });
 
   const handleInputChange =
@@ -39,6 +39,9 @@ function TransactionForm({
       onChange({
         to,
         amount,
+        ...(vestingAvailable && {
+          vestingAmount,
+        }),
         [event.target.name]:
           !!asNumber && !!event.target.value
             ? event.target.valueAsNumber
@@ -73,11 +76,30 @@ function TransactionForm({
       return false;
     }
 
+    if (vesting && !vestingAmount) {
+      setErrors({
+        ...errors,
+        vestingAmount: "Please provide a vesting amount!",
+      });
+
+      return false;
+    }
+
     return true;
   }
 
   function handleMaxValueSet() {
-    onChange({ to, amount: Number(balance) });
+    onChange({
+      to,
+      amount: Number(balance),
+      ...(vestingAvailable && {
+        vestingAmount,
+      }),
+    });
+  }
+
+  function handleVestingChange() {
+    setVesting((vesting) => !vesting);
   }
 
   function handleSubmit(event) {
@@ -87,7 +109,13 @@ function TransactionForm({
 
     if (!isValid) return;
 
-    onSubmit?.({ to, amount });
+    onSubmit?.({
+      to,
+      amount,
+      ...(vestingAvailable && {
+        vestingAmount,
+      }),
+    });
   }
 
   function renderSubmitButton({ element, showTooltip }) {
@@ -106,7 +134,7 @@ function TransactionForm({
     <form onSubmit={handleSubmit}>
       <Grid
         container
-        direction={column ? "column" : "row"}
+        direction={column || vesting ? "column" : "row"}
         spacing={2}
         wrap="nowrap"
       >
@@ -126,7 +154,14 @@ function TransactionForm({
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid
+          {...(vesting && {
+            container: true,
+            wrap: "nowrap",
+          })}
+          item
+          xs={3}
+        >
           <TextField
             name="amount"
             value={amount}
@@ -157,9 +192,56 @@ function TransactionForm({
               ),
             }}
           />
+
+          {vesting && (
+            <TextField
+              name="vestingAmount"
+              value={vestingAmount}
+              disabled={loading}
+              onChange={handleInputChange(true)}
+              placeholder="5760"
+              label="Blocks"
+              type="number"
+              autoComplete="off"
+              InputLabelProps={{ shrink: true }}
+              error={!!errors["vestingAmount"]}
+              helperText={errors["vestingAmount"]}
+              style={{ width: "100%", marginLeft: 16 }}
+            />
+          )}
         </Grid>
 
-        <Grid item xs container justifyContent="flex-end">
+        <Grid
+          item
+          xs
+          container
+          justifyContent="flex-end"
+          alignItems="center"
+          {...(!vesting &&
+            !!vestingAvailable && {
+              flexDirection: "column-reverse",
+              alignItems: "stretch",
+            })}
+        >
+          {vestingAvailable && (
+            <Box
+              {...(!vesting
+                ? {
+                    marginTop: 2,
+                  }
+                : { marginRight: 2 })}
+            >
+              <FormControlLabel
+                style={{ marginRight: 0 }}
+                control={
+                  <Switch checked={vesting} onChange={handleVestingChange} />
+                }
+                label={<Typography>Vesting</Typography>}
+                labelPlacement={vesting ? "start" : "end"}
+              />
+            </Box>
+          )}
+
           {renderSubmitButton({
             element: (
               <LoadingButton

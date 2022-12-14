@@ -8,11 +8,11 @@ const navConfig = [
     path: "/app/dashboard",
     icon: getIcon("akar-icons:home"),
   },
-  // {
-  //   title: "Polls",
-  //   path: "/app/polls",
-  //   icon: getIcon("mdi:vote-outline"),
-  // },
+  {
+    title: "Polls",
+    path: "/app/polls",
+    icon: getIcon("mdi:vote-outline"),
+  },
   {
     title: "Transfer",
     path: "/app/transfer",
