@@ -3,15 +3,16 @@ import {
   useTheme,
   Grid,
   Typography,
-  Tooltip,
   CircularProgress,
   Box,
   Chip,
-  Switch,
+  Button,
 } from "@mui/material";
 import { useFreeze, /* useFreezeRestore */ useIsFrozen } from "src/lib";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { getTransactionLink } from "src/utils/getTransactionLink";
+
+import FreezeModal from "./FreezeModal";
 
 export default function FreezeDao() {
   const theme = useTheme();
@@ -19,6 +20,7 @@ export default function FreezeDao() {
   const { isFrozen } = useIsFrozen();
 
   const [transactionState, setTransactionState] = useState("");
+  const [isFreezeModalOpen, setFreezeModalOpen] = useState(false);
 
   const { freeze, freezeData, freezeStatus } = useFreeze();
   //   const { defreeze, defreezeData, defreezeStatus } = useFreezeRestore();
@@ -49,17 +51,16 @@ export default function FreezeDao() {
     //  defreezeStatus
   ]);
 
-  function handleStatusChange() {
-    if (isFrozen) {
-      //   defreeze?.();
-      return;
-    }
-
-    freeze?.();
+  function handleModalChange() {
+    setFreezeModalOpen((isOpen) => !isOpen);
   }
 
   function handleSnackbarClose() {
     setTransactionState("");
+  }
+
+  function handleDaoFreeze() {
+    freeze?.();
   }
 
   const isVerifing = freezeStatus === "loading";
@@ -78,30 +79,40 @@ export default function FreezeDao() {
           <Grid item sm={10}>
             <Typography variant="subtitle1">Dao status</Typography>
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={2} ml={-8}>
             {isFrozen ? (
               <Chip label="FROZEN" color="error" style={{ color: "white" }} />
             ) : (
               <Chip label="ACTIVE" color="success" style={{ color: "white" }} />
             )}
           </Grid>
-          <Grid item>
+          <Grid container item sm={1} justifyContent="flex-end">
             {isVerifing ? (
               <Box marginRight={2}>
                 <CircularProgress size={20} />
               </Box>
+            ) : isFrozen ? (
+              <Button variant="contained" color="error" disabled>
+                Activate
+              </Button>
             ) : (
-              <Tooltip title={isFrozen ? "Activate DAO" : "Freeze DAO"}>
-                <Switch
-                  checked={isFrozen}
-                  onChange={handleStatusChange}
-                  disabled={isFrozen}
-                />
-              </Tooltip>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleModalChange}
+              >
+                Freeze
+              </Button>
             )}
           </Grid>
         </>
       </Grid>
+
+      <FreezeModal
+        isOpen={isFreezeModalOpen}
+        onCancel={handleModalChange}
+        onSubmit={handleDaoFreeze}
+      />
 
       {!!transactionState && (
         <TransactionSnackbar

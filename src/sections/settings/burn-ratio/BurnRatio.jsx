@@ -128,7 +128,7 @@ export default function BurnRatio() {
             <Grid item sm={2}>
               <Typography variant="subtitle1">{localRatio}</Typography>
             </Grid>
-            <Grid item>
+            <Grid container item sm={1} justifyContent="flex-end">
               {isVerifing ? (
                 <Box marginRight={2}>
                   <CircularProgress size={20} />
