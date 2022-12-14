@@ -1,20 +1,16 @@
 import { accessibilityOptions } from "src/contracts/options";
 
 import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
-import { useAccount, useContractRead } from "wagmi";
+import { useContractRead } from "wagmi";
 
-function useIsFrozen({ account } = {}) {
-  const { address } = useAccount();
-
+function useIsFrozen() {
   const options = accessibilityOptions(
-    account || address,
     SMART_CONTRACT_FUNCTIONS.CHECK_IS_FROZEN
   );
 
-  const query = useContractRead({ ...options });
+  const query = useContractRead({ ...options, watch: true });
 
   return {
-    ...query,
     isFrozen: query.data,
     isFrozenStatus: query.status,
     isFrozenError: query.error,

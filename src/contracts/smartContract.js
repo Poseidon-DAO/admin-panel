@@ -4,6 +4,7 @@ const CHECK_IS_FROZEN = "getIsFrozen";
 const CREATE_MULTISIG_POLL = "createMultiSigPoll";
 const VOTE_MULTISIG_POLL = "voteMultiSigPoll";
 const FREEZE_DAO = "freeze";
+const RESTORE_DAO_FREEZE = "restoreIsFrozen";
 const GET_ACTIVE_POLLS = "getListOfActivePoll";
 const GET_EXPIRATION_BLOCK = "getExpirationBlockTime";
 const EVENT_NEW_MULTISIG = "NewMultisigPollEvent";
@@ -17,6 +18,8 @@ const GET_ERC1155_ADDRESS = "ERC1155Address";
 const GET_ERC1155_ID = "ID_ERC1155";
 const GET_RATIO = "ratio";
 const SET_ERC_1155 = "setERC1155";
+const GET_SECURITY_DELAY_IN_BLOCKS = "securityDelayInBlocks";
+const SET_SECURITY_DELAY_IN_BLOCKS = "setSecurityDelay";
 
 // EVENTS
 const GET_POLL_META = "getPollMetaData";
@@ -30,6 +33,7 @@ const SMART_CONTRACT_FUNCTIONS = {
   GET_MULTISIG_LENGTH,
   VOTE_MULTISIG_POLL,
   FREEZE_DAO,
+  RESTORE_DAO_FREEZE,
   GET_POLL_META,
   GET_VOTE,
   GET_ACTIVE_POLLS,
@@ -42,6 +46,8 @@ const SMART_CONTRACT_FUNCTIONS = {
   GET_ERC1155_ID,
   GET_RATIO,
   SET_ERC_1155,
+  GET_SECURITY_DELAY_IN_BLOCKS,
+  SET_SECURITY_DELAY_IN_BLOCKS,
 
   // Events
   EVENT_NEW_MULTISIG,

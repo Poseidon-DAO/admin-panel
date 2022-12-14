@@ -37,7 +37,7 @@ export const multiSigEventsOptions = (name, address, args) => {
   };
 };
 
-export const accessibilityOptions = (address, functionName, args) => {
+export const accessibilityOptions = (functionName, args = []) => {
   return {
     address: accessibilityAdress,
     functionName: functionName,

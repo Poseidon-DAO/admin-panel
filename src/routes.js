@@ -3,7 +3,6 @@ import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 import DashboardLayout from "./layouts/dashboard";
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 
-import Accessibility from "./pages/Accessibility";
 import Login from "./pages/Login";
 import NotAllowed from "./pages/NotAllowed";
 import NotFound from "./pages/Page404";
@@ -42,10 +41,6 @@ export default function Router() {
         <Route
           path="dashboard"
           element={<DashboardApp sectionTitle={sectionTitle} />}
-        />
-        <Route
-          path="accessibility"
-          element={<Accessibility sectionTitle={sectionTitle} />}
         />
         {/* <Route path="polls" element={<Polls sectionTitle={sectionTitle} />} /> */}
         <Route

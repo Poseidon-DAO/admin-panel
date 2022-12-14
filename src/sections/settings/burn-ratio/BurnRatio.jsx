@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Box,
   Grid,
   Typography,
   IconButton,
@@ -8,7 +7,7 @@ import {
   TextField,
   Tooltip,
   CircularProgress,
-  Button,
+  Box,
 } from "@mui/material";
 import Iconify from "src/components/Iconify";
 import {
@@ -17,12 +16,10 @@ import {
   useERC1155Ratio,
   useSetERC1155,
 } from "src/lib";
-import { useEffect } from "react";
-import { LoadingButton } from "@mui/lab";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 
-export default function TokenSettings() {
+export default function BurnRatio() {
   const theme = useTheme();
 
   const { ratio } = useERC1155Ratio();
@@ -57,55 +54,38 @@ export default function TokenSettings() {
     }
   }, [setERC1155Status]);
 
-  function handleEditClick(shouldEdit) {
-    setEditing(shouldEdit);
+  function handleEditClick() {
+    setEditing(true);
+  }
+
+  function handleDecline() {
+    setEditing(false);
+    setLocalRatio(ratio);
+  }
+
+  function handleSave() {
+    setEditing(false);
+    setERC1155();
   }
 
   function handleRatioChange(event) {
     setLocalRatio(event.target.valueAsNumber);
   }
 
-  function handleDecline() {
-    setLocalRatio(ratio);
-  }
-
   function handleSnackbarClose() {
     setTransactionState("");
   }
 
-  async function handleSave() {
-    setERC1155();
-    handleEditClick(false);
-  }
-
-  if (setERC1155Status === "loading") {
-    return (
-      <Box textAlign="center" mt={2}>
-        <CircularProgress />
-        <TransactionSnackbar
-          message="The transaction is being verified!"
-          variant={transactionState}
-          onClose={handleSnackbarClose}
-          duration={null}
-          etherscanLink={getTransactionLink(setERC1155Data?.hash)}
-          loading
-        />
-      </Box>
-    );
-  }
+  const isVerifing = setERC1155Status === "loading";
 
   return (
-    <Box ml={5}>
+    <>
       <Grid
         container
         justifyContent="space-between"
         alignItems="center"
         wrap="nowrap"
         color={theme.palette.grey["600"]}
-        sx={{ borderWidth: "1px 0 1px 0", minHeight: 98 }}
-        border={`1px solid ${theme.palette.divider}`}
-        py={3}
-        px={2}
       >
         {!!isEditing ? (
           <>
@@ -120,9 +100,21 @@ export default function TokenSettings() {
                 autoFocus
               />
             </Grid>
-            <Grid item>
+            <Grid
+              item
+              container
+              justifyContent="flex-end"
+              alignItems="center"
+              flex={1}
+              wrap="nowrap"
+            >
+              <Tooltip title="Decline">
+                <IconButton onClick={() => handleDecline()}>
+                  <Iconify icon="charm:cross" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Save">
-                <IconButton onClick={() => handleEditClick(false)}>
+                <IconButton onClick={() => handleSave()}>
                   <Iconify icon="charm:tick" />
                 </IconButton>
               </Tooltip>
@@ -137,49 +129,32 @@ export default function TokenSettings() {
               <Typography variant="subtitle1">{localRatio}</Typography>
             </Grid>
             <Grid item>
-              <Tooltip title="Edit">
-                <IconButton onClick={() => handleEditClick(true)}>
-                  <Iconify icon="clarity:edit-line" />
-                </IconButton>
-              </Tooltip>
+              {isVerifing ? (
+                <Box marginRight={2}>
+                  <CircularProgress size={20} />
+                </Box>
+              ) : (
+                <Tooltip title="Edit">
+                  <IconButton onClick={() => handleEditClick()}>
+                    <Iconify icon="clarity:edit-line" />
+                  </IconButton>
+                </Tooltip>
+              )}
             </Grid>
           </>
         )}
       </Grid>
 
-      {ratio !== localRatio && !isEditing && (
-        <Box textAlign="right" mt={2}>
-          <Button
-            size="medium"
-            variant="outlined"
-            color="error"
-            onClick={handleDecline}
-            disabled={setERC1155Status === "loading"}
-          >
-            Decline
-          </Button>
-
-          <LoadingButton
-            size="medium"
-            variant="contained"
-            sx={{ marginLeft: 1 }}
-            onClick={handleSave}
-            loading={setERC1155Status === "loading"}
-            disabled={setERC1155Status === "loading"}
-          >
-            Save changes
-          </LoadingButton>
-        </Box>
-      )}
-
       {!!transactionState && (
         <TransactionSnackbar
+          message={isVerifing ? "The transaction is being verified!" : null}
           variant={transactionState}
           onClose={handleSnackbarClose}
-          duration={3000}
+          duration={isVerifing ? null : 3000}
           etherscanLink={getTransactionLink(setERC1155Data?.hash)}
+          loading={isVerifing}
         />
       )}
-    </Box>
+    </>
   );
 }

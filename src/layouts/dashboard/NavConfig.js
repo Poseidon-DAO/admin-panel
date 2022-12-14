@@ -8,11 +8,6 @@ const navConfig = [
     path: "/app/dashboard",
     icon: getIcon("akar-icons:home"),
   },
-  {
-    title: "Accessibility",
-    path: "/app/accessibility",
-    icon: getIcon("akar-icons:key"),
-  },
   // {
   //   title: "Polls",
   //   path: "/app/polls",

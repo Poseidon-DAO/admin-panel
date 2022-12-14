@@ -17,7 +17,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "duration",
+        "name": "durationInBlocks",
         "type": "uint256"
       }
     ],
@@ -53,25 +53,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "AccessibilitySettingsAddress",
-        "type": "address"
-      }
-    ],
-    "name": "DAOConnectionEvent",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": false,
         "internalType": "address",
         "name": "owner",
@@ -82,6 +63,12 @@
         "internalType": "address",
         "name": "to",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
     "name": "DeleteVestEvent",
@@ -201,6 +188,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "securityDelayInBlocks",
+        "type": "uint256"
+      }
+    ],
+    "name": "securityDelayInBlocksEvent",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "ERC1155Address",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
@@ -215,17 +221,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "SECURITY_DELAY",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "address", "name": "_address", "type": "address" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "_duration", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_durationInBlocks",
+        "type": "uint256"
+      }
     ],
     "name": "addVest",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -240,7 +243,11 @@
         "type": "address[]"
       },
       { "internalType": "uint256[]", "name": "_amounts", "type": "uint256[]" },
-      { "internalType": "uint256[]", "name": "_durations", "type": "uint256[]" }
+      {
+        "internalType": "uint256[]",
+        "name": "_durationsInBlocks",
+        "type": "uint256[]"
+      }
     ],
     "name": "airdropVest",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -317,9 +324,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_address", "type": "address" }
+      { "internalType": "address", "name": "_address", "type": "address" },
+      { "internalType": "uint256", "name": "_startPoint", "type": "uint256" },
+      { "internalType": "uint256", "name": "_endPoint", "type": "uint256" }
     ],
-    "name": "deleteVest",
+    "name": "deleteUnexpiredVests",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -328,10 +337,8 @@
     "inputs": [
       { "internalType": "address", "name": "_address", "type": "address" }
     ],
-    "name": "getListOfVest",
-    "outputs": [
-      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
-    ],
+    "name": "getVestLength",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -362,8 +369,7 @@
     "inputs": [
       { "internalType": "string", "name": "_name", "type": "string" },
       { "internalType": "string", "name": "_symbol", "type": "string" },
-      { "internalType": "uint256", "name": "_totalSupply", "type": "uint256" },
-      { "internalType": "uint256", "name": "_decimals", "type": "uint256" }
+      { "internalType": "uint256", "name": "_totalSupply", "type": "uint256" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -405,12 +411,18 @@
         "name": "_addresses",
         "type": "address[]"
       },
-      { "internalType": "uint256[]", "name": "_amounts", "type": "uint256[]" },
-      { "internalType": "uint256", "name": "_decimals", "type": "uint256" }
+      { "internalType": "uint256[]", "name": "_amounts", "type": "uint256[]" }
     ],
     "name": "runAirdrop",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "securityDelayInBlocks",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -424,6 +436,19 @@
       { "internalType": "uint256", "name": "_ratio", "type": "uint256" }
     ],
     "name": "setERC1155",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_durationInBlocks",
+        "type": "uint256"
+      }
+    ],
+    "name": "setSecurityDelay",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "nonpayable",
     "type": "function"
