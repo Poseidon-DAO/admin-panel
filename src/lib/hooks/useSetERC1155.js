@@ -8,7 +8,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 
-function useSetERC1155({ erc1155Address, ercId, ratio } = {}) {
+function useSetERC1155({ erc1155Address, ercId, ratio, enabled = true } = {}) {
   const { address } = useAccount();
 
   const options = erc20Options(SMART_CONTRACT_FUNCTIONS.SET_ERC_1155, [
@@ -19,7 +19,7 @@ function useSetERC1155({ erc1155Address, ercId, ratio } = {}) {
 
   const { config } = usePrepareContractWrite({
     ...options,
-    enabled: !!address && !!erc1155Address && !!ercId && !!ratio,
+    enabled: !!address && !!erc1155Address && !!ercId && !!ratio && enabled,
   });
 
   const { data, write } = useContractWrite(config);

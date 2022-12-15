@@ -22,7 +22,9 @@ export default function FreezeDao() {
   const [transactionState, setTransactionState] = useState("");
   const [isFreezeModalOpen, setFreezeModalOpen] = useState(false);
 
-  const { freeze, freezeData, freezeStatus } = useFreeze();
+  const { freeze, freezeData, freezeStatus } = useFreeze({
+    enabled: !isFrozen,
+  });
   //   const { defreeze, defreezeData, defreezeStatus } = useFreezeRestore();
 
   useEffect(() => {

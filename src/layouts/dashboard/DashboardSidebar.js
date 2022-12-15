@@ -88,7 +88,7 @@ export default function DashboardSidebar({
               </Tooltip>
               <Tooltip title={balance || ""}>
                 <Typography variant="caption" sx={{ color: "text.primary" }}>
-                  {balance} {symbol}
+                  {Number(balance).toFixed(5)} {symbol}
                 </Typography>
               </Tooltip>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>

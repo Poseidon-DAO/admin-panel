@@ -47,9 +47,14 @@ const headCells = [
     numeric: true,
     label: "Amount",
   },
+  {
+    id: "vestingAmount",
+    numeric: true,
+    label: "Blocks",
+  },
 ];
 
-function Table({ rows, onSelectChange, onRowsDelete }) {
+function Table({ rows, onSelectChange, onRowsDelete, isVestingActive }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchRows, setSearchRows] = useState(rows);
 
@@ -126,6 +131,9 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
 
   const isSelected = (name) => !!selected.find((el) => el.address === name);
 
+  const filteredCells = !isVestingActive
+    ? headCells.filter((cell) => cell.id !== "vestingAmount")
+    : headCells;
   const rowCount = searchRows.length;
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - searchRows.length) : 0;
@@ -197,13 +205,15 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
                     }}
                   />
                 </TableCell>
-                {headCells.map((headCell) => (
+
+                {filteredCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
                     align="left"
                     sortDirection={orderBy === headCell.id ? order : false}
                   >
-                    {headCell.id === "amount" ? (
+                    {headCell.id === "amount" ||
+                    headCell.id === "vestingAmount" ? (
                       <TableSortLabel
                         active={orderBy === headCell.id}
                         direction={orderBy === headCell.id ? order : "asc"}
@@ -250,6 +260,9 @@ function Table({ rows, onSelectChange, onRowsDelete }) {
 
                       <TableCell align="left">{row.address}</TableCell>
                       <TableCell align="left">{row.amount}</TableCell>
+                      {isVestingActive && (
+                        <TableCell align="left">{row.vestingAmount}</TableCell>
+                      )}
                     </TableRow>
                   );
                 })}
