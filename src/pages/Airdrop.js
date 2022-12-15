@@ -127,6 +127,7 @@ export default function Airdrop({ sectionTitle }) {
         </Grid>
 
         <TransactionForm
+          airdrop
           vestingAvailable
           formState={{ to: address, amount, vestingAmount }}
           loading={transferStatus === "loading" || isVerifying}

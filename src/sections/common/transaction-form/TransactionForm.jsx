@@ -23,6 +23,7 @@ function TransactionForm({
   formState = { to: "", amount: "", vestingAmount: "" },
   vestingAvailable = false,
   onVestingChange,
+  airdrop = false,
 }) {
   const { balance } = useOutletContext();
   const { to, amount, vestingAmount } = formState;
@@ -257,14 +258,14 @@ function TransactionForm({
                 size="large"
                 type="submit"
                 style={{ marginTop: 4 }}
-                disabled={amount > balance}
+                disabled={!airdrop && amount > balance}
                 loading={loading}
                 {...allButtonProps}
               >
                 {title || "Add"}
               </LoadingButton>
             ),
-            showTooltip: balance < amount,
+            showTooltip: airdrop ? false : balance < amount,
           })}
         </Grid>
       </Grid>
