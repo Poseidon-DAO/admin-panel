@@ -30,7 +30,7 @@ const ItemWrapper = styled(Box)(({ theme }) => ({
   paddnig: "3 2",
   border: `1px solid ${theme.palette.divider}`,
   borderWidth: "0 0 1px 0",
-  "&:first-child": {
+  "&:first-of-type": {
     borderWidth: "1px 0 1px 0",
   },
 }));
