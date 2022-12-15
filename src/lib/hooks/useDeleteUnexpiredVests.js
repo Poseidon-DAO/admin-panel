@@ -6,19 +6,15 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 
-function useDeleteUnexpiredVests({ accounts }) {
-  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP);
+function useDeleteUnexpiredVests({ address, start, end }) {
+  const options = erc20Options(
+    SMART_CONTRACT_FUNCTIONS.DELETE_UNEXPIRED_VESTS,
+    [address, start, end]
+  );
 
   const { config } = usePrepareContractWrite({
     ...options,
-    enabled: !!accounts.length,
-    args: !!accounts.length
-      ? [
-          accounts.map((account) => account.address),
-          accounts.map((account) => account.amount),
-          18,
-        ]
-      : [],
+    enabled: !!address && !!start && !!end,
   });
 
   const { data, write } = useContractWrite(config);
@@ -28,10 +24,10 @@ function useDeleteUnexpiredVests({ accounts }) {
   });
 
   return {
-    runAirdrop: write,
-    airdropData: data,
-    isAirdropSuccess: isSuccess,
-    transferStatus: status,
+    deleteUnExpiredVests: write,
+    deleteUnExpiredVestsData: data,
+    isDeleteUnExpiredVestsSuccess: isSuccess,
+    deleteUnExpiredVestsStatus: status,
   };
 }
 

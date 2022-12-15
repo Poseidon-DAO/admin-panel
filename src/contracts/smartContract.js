@@ -23,6 +23,7 @@ const GET_SECURITY_DELAY_IN_BLOCKS = "securityDelayInBlocks";
 const SET_SECURITY_DELAY_IN_BLOCKS = "setSecurityDelay";
 const GET_VEST_LENGTH = "getVestLength";
 const GET_VEST_METADATA = "getVestMetaData";
+const DELETE_UNEXPIRED_VESTS = "deleteUnexpiredVests";
 
 // EVENTS
 const GET_POLL_META = "getPollMetaData";
@@ -54,6 +55,7 @@ const SMART_CONTRACT_FUNCTIONS = {
   SET_SECURITY_DELAY_IN_BLOCKS,
   GET_VEST_LENGTH,
   GET_VEST_METADATA,
+  DELETE_UNEXPIRED_VESTS,
 
   // Events
   EVENT_NEW_MULTISIG,
