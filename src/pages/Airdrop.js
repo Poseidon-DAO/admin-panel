@@ -135,7 +135,7 @@ export default function Airdrop({ sectionTitle }) {
           onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
           buttonProps={{
-            disabled: vestingAmount && vestingAmount < delayInBlocks,
+            disabled: vestingAmount ? vestingAmount < delayInBlocks : false,
             tooltipText: "Blocks number is below the minimum value",
           }}
         />
