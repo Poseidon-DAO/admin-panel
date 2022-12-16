@@ -1,8 +1,6 @@
+import { LoadingButton } from "@mui/lab";
 import {
-  alpha,
   Box,
-  Checkbox,
-  IconButton,
   Paper,
   Table as MuiTable,
   TableBody,
@@ -13,11 +11,11 @@ import {
   TableRow,
   TableSortLabel,
   Toolbar,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import Iconify from "src/components/Iconify";
+import { usePDNSymbol } from "src/lib";
+import { useBlockNumber } from "wagmi";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -51,10 +49,17 @@ const headCells = [
     numeric: true,
     label: "Exp. Block Height",
   },
+  {
+    id: "delete",
+    numeric: false,
+    label: "",
+  },
 ];
 
-function VestingTable({ rows, onSelectChange, onRowsDelete }) {
+function VestingTable({ rows, onRowDelete, isLoading, loadingId }) {
   const [searchRows, setSearchRows] = useState(rows);
+  const { symbol } = usePDNSymbol();
+  const { data: lastBlock } = useBlockNumber({ watch: true });
 
   useEffect(() => {
     setSearchRows(rows);
@@ -62,7 +67,6 @@ function VestingTable({ rows, onSelectChange, onRowsDelete }) {
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("amount");
-  const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -70,33 +74,6 @@ function VestingTable({ rows, onSelectChange, onRowsDelete }) {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  }
-
-  function handleSelectChange(rows) {
-    setSelected(rows);
-    onSelectChange?.(rows);
-  }
-
-  function handleSelectAllClick(event) {
-    if (event.target.checked) {
-      handleSelectChange(rows);
-      return;
-    }
-    handleSelectChange([]);
-  }
-
-  function handleClick(_, row) {
-    const elementIsSelected = selected.find((el) => el.address === row.address);
-
-    if (elementIsSelected) {
-      const filtered = selected.filter((el) => el.address !== row.address);
-      handleSelectChange(filtered);
-
-      return;
-    }
-
-    const updatedSelected = [...selected, row];
-    handleSelectChange(updatedSelected);
   }
 
   function handleChangePage(_, newPage) {
@@ -108,18 +85,18 @@ function VestingTable({ rows, onSelectChange, onRowsDelete }) {
     setPage(0);
   }
 
-  function handleRowsDelete() {
-    const selectedAddresses = selected.map((a) => a.address);
-    onRowsDelete(selectedAddresses);
-    handleSelectChange([]);
+  function handleRowDelete(index) {
+    onRowDelete?.(index);
   }
 
-  const isSelected = (name) => !!selected.find((el) => el.address === name);
-
-  const rowCount = searchRows.length;
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - searchRows.length) : 0;
-  const numSelected = selected.length;
+  const showDeleteCell = searchRows.some(
+    (row) => lastBlock < row?.expirationBlockHeight
+  );
+  const filteredCells = headCells.filter(
+    (cell) => !(!showDeleteCell && cell.id === "delete")
+  );
 
   return (
     <Box sx={{ width: "100%" }} marginTop={4}>
@@ -129,59 +106,22 @@ function VestingTable({ rows, onSelectChange, onRowsDelete }) {
             sx={{
               pl: { sm: 2 },
               pr: { xs: 1, sm: 1 },
-              ...(numSelected > 0 && {
-                bgcolor: (theme) =>
-                  alpha(
-                    theme.palette.primary.main,
-                    theme.palette.action.activatedOpacity
-                  ),
-              }),
             }}
           >
-            {numSelected > 0 ? (
-              <Typography
-                sx={{ flex: "1 1 100%" }}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-              >
-                {numSelected} selected
-              </Typography>
-            ) : (
-              <Typography
-                sx={{ flex: "1 1 100%" }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
-              >
-                Airdrop vesting
-              </Typography>
-            )}
-
-            {numSelected > 0 && (
-              <Tooltip title="Delete">
-                <IconButton onClick={handleRowsDelete}>
-                  <Iconify icon="ant-design:delete-filled" />
-                </IconButton>
-              </Tooltip>
-            )}
+            <Typography
+              sx={{ flex: "1 1 100%" }}
+              variant="h6"
+              id="tableTitle"
+              component="div"
+            >
+              Airdrop vesting
+            </Typography>
           </Toolbar>
 
           <MuiTable sx={{ minWidth: 750 }} aria-labelledby="airdrop accounts">
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={numSelected > 0 && numSelected < rowCount}
-                    checked={rowCount > 0 && numSelected === rowCount}
-                    onChange={handleSelectAllClick}
-                    inputProps={{
-                      "aria-label": "select all addresses",
-                    }}
-                  />
-                </TableCell>
-                {headCells.map((headCell) => (
+                {filteredCells.map((headCell) => (
                   <TableCell
                     key={headCell.id}
                     align="left"
@@ -211,32 +151,34 @@ function VestingTable({ rows, onSelectChange, onRowsDelete }) {
               {searchRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .sort(getComparator(order, orderBy))
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.address);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
+                .map((row) => {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row)}
                       role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.address}
-                      selected={isItemSelected}
+                      key={row?.vestIndex}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-
                       <TableCell align="left">{row.address}</TableCell>
-                      <TableCell align="left">{row.amount}</TableCell>
                       <TableCell align="left">
-                        {row.expirationBlockHeight}
+                        {row.amount} {symbol}
+                      </TableCell>
+                      <TableCell align="left">
+                        {row.expirationBlockHeight - lastBlock}
+                      </TableCell>
+                      <TableCell align="right">
+                        {lastBlock < row?.expirationBlockHeight && (
+                          <LoadingButton
+                            variant="contained"
+                            color="error"
+                            size="small"
+                            onClick={() => handleRowDelete(row?.vestIndex)}
+                            loading={isLoading && loadingId === row?.vestIndex}
+                            disabled={isLoading && loadingId !== row?.vestIndex}
+                          >
+                            Delete
+                          </LoadingButton>
+                        )}
                       </TableCell>
                     </TableRow>
                   );

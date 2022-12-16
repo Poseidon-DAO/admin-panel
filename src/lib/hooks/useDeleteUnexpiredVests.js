@@ -7,14 +7,12 @@ import {
 } from "wagmi";
 
 function useDeleteUnexpiredVests({ address, start, end }) {
-  const options = erc20Options(
-    SMART_CONTRACT_FUNCTIONS.DELETE_UNEXPIRED_VESTS,
-    [address, start, end]
-  );
+  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.DELETE_UNEXPIRED_VESTS);
 
   const { config } = usePrepareContractWrite({
     ...options,
-    enabled: !!address && !!start && !!end,
+    args: [address, start, end],
+    enabled: !!address && start >= 0 && end >= 0,
   });
 
   const { data, write } = useContractWrite(config);

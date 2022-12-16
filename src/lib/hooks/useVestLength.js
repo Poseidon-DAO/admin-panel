@@ -8,7 +8,11 @@ function useVestLength({ address = "", enabled = true }) {
     address,
   ]);
 
-  const query = useContractRead({ ...options, enabled: !!address && enabled });
+  const query = useContractRead({
+    ...options,
+    enabled: !!address && enabled,
+    watch: true,
+  });
 
   return {
     vestLength: !!query.data ? Number(query.data) : null,
