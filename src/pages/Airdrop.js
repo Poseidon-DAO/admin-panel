@@ -128,14 +128,16 @@ export default function Airdrop({ sectionTitle }) {
         </Grid>
 
         <TransactionForm
-          airdrop
           vestingAvailable
           formState={{ to: address, amount, vestingAmount }}
           loading={transferStatus === "loading" || isVerifying}
           onVestingChange={(vestingState) => setVestingActive(vestingState)}
           onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
-          buttonProps={{ disabled: vestingAmount < delayInBlocks }}
+          buttonProps={{
+            disabled: vestingAmount && vestingAmount < delayInBlocks,
+            tooltipText: "Blocks number is below the minimum value",
+          }}
         />
 
         {!!airdropAddresses.length && (

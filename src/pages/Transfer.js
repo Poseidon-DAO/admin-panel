@@ -18,6 +18,7 @@ export default function Transfer({ sectionTitle }) {
   const debouncedTo = useDebounce(to);
   const debouncedAmount = useDebounce(amount);
 
+  const { balance } = useOutletContext();
   const { transfer, transferData, isFetchingTransfer, transferStatus } =
     useTransfer({
       address: debouncedTo,
@@ -66,15 +67,20 @@ export default function Transfer({ sectionTitle }) {
         <PageTitle>{sectionTitle}</PageTitle>
 
         <TransactionForm
+          column
+          maxAmountButton
           formState={{ to, amount }}
           onSubmit={handleTransfer}
           onChange={handleFormStateChange}
           loading={
             isFetchingTransfer || transferStatus === "loading" || isVerifying
           }
-          buttonProps={{ title: "Transfer", variant: "contained" }}
-          column
-          maxAmountButton
+          buttonProps={{
+            title: "Transfer",
+            variant: "contained",
+            tooltipText: "Insufficient funds",
+            disabled: balance < amount,
+          }}
         />
       </Container>
 

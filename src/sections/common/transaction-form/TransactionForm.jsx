@@ -8,10 +8,13 @@ import {
   FormControlLabel,
   Box,
   Typography,
+  IconButton,
 } from "@mui/material";
 import web3 from "web3";
 import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
+import { useSecurityDelayInBlocks } from "src/lib";
+import Iconify from "src/components/Iconify";
 
 function TransactionForm({
   onSubmit,
@@ -23,11 +26,11 @@ function TransactionForm({
   formState = { to: "", amount: "", vestingAmount: "" },
   vestingAvailable = false,
   onVestingChange,
-  airdrop = false,
 }) {
   const { balance } = useOutletContext();
   const { to, amount, vestingAmount } = formState;
   const [vesting, setVesting] = useState(false);
+  const { delayInBlocks } = useSecurityDelayInBlocks();
 
   const [errors, setErrors] = useState({
     to: "",
@@ -106,6 +109,27 @@ function TransactionForm({
     });
   }
 
+  function handleMinValueSet() {
+    onChange({
+      to,
+      amount,
+      ...(vestingAvailable && {
+        vestingAmount: delayInBlocks,
+      }),
+    });
+  }
+
+  function handleRemove(newValue) {
+    onChange({
+      to,
+      amount,
+      ...(vestingAvailable && {
+        vestingAmount,
+      }),
+      ...newValue,
+    });
+  }
+
   function handleVestingChange() {
     setVesting((vesting) => !vesting);
   }
@@ -126,17 +150,17 @@ function TransactionForm({
     });
   }
 
-  function renderSubmitButton({ element, showTooltip }) {
-    if (!showTooltip) return element;
+  function renderSubmitButton({ element, tooltipText }) {
+    if (!tooltipText) return element;
 
     return (
-      <Tooltip title="Insufficient funds">
+      <Tooltip title={tooltipText}>
         <span>{element}</span>
       </Tooltip>
     );
   }
 
-  const { title, ...allButtonProps } = buttonProps;
+  const { title, tooltipText, ...allButtonProps } = buttonProps;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -159,6 +183,19 @@ function TransactionForm({
             error={!!errors["address"]}
             helperText={errors["address"]}
             style={{ width: "100%" }}
+            InputProps={{
+              endAdornment: to && (
+                <Tooltip title="Remove address" placement="top">
+                  <IconButton
+                    variant="text"
+                    size="medium"
+                    onClick={() => handleRemove({ to: "" })}
+                  >
+                    <Iconify icon="charm:cross" />
+                  </IconButton>
+                </Tooltip>
+              ),
+            }}
           />
         </Grid>
 
@@ -184,18 +221,30 @@ function TransactionForm({
             helperText={errors["amount"]}
             style={{ width: "100%" }}
             InputProps={{
-              endAdornment: maxAmountButton && !amount && (
-                <Tooltip
-                  title="Use the max amount of tokens you have"
-                  placement="top"
-                >
-                  <Button
+              endAdornment: !amount ? (
+                maxAmountButton ? (
+                  <Tooltip
+                    title="Use the max amount of tokens you have"
+                    placement="top"
+                  >
+                    <Button
+                      variant="text"
+                      size="medium"
+                      onClick={handleMaxValueSet}
+                    >
+                      Max
+                    </Button>
+                  </Tooltip>
+                ) : null
+              ) : (
+                <Tooltip title="Remove amount" placement="top">
+                  <IconButton
                     variant="text"
                     size="medium"
-                    onClick={handleMaxValueSet}
+                    onClick={() => handleRemove({ amount: "" })}
                   >
-                    Max
-                  </Button>
+                    <Iconify icon="charm:cross" />
+                  </IconButton>
                 </Tooltip>
               ),
             }}
@@ -215,6 +264,32 @@ function TransactionForm({
               error={!!errors["vestingAmount"]}
               helperText={errors["vestingAmount"]}
               style={{ width: "100%", marginLeft: 16 }}
+              InputProps={{
+                endAdornment: !vestingAmount ? (
+                  <Tooltip
+                    title="Use the min block height set on settings"
+                    placement="top"
+                  >
+                    <Button
+                      variant="text"
+                      size="medium"
+                      onClick={handleMinValueSet}
+                    >
+                      Min
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Remove blocks" placement="top">
+                    <IconButton
+                      variant="text"
+                      size="medium"
+                      onClick={() => handleRemove({ vestingAmount: "" })}
+                    >
+                      <Iconify icon="charm:cross" />
+                    </IconButton>
+                  </Tooltip>
+                ),
+              }}
             />
           )}
         </Grid>
@@ -258,14 +333,13 @@ function TransactionForm({
                 size="large"
                 type="submit"
                 style={{ marginTop: 4 }}
-                disabled={!airdrop && amount > balance}
                 loading={loading}
                 {...allButtonProps}
               >
                 {title || "Add"}
               </LoadingButton>
             ),
-            showTooltip: airdrop ? false : balance < amount,
+            tooltipText: !!buttonProps.disabled ? tooltipText : "",
           })}
         </Grid>
       </Grid>
