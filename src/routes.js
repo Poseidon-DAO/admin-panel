@@ -8,8 +8,9 @@ import NotAllowed from "./pages/NotAllowed";
 import NotFound from "./pages/Page404";
 import DashboardApp from "./pages/DashboardApp";
 // import Polls from "./pages/Polls";
-import Airdrop from "./pages/Airdrop";
 import Transfer from "./pages/Transfer";
+import Airdrop from "./pages/Airdrop";
+import Vesting from "./pages/Vesting";
 import Settings from "./pages/Settings";
 
 export const sectionsTitles = {
@@ -18,6 +19,7 @@ export const sectionsTitles = {
   polls: "List of polls",
   transfer: "Transfer tokens",
   airdrop: "Create Airdrop",
+  vesting: "Vesting",
   settings: "Settings",
 };
 
@@ -50,6 +52,10 @@ export default function Router() {
         <Route
           path="airdrop"
           element={<Airdrop sectionTitle={sectionTitle} />}
+        />
+        <Route
+          path="vesting"
+          element={<Vesting sectionTitle={sectionTitle} />}
         />
         <Route
           path="settings"

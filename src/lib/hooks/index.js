@@ -1,5 +1,6 @@
 export * from "./useAirdrop";
 export * from "./useCreatePoll";
+export * from "./useDeleteUnexpiredVests";
 export * from "./useERC1155Address";
 export * from "./useERC1155Id";
 export * from "./useERC1155Ratio";
@@ -17,4 +18,6 @@ export * from "./useSecurityDelayInBlocks";
 export * from "./useSetERC1155";
 export * from "./useSetSecurityDelayInBlocks";
 export * from "./useTransfer";
+export * from "./useVestLength";
+export * from "./useVestsMetadata";
 export * from "./useVote";

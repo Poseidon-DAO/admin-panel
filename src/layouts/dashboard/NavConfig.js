@@ -24,6 +24,11 @@ const navConfig = [
     icon: getIcon("bi:coin"),
   },
   {
+    title: "Vesting",
+    path: "/app/vesting",
+    icon: getIcon("ic:round-more-time"),
+  },
+  {
     title: "Settings",
     path: "/app/settings",
     icon: getIcon("carbon:settings"),

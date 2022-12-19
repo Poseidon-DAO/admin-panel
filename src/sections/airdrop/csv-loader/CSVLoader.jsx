@@ -43,16 +43,15 @@ function CSVLoader({
         const formatedData = data.map(([address, amount, blocks]) => ({
           address,
           amount: Number(amount),
-          ...(isVestingActive && { vestingAmount: Number(blocks) }),
+          vestingAmount: blocks ? Number(blocks) : NaN,
         }));
 
         const isDataValid = formatedData.every(
           ({ address, amount, vestingAmount }) => {
             return (
-              !web3.utils.isAddress(address) &&
+              web3.utils.isAddress(address) &&
               !isNaN(amount) &&
-              !!isVestingActive &&
-              !isNaN(vestingAmount)
+              (isVestingActive ? !isNaN(vestingAmount) : isNaN(vestingAmount))
             );
           }
         );

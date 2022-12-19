@@ -10,7 +10,7 @@ import TransactionSnackbar from "src/sections/common/transaction-snackbar/Transa
 import PageTitle from "src/sections/common/page-title/PageTitle";
 import Page from "src/components/Page";
 
-import { useAirdrop } from "src/lib";
+import { useAirdrop, useSecurityDelayInBlocks } from "src/lib";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 
 const variant = {
@@ -35,6 +35,7 @@ export default function Airdrop({ sectionTitle }) {
   const [airdropAddresses, setAirdropAddresses] = useState([]);
   const [transactionState, setTransactionState] = useState("");
 
+  const { delayInBlocks } = useSecurityDelayInBlocks();
   const { runAirdrop, airdropData, transferStatus } = useAirdrop({
     accounts: airdropAddresses,
     isVestingActive: !!isVestingActive,
@@ -127,13 +128,16 @@ export default function Airdrop({ sectionTitle }) {
         </Grid>
 
         <TransactionForm
-          airdrop
           vestingAvailable
           formState={{ to: address, amount, vestingAmount }}
           loading={transferStatus === "loading" || isVerifying}
           onVestingChange={(vestingState) => setVestingActive(vestingState)}
           onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
+          buttonProps={{
+            disabled: vestingAmount ? vestingAmount < delayInBlocks : false,
+            tooltipText: "Blocks number is below the minimum value",
+          }}
         />
 
         {!!airdropAddresses.length && (

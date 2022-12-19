@@ -247,7 +247,7 @@ function Table({ rows, onSelectChange, onRowsDelete, isVestingActive }) {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.address}
+                      key={index}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
