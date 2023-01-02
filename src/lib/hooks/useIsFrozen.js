@@ -1,6 +1,6 @@
 import { accessibilityOptions } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 import { useContractRead } from "wagmi";
 
 function useIsFrozen() {

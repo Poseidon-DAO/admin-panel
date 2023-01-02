@@ -5,7 +5,7 @@ import {
 } from "wagmi";
 
 import { accessibilityOptions } from "src/contracts/options";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 
 function useFreeze({ enabled = true }) {
   const options = accessibilityOptions(SMART_CONTRACT_FUNCTIONS.FREEZE_DAO);

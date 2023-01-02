@@ -1,7 +1,7 @@
 import { useContractRead } from "wagmi";
 import { erc20Options } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 
 function useVestLength({ address = "", enabled = true }) {
   const options = erc20Options(SMART_CONTRACT_FUNCTIONS.GET_VEST_LENGTH, [

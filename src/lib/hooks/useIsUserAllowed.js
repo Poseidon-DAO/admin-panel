@@ -1,6 +1,6 @@
 // import { multiSigOptions } from "src/contracts/options";
 
-// import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+// import {SMART_CONTRACT_FUNCTIONS} from "src/contracts/smartContract";
 import { useAccount /* useContractRead */ } from "wagmi";
 
 // TODO: We are checking against the env var currently, and not from the multisig address since this is missing right now

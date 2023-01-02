@@ -1,7 +1,7 @@
 import { useContractRead } from "wagmi";
 import { multiSigOptions } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 import { fHex } from "src/utils/formatNumber";
 
 function usePollMetadata({ pollId } = {}) {

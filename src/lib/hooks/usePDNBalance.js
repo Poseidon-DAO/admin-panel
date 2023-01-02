@@ -1,7 +1,7 @@
 import { utils } from "ethers";
 import { erc20Options } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 import { useAccount, useContractRead } from "wagmi";
 
 function usePDNBalance() {

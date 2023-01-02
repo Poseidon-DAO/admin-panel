@@ -1,5 +1,5 @@
 import { multiSigOptions } from "src/contracts/options";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 import {
   useContractWrite,
   usePrepareContractWrite,

@@ -1,7 +1,10 @@
 import Page from "../components/Page";
 import { useEffect } from "react";
 import { useState } from "react";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import {
+  SMART_CONTRACT_EVENTS,
+  SMART_CONTRACT_FUNCTIONS,
+} from "src/contracts/smartContract";
 import { Box, Container, Grid, Typography } from "@mui/material";
 import PollArgumentsModal from "src/components/PollArgumentsModal";
 import CustomSnackbar from "src/components/CustomSnackbar";
@@ -26,7 +29,7 @@ const CREATE_MULTISIG_POLL = {
     },
   ],
   event: {
-    name: SMART_CONTRACT_FUNCTIONS.EVENT_NEW_MULTISIG,
+    name: SMART_CONTRACT_EVENTS.EVENT_NEW_MULTISIG,
     args: {
       pollType: 3,
       pollIndex: 1,

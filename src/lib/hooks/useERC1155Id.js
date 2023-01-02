@@ -1,5 +1,5 @@
 import { useContractRead } from "wagmi";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 import { erc20Options } from "src/contracts/options";
 
 function useERC1155Id() {

@@ -1,7 +1,7 @@
 import { useAccount, useContractRead, useContractReads } from "wagmi";
 
 import { multiSigOptions } from "src/contracts/options";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import {SMART_CONTRACT_FUNCTIONS} from "src/contracts/smartContract";
 
 function usePolls() {
   const { address } = useAccount();

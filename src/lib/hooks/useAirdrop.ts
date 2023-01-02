@@ -5,7 +5,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { erc20Options } from "src/contracts/options";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 
 type IProps = {
   accounts: { address: string; amount: string; vestingAmount: string }[];

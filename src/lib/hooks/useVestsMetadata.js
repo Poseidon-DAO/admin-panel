@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useContractReads } from "wagmi";
 import { erc20Options } from "src/contracts/options";
 
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import {SMART_CONTRACT_FUNCTIONS} from "src/contracts/smartContract";
 
 function useVestsMetadata({ vestLength = 0, address = "", enabled = true }) {
   const indexes = Array.from(Array(vestLength).keys());

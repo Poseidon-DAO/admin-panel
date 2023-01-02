@@ -1,4 +1,3 @@
-// FUNCTIONS
 const GET_IS_MULTISIG_ADDRESS = "getIsMultiSigAddress";
 const CHECK_IS_FROZEN = "getIsFrozen";
 const CREATE_MULTISIG_POLL = "createMultiSigPoll";
@@ -24,13 +23,10 @@ const SET_SECURITY_DELAY_IN_BLOCKS = "setSecurityDelay";
 const GET_VEST_LENGTH = "getVestLength";
 const GET_VEST_METADATA = "getVestMetaData";
 const DELETE_UNEXPIRED_VESTS = "deleteUnexpiredVests";
-
-// EVENTS
 const GET_POLL_META = "getPollMetaData";
 const EVENT_VOTE_MULTISIG = "VoteMultisigPollEvent";
 
 const SMART_CONTRACT_FUNCTIONS = {
-  // Functions
   GET_IS_MULTISIG_ADDRESS,
   CHECK_IS_FROZEN,
   CREATE_MULTISIG_POLL,
@@ -56,10 +52,11 @@ const SMART_CONTRACT_FUNCTIONS = {
   GET_VEST_LENGTH,
   GET_VEST_METADATA,
   DELETE_UNEXPIRED_VESTS,
+};
 
-  // Events
+const SMART_CONTRACT_EVENTS = {
   EVENT_NEW_MULTISIG,
   EVENT_VOTE_MULTISIG,
 };
 
-export default SMART_CONTRACT_FUNCTIONS;
+export { SMART_CONTRACT_FUNCTIONS, SMART_CONTRACT_EVENTS };
