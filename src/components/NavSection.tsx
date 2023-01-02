@@ -1,20 +1,25 @@
-import PropTypes from "prop-types";
+import { type FC, type ElementType } from "react";
 import { matchPath, useLocation } from "react-router-dom";
 import { Box, List } from "@mui/material";
+
 import NavItem from "./NavItem";
 
-NavSection.propTypes = {
-  navConfig: PropTypes.array,
-};
+interface IProps {
+  navConfig: {
+    title: string;
+    path: string;
+    icon: ElementType;
+  }[];
+}
 
-export default function NavSection({ navConfig, ...other }) {
+const NavSection: FC<IProps> = ({ navConfig }) => {
   const { pathname } = useLocation();
 
-  const match = (path) =>
+  const match = (path: string) =>
     path ? !!matchPath({ path, end: false }, pathname) : false;
 
   return (
-    <Box {...other}>
+    <Box>
       <List disablePadding sx={{ p: 1 }}>
         {navConfig.map((item) => (
           <NavItem key={item.title} item={item} active={match} />
@@ -22,4 +27,6 @@ export default function NavSection({ navConfig, ...other }) {
       </List>
     </Box>
   );
-}
+};
+
+export default NavSection;
