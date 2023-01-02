@@ -1,4 +1,4 @@
-export function formatAddress(address, charsToSlice) {
+export function formatAddress(address: string, charsToSlice: number) {
   if (!address) return;
 
   return (
