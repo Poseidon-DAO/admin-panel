@@ -4,13 +4,13 @@ import { Box, List } from "@mui/material";
 
 import NavItem from "./NavItem";
 
-interface IProps {
+type IProps = {
   navConfig: {
     title: string;
     path: string;
     icon: ElementType;
   }[];
-}
+};
 
 const NavSection: FC<IProps> = ({ navConfig }) => {
   const { pathname } = useLocation();

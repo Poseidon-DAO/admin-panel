@@ -54,7 +54,12 @@ const headCells = [
   },
 ];
 
-function Table({ rows, onSelectChange, onRowsDelete, isVestingActive }) {
+function Table({
+  rows,
+  onSelectChange = () => {},
+  onRowsDelete,
+  isVestingActive,
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchRows, setSearchRows] = useState(rows);
 

@@ -1,39 +1,33 @@
-import { useEffect, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import { Container, Grid, Box } from "@mui/material";
-import { useOutletContext } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
 
+import Page from "src/components/Page";
 import AirdropTable from "src/sections/airdrop/table/Table";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import PageTitle from "src/sections/common/page-title/PageTitle";
-import Page from "src/components/Page";
 
 import { useAirdrop, useSecurityDelayInBlocks } from "src/lib";
 import { getTransactionLink } from "src/utils/getTransactionLink";
+import { useRouterContext } from "src/hooks";
 
-const variant = {
-  error: "error",
-  fileError: "error",
-  success: "success",
-  verifying: "info",
+type IProps = {
+  sectionTitle: string;
 };
 
-const messages = {
-  fileError: "Wrong data format on file!",
-  verifying: "The transaction is being verified!",
-};
+type Account = { address: string; amount: string; vestingAmount: string };
 
-export default function Airdrop({ sectionTitle }) {
+const Airdrop: FC<IProps> = ({ sectionTitle }) => {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [vestingAmount, setVestingAmount] = useState("");
 
-  const [isVestingActive, setVestingActive] = useState("");
+  const [isVestingActive, setVestingActive] = useState(false);
 
-  const [airdropAddresses, setAirdropAddresses] = useState([]);
-  const [transactionState, setTransactionState] = useState("");
+  const [airdropAddresses, setAirdropAddresses] = useState<Account[]>([]);
+  const [fileUploadError, setFileUploadError] = useState("");
 
   const { delayInBlocks } = useSecurityDelayInBlocks();
   const { runAirdrop, airdropData, transferStatus } = useAirdrop({
@@ -41,25 +35,43 @@ export default function Airdrop({ sectionTitle }) {
     isVestingActive: !!isVestingActive,
   });
 
-  const { refetchBalance } = useOutletContext();
+  const { refetchBalance } = useRouterContext();
 
   useEffect(() => {
     setAirdropAddresses([]);
   }, [isVestingActive]);
 
-  function handleAddressAdd({ to, amount, vestingAmount }) {
-    setAirdropAddresses((prevAddresses) => [
-      ...prevAddresses,
-      { address: to, amount, vestingAmount },
-    ]);
+  useEffect(() => {
+    if (transferStatus === "success") {
+      refetchBalance();
+      setAirdropAddresses([]);
+      clearState();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferStatus]);
+
+  function clearState() {
     setAddress("");
     setAmount("");
     setVestingAmount("");
   }
 
-  function handleCSVFileLoad(addresses, error) {
+  function handleAddressAdd({
+    to,
+    amount,
+    vestingAmount,
+  }: { to: string } & Omit<Account, "address">) {
+    setAirdropAddresses((prevAddresses) => [
+      ...prevAddresses,
+      { address: to, amount, vestingAmount },
+    ]);
+    clearState();
+  }
+
+  function handleCSVFileLoad(addresses: Account[], error: Error) {
     if (!!error) {
-      setTransactionState("fileError");
+      setFileUploadError("Wrong data format on file!");
       return;
     }
     setAirdropAddresses(addresses);
@@ -69,34 +81,15 @@ export default function Airdrop({ sectionTitle }) {
     setAirdropAddresses([]);
   }
 
-  function handleRemoveRows(selected) {
+  function handleRemoveRows(selected: string[]) {
     setAirdropAddresses((addresses) =>
       addresses.filter(({ address }) => !selected.includes(address))
     );
   }
 
-  useEffect(() => {
-    if (transferStatus === "error") {
-      setTransactionState("error");
-    }
-
-    if (transferStatus === "success") {
-      refetchBalance();
-      setTransactionState("success");
-      setAirdropAddresses([]);
-      setAddress("");
-      setAmount("");
-      setVestingAmount("");
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transferStatus]);
-
-  function handleSnackbarClose() {
-    setTransactionState("");
-  }
-
-  function handleFormStateChange(formState) {
+  function handleFormStateChange(
+    formState: { to: string } & Omit<Account, "address">
+  ) {
     setAddress(formState.to);
     setAmount(formState.amount);
     setVestingAmount(formState.vestingAmount);
@@ -107,6 +100,20 @@ export default function Airdrop({ sectionTitle }) {
   }
 
   const isVerifying = transferStatus === "loading";
+
+  const showSnackbar = transferStatus !== "idle";
+  const snackbarDuration = isVerifying ? null : 3000;
+
+  const snackbarVariantForState = {
+    loading: "info",
+    error: "error",
+    success: "success",
+    idle: "",
+  }[transferStatus];
+
+  const snackbarMessage = isVerifying
+    ? "The transaction is being verified!"
+    : fileUploadError || "";
 
   return (
     <Page title="Airdrop">
@@ -131,11 +138,16 @@ export default function Airdrop({ sectionTitle }) {
           vestingAvailable
           formState={{ to: address, amount, vestingAmount }}
           loading={transferStatus === "loading" || isVerifying}
-          onVestingChange={(vestingState) => setVestingActive(vestingState)}
+          onVestingChange={(vestingState: boolean) =>
+            setVestingActive(vestingState)
+          }
           onChange={handleFormStateChange}
           onSubmit={handleAddressAdd}
           buttonProps={{
-            disabled: vestingAmount ? vestingAmount < delayInBlocks : false,
+            title: "Add",
+            disabled: vestingAmount
+              ? Number(vestingAmount) < delayInBlocks!
+              : false,
             tooltipText: "Blocks number is below the minimum value",
           }}
         />
@@ -163,20 +175,17 @@ export default function Airdrop({ sectionTitle }) {
         )}
       </Container>
 
-      {(!!transactionState || isVerifying) && (
+      {showSnackbar && (
         <TransactionSnackbar
-          variant={
-            isVerifying ? variant["verifying"] : variant[transactionState]
-          }
-          message={
-            isVerifying ? messages["verifying"] : messages[transactionState]
-          }
-          onClose={handleSnackbarClose}
+          variant={snackbarVariantForState}
+          message={snackbarMessage}
           loading={isVerifying}
-          duration={isVerifying ? null : 3000}
+          duration={snackbarDuration}
           etherscanLink={getTransactionLink(airdropData?.hash)}
         />
       )}
     </Page>
   );
-}
+};
+
+export default Airdrop;

@@ -1,13 +1,18 @@
-import { erc20Options } from "src/contracts/options";
-import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
+import { ethers } from "ethers";
 import {
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { ethers } from "ethers";
+import { erc20Options } from "src/contracts/options";
+import SMART_CONTRACT_FUNCTIONS from "src/contracts/smartContract";
 
-function useAirdrop({ accounts, isVestingActive = null }) {
+type IProps = {
+  accounts: { address: string; amount: string; vestingAmount: string }[];
+  isVestingActive?: boolean | null;
+};
+
+const useAirdrop = ({ accounts, isVestingActive = null }: IProps) => {
   const options = erc20Options(
     isVestingActive
       ? SMART_CONTRACT_FUNCTIONS.RUN_AIR_DROP_VESTING
@@ -47,6 +52,6 @@ function useAirdrop({ accounts, isVestingActive = null }) {
     isAirdropSuccess: isSuccess,
     transferStatus: status,
   };
-}
+};
 
 export { useAirdrop };

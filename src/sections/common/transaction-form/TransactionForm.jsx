@@ -19,7 +19,7 @@ import Iconify from "src/components/Iconify";
 function TransactionForm({
   onSubmit,
   onChange,
-  buttonProps = { title: "" },
+  buttonProps = { title: "", disabled: false, tooltipText: "" },
   column = false,
   maxAmountButton = false,
   loading = false,
