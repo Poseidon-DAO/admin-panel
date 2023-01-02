@@ -1,7 +1,12 @@
-import { useTheme } from "@mui/material/styles";
+import { type Breakpoint, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-export default function useResponsive(query, key, start, end) {
+export default function useResponsive(
+  query: "up" | "down" | "between" | "only",
+  key: Breakpoint,
+  start: Breakpoint,
+  end: Breakpoint
+) {
   const theme = useTheme();
 
   const mediaUp = useMediaQuery(theme.breakpoints.up(key));
@@ -27,5 +32,6 @@ export default function useResponsive(query, key, start, end) {
   if (query === "only") {
     return mediaOnly;
   }
+
   return null;
 }
