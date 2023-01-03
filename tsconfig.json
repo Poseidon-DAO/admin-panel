@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "allowJs": true, // TODO: remove this when all files have been migrated
     "target": "es2016",
+    "allowJs": true,
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "build"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build/**/*"]

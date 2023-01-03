@@ -15,7 +15,7 @@ import { FullPageLoader } from "src/components/FullPageLoader";
 import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
 import CustomSnackbar from "src/components/CustomSnackbar";
-import { NetworkTypes } from "src/types";
+import { NetworkTypes } from "src/constants";
 
 const APP_BAR_MOBILE = 64;
 const APP_BAR_DESKTOP = 92;

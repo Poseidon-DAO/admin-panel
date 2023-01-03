@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { type FC, type ReactNode } from "react";
 import { Alert, Snackbar, type AlertProps } from "@mui/material";
 
 type IProps = {
   type?: AlertProps["severity"];
   variant?: AlertProps["variant"];
-  message?: string;
+  message?: string | ReactNode;
   isOpen: boolean;
   onClose?: () => void;
 };

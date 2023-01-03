@@ -20,10 +20,10 @@ import { usePDNSymbol } from "src/lib";
 import { useBlockNumber } from "wagmi";
 
 function descendingComparator(a: IRow, b: IRow, orderBy: keyof IRow) {
-  if (b[orderBy] < a[orderBy]) {
+  if (Number(b[orderBy]) < Number(a[orderBy])) {
     return -1;
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (Number(b[orderBy]) > Number(a[orderBy])) {
     return 1;
   }
   return 0;
@@ -87,11 +87,13 @@ const VestingTable: FC<IProps> = ({
   }, [rows]);
 
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<keyof IRow>("amount");
+  const [orderBy, setOrderBy] = useState<"amount" | "expirationBlockHeight">(
+    "amount"
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  function handleRequestSort(property: keyof IRow) {
+  function handleRequestSort(property: "amount" | "expirationBlockHeight") {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
@@ -158,7 +160,9 @@ const VestingTable: FC<IProps> = ({
                         active={orderBy === headCell.id}
                         direction={orderBy === headCell.id ? order : "asc"}
                         onClick={() =>
-                          handleRequestSort(headCell.id as keyof IRow)
+                          handleRequestSort(
+                            headCell.id as "amount" | "expirationBlockHeight"
+                          )
                         }
                         style={{ fontWeight: "bolder" }}
                       >
