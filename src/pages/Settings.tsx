@@ -1,21 +1,23 @@
-import PropTypes from "prop-types";
+import { type FC } from "react";
 import { Container } from "@mui/material";
 
 import Page from "src/components/Page";
-import VestingLayout from "src/layouts/vesting";
+import SettingsLayout from "src/layouts/settings";
 import PageTitle from "src/sections/common/page-title/PageTitle";
 
-Vesting.propTypes = {
-  sectionTitle: PropTypes.string,
+type IProps = {
+  sectionTitle: string;
 };
 
-export default function Vesting({ sectionTitle = "" }) {
+const Settings: FC<IProps> = ({ sectionTitle = "" }) => {
   return (
-    <Page title="Vesting">
+    <Page title="Settings">
       <Container maxWidth="xl">
         <PageTitle>{sectionTitle}</PageTitle>
-        <VestingLayout />
+        <SettingsLayout />
       </Container>
     </Page>
   );
-}
+};
+
+export default Settings;

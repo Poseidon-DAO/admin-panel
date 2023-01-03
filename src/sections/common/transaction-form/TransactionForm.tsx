@@ -1,4 +1,13 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FC,
+  type FormEvent,
+  type ReactNode,
+} from "react";
+import web3 from "web3";
+import { LoadingButton } from "@mui/lab";
 import {
   Grid,
   TextField,
@@ -9,16 +18,38 @@ import {
   Box,
   Typography,
   IconButton,
+  ButtonProps,
 } from "@mui/material";
-import web3 from "web3";
-import { useOutletContext } from "react-router-dom";
-import { LoadingButton } from "@mui/lab";
-import { useSecurityDelayInBlocks } from "src/lib";
-import Iconify from "src/components/Iconify";
 
-function TransactionForm({
-  onSubmit,
-  onChange,
+import Iconify from "src/components/Iconify";
+import { useSecurityDelayInBlocks } from "src/lib";
+import { useRouterContext } from "src/hooks";
+
+type FormState = {
+  to: string;
+  amount: string | number;
+  vestingAmount?: string | number | null;
+};
+
+type IProps = {
+  buttonProps?: {
+    title?: string;
+    disabled?: boolean;
+    tooltipText?: string;
+    variant?: ButtonProps["variant"];
+  };
+  column?: boolean;
+  maxAmountButton?: boolean;
+  loading?: boolean;
+  vestingAvailable?: boolean;
+  formState: FormState;
+
+  onVestingChange?: (vestingStatus: boolean) => void;
+  onChange?: (formState: FormState) => void;
+  onSubmit?: (formState: FormState) => void;
+};
+
+const TransactionForm: FC<IProps> = ({
   buttonProps = { title: "", disabled: false, tooltipText: "" },
   column = false,
   maxAmountButton = false,
@@ -26,13 +57,15 @@ function TransactionForm({
   formState = { to: "", amount: "", vestingAmount: "" },
   vestingAvailable = false,
   onVestingChange,
-}) {
-  const { balance } = useOutletContext();
+  onSubmit,
+  onChange,
+}) => {
+  const { balance } = useRouterContext();
   const { to, amount, vestingAmount } = formState;
   const [vesting, setVesting] = useState(false);
   const { delayInBlocks } = useSecurityDelayInBlocks();
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<Partial<FormState>>({
     to: "",
     amount: "",
     vestingAmount: "",
@@ -46,8 +79,8 @@ function TransactionForm({
 
   const handleInputChange =
     (asNumber = false) =>
-    (event) => {
-      onChange({
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      onChange?.({
         to,
         amount,
         ...(vestingAvailable && {
@@ -55,7 +88,7 @@ function TransactionForm({
         }),
         [event.target.name]:
           !!asNumber && !!event.target.value
-            ? event.target.valueAsNumber
+            ? (event as ChangeEvent<HTMLInputElement>).target.valueAsNumber
             : event.target.value,
       });
       setErrors((errors) => ({
@@ -81,7 +114,7 @@ function TransactionForm({
     if (!web3.utils.isAddress(to)) {
       setErrors({
         ...errors,
-        address: "Please provide a valid address!",
+        to: "Please provide a valid address!",
       });
 
       return false;
@@ -100,7 +133,7 @@ function TransactionForm({
   }
 
   function handleMaxValueSet() {
-    onChange({
+    onChange?.({
       to,
       amount: Number(balance),
       ...(vestingAvailable && {
@@ -110,7 +143,7 @@ function TransactionForm({
   }
 
   function handleMinValueSet() {
-    onChange({
+    onChange?.({
       to,
       amount,
       ...(vestingAvailable && {
@@ -119,8 +152,8 @@ function TransactionForm({
     });
   }
 
-  function handleRemove(newValue) {
-    onChange({
+  function handleRemove(newValue: Partial<FormState>) {
+    onChange?.({
       to,
       amount,
       ...(vestingAvailable && {
@@ -134,7 +167,7 @@ function TransactionForm({
     setVesting((vesting) => !vesting);
   }
 
-  function handleSubmit(event) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const isValid = validate();
@@ -150,7 +183,13 @@ function TransactionForm({
     });
   }
 
-  function renderSubmitButton({ element, tooltipText }) {
+  function renderSubmitButton({
+    element,
+    tooltipText,
+  }: {
+    element: ReactNode;
+    tooltipText?: string;
+  }) {
     if (!tooltipText) return element;
 
     return (
@@ -180,14 +219,13 @@ function TransactionForm({
             label="Address"
             autoComplete="off"
             InputLabelProps={{ shrink: true }}
-            error={!!errors["address"]}
-            helperText={errors["address"]}
+            error={!!errors["to"]}
+            helperText={errors["to"]}
             style={{ width: "100%" }}
             InputProps={{
               endAdornment: to && (
                 <Tooltip title="Remove address" placement="top">
                   <IconButton
-                    variant="text"
                     size="medium"
                     onClick={() => handleRemove({ to: "" })}
                   >
@@ -239,7 +277,6 @@ function TransactionForm({
               ) : (
                 <Tooltip title="Remove amount" placement="top">
                   <IconButton
-                    variant="text"
                     size="medium"
                     onClick={() => handleRemove({ amount: "" })}
                   >
@@ -281,7 +318,6 @@ function TransactionForm({
                 ) : (
                   <Tooltip title="Remove blocks" placement="top">
                     <IconButton
-                      variant="text"
                       size="medium"
                       onClick={() => handleRemove({ vestingAmount: "" })}
                     >
@@ -345,6 +381,6 @@ function TransactionForm({
       </Grid>
     </form>
   );
-}
+};
 
 export default TransactionForm;

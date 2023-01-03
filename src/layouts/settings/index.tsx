@@ -1,3 +1,4 @@
+import { type FC } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -5,7 +6,7 @@ import BurnRatio from "src/sections/settings/burn-ratio/BurnRatio";
 import FreezeDao from "src/sections/settings/freeze-dao/FreezeDao";
 import VestingBlocks from "src/sections/settings/vesting-blocks/VestingBlocks";
 
-export default function SettingsLayout() {
+const SettingsLayout: FC = () => {
   return (
     <Box>
       <ItemWrapper>
@@ -21,7 +22,7 @@ export default function SettingsLayout() {
       </ItemWrapper>
     </Box>
   );
-}
+};
 
 const ItemWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -34,3 +35,5 @@ const ItemWrapper = styled(Box)(({ theme }) => ({
     borderWidth: "1px 0 1px 0",
   },
 }));
+
+export default SettingsLayout;

@@ -1,20 +1,18 @@
+import { type FC } from "react";
 import { useConnect } from "wagmi";
 import { styled } from "@mui/material/styles";
 import { Button, Card, Container, Typography, useTheme } from "@mui/material";
 
-import Page from "../components/Page";
-import Logo from "../components/Logo";
+import Page from "src/components/Page";
+import Logo from "src/components/Logo";
 
-import metamask from "../assets/metamask-logo.png";
-
-export default function Login() {
+const Login: FC = () => {
   const theme = useTheme();
-
   const { connect, connectors } = useConnect();
 
-  const handleLogin = () => {
+  function handleLogin() {
     connect({ connector: connectors[0] });
-  };
+  }
 
   return (
     <Page title="Login">
@@ -52,7 +50,13 @@ export default function Login() {
                   fontSize: 30,
                   color: theme.palette.primary.main,
                 }}
-                endIcon={<img src={metamask} alt="metamask" width="40" />}
+                endIcon={
+                  <img
+                    src="../assets/metamask-logo.png"
+                    alt="metamask"
+                    width="40"
+                  />
+                }
               >
                 CONNECT
               </Button>
@@ -62,7 +66,7 @@ export default function Login() {
       </RootStyle>
     </Page>
   );
-}
+};
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -101,3 +105,5 @@ const ContentStyle = styled("div")(({ theme }) => ({
   textAlign: "center",
   padding: theme.spacing(12, 0),
 }));
+
+export default Login;

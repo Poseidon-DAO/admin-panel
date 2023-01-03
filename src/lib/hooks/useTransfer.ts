@@ -1,13 +1,19 @@
 import { ethers } from "ethers";
-import { erc20Options } from "src/contracts/options";
-import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 import {
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
 
-function useTransfer({ address, amount = 0 } = {}) {
+import { erc20Options } from "src/contracts/options";
+import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
+
+type IProps = {
+  address: string;
+  amount?: number | string;
+};
+
+const useTransfer = ({ address, amount = 0 }: IProps) => {
   const options = erc20Options(SMART_CONTRACT_FUNCTIONS.TRANSFER);
 
   const { config } = usePrepareContractWrite({
@@ -16,7 +22,7 @@ function useTransfer({ address, amount = 0 } = {}) {
     args: [address, ethers.utils.parseUnits(amount.toString() || "0", 18)],
   });
 
-  const { data, write, isFetching } = useContractWrite(config);
+  const { data, write } = useContractWrite(config);
 
   const { isSuccess, status } = useWaitForTransaction({
     hash: data?.hash,
@@ -26,9 +32,8 @@ function useTransfer({ address, amount = 0 } = {}) {
     transfer: write,
     transferData: data,
     isTransferSuccess: isSuccess,
-    isFetchingTransfer: isFetching,
     transferStatus: status,
   };
-}
+};
 
 export { useTransfer };

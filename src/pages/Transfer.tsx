@@ -1,31 +1,32 @@
-import { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useState, useEffect, type FC } from "react";
 import { Container } from "@mui/material";
 
 import { useTransfer } from "src/lib";
-import { useDebounce } from "src/hooks/useDebounce";
+import { useRouterContext, useDebounce } from "src/hooks";
+import { getTransactionLink } from "src/utils/getTransactionLink";
+
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import TransactionForm from "src/sections/common/transaction-form/TransactionForm";
 import PageTitle from "src/sections/common/page-title/PageTitle";
-import { getTransactionLink } from "src/utils/getTransactionLink";
+import Page from "src/components/Page";
 
-import Page from "../components/Page";
+type IProps = {
+  sectionTitle: string;
+};
 
-export default function Transfer({ sectionTitle }) {
+const Transfer: FC<IProps> = ({ sectionTitle }) => {
   const [to, setTo] = useState("");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<string | number>("");
 
   const debouncedTo = useDebounce(to);
   const debouncedAmount = useDebounce(amount);
 
-  const { balance } = useOutletContext();
-  const { transfer, transferData, isFetchingTransfer, transferStatus } =
-    useTransfer({
-      address: debouncedTo,
-      amount: debouncedAmount,
-    });
+  const { balance, refetchBalance } = useRouterContext();
+  const { transfer, transferData, transferStatus } = useTransfer({
+    address: debouncedTo,
+    amount: debouncedAmount,
+  });
   const [transactionState, setTransactionState] = useState("");
-  const { refetchBalance } = useOutletContext();
 
   const isVerifying = transferStatus === "loading";
 
@@ -52,7 +53,10 @@ export default function Transfer({ sectionTitle }) {
     setTransactionState("");
   }
 
-  function handleFormStateChange(formState) {
+  function handleFormStateChange(formState: {
+    to: string;
+    amount: string | number;
+  }) {
     setTo(formState.to);
     setAmount(formState.amount);
   }
@@ -72,9 +76,7 @@ export default function Transfer({ sectionTitle }) {
           formState={{ to, amount }}
           onSubmit={handleTransfer}
           onChange={handleFormStateChange}
-          loading={
-            isFetchingTransfer || transferStatus === "loading" || isVerifying
-          }
+          loading={transferStatus === "loading" || isVerifying}
           buttonProps={{
             title: "Transfer",
             variant: "contained",
@@ -96,4 +98,6 @@ export default function Transfer({ sectionTitle }) {
       )}
     </Page>
   );
-}
+};
+
+export default Transfer;

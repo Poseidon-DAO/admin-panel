@@ -17,12 +17,18 @@ type IProps = {
   sectionTitle: string;
 };
 
-type Account = { address: string; amount: string; vestingAmount: string };
+type Account = {
+  address: string;
+  amount: string | number;
+  vestingAmount?: string | number | null;
+};
 
 const Airdrop: FC<IProps> = ({ sectionTitle }) => {
   const [address, setAddress] = useState("");
-  const [amount, setAmount] = useState("");
-  const [vestingAmount, setVestingAmount] = useState("");
+  const [amount, setAmount] = useState<string | number>("");
+  const [vestingAmount, setVestingAmount] = useState<string | number | null>(
+    ""
+  );
 
   const [isVestingActive, setVestingActive] = useState(false);
 
@@ -92,7 +98,7 @@ const Airdrop: FC<IProps> = ({ sectionTitle }) => {
   ) {
     setAddress(formState.to);
     setAmount(formState.amount);
-    setVestingAmount(formState.vestingAmount);
+    setVestingAmount(formState?.vestingAmount!);
   }
 
   function handleAirdrop() {

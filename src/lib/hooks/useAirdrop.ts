@@ -4,11 +4,16 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+
 import { erc20Options } from "src/contracts/options";
 import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 
 type IProps = {
-  accounts: { address: string; amount: string; vestingAmount: string }[];
+  accounts: {
+    address: string;
+    amount: string | number;
+    vestingAmount?: string | number | null;
+  }[];
   isVestingActive?: boolean | null;
 };
 

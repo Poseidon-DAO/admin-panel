@@ -1,10 +1,11 @@
-import { Box, Button, Typography } from "@mui/material";
-import Page from "../components/Page";
-import logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { type FC } from "react";
 import { useDisconnect } from "wagmi";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
 
-export default function NotAllowed() {
+import Page from "src/components/Page";
+
+const NotAllowed: FC = () => {
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
 
@@ -23,7 +24,12 @@ export default function NotAllowed() {
         height="100vh"
         width="100vw"
       >
-        <img src={logo} alt="PoseidonDAO" height="100px" width="100px" />
+        <img
+          src="../assets/logo.png"
+          alt="PoseidonDAO"
+          height="100px"
+          width="100px"
+        />
         <Typography variant="h4" gutterBottom mt={5}>
           You're not allowed to view this page.
         </Typography>
@@ -35,4 +41,6 @@ export default function NotAllowed() {
       </Box>
     </Page>
   );
-}
+};
+
+export default NotAllowed;

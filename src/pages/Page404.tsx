@@ -1,7 +1,9 @@
+import { type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import { Button, Typography, Container, Box } from "@mui/material";
-import Page from "../components/Page";
+
+import Page from "src/components/Page";
 
 const ContentStyle = styled("div")(({ theme }) => ({
   maxWidth: 480,
@@ -13,7 +15,7 @@ const ContentStyle = styled("div")(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
-export default function Page404() {
+const Page404: FC = () => {
   return (
     <Page title="404 Page Not Found">
       <Container maxWidth="xl">
@@ -45,4 +47,6 @@ export default function Page404() {
       </Container>
     </Page>
   );
-}
+};
+
+export default Page404;
