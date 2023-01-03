@@ -1,9 +1,17 @@
+import { type FC, useState } from "react";
 import { Button, Grid, TextField, IconButton } from "@mui/material";
-import { useState } from "react";
-import Iconify from "src/components/Iconify";
 import Web3 from "web3";
 
-export default function SearchInput({ address, onChange, onClick, onDelete }) {
+import Iconify from "src/components/Iconify";
+
+type IProps = {
+  address: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick: () => void;
+  onDelete: () => void;
+};
+
+const SearchInput: FC<IProps> = ({ address, onChange, onClick, onDelete }) => {
   const [error, setError] = useState("");
 
   function isValid() {
@@ -21,9 +29,9 @@ export default function SearchInput({ address, onChange, onClick, onDelete }) {
     return isValid;
   }
 
-  function handleChange(e) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setError("");
-    onChange?.(e);
+    onChange(e);
   }
 
   function handleDelete() {
@@ -51,7 +59,7 @@ export default function SearchInput({ address, onChange, onClick, onDelete }) {
           onChange={handleChange}
           InputProps={{
             endAdornment: address && (
-              <IconButton variant="text" size="medium" onClick={handleDelete}>
+              <IconButton size="medium" onClick={handleDelete}>
                 <Iconify icon="charm:cross" />
               </IconButton>
             ),
@@ -68,4 +76,6 @@ export default function SearchInput({ address, onChange, onClick, onDelete }) {
       </Grid>
     </Grid>
   );
-}
+};
+
+export default SearchInput;

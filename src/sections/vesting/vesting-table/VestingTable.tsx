@@ -1,3 +1,4 @@
+import { type FC, useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import {
   Box,
@@ -11,13 +12,14 @@ import {
   TableRow,
   TableSortLabel,
   Toolbar,
+  Tooltip,
   Typography,
+  type SortDirection,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { usePDNSymbol } from "src/lib";
 import { useBlockNumber } from "wagmi";
 
-function descendingComparator(a, b, orderBy) {
+function descendingComparator(a: IRow, b: IRow, orderBy: keyof IRow) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -27,10 +29,10 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-function getComparator(order, orderBy) {
+function getComparator(order: string, orderBy: keyof IRow) {
   return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
+    ? (a: IRow, b: IRow) => descendingComparator(a, b, orderBy)
+    : (a: IRow, b: IRow) => -descendingComparator(a, b, orderBy);
 }
 
 const headCells = [
@@ -56,7 +58,26 @@ const headCells = [
   },
 ];
 
-function VestingTable({ rows, onRowDelete, isLoading, loadingId }) {
+type IRow = {
+  amount: string | number;
+  expirationBlockHeight: number | string;
+  vestIndex: number;
+  address: string;
+};
+
+type IProps = {
+  rows: IRow[];
+  onRowDelete?: (vestToDelete: number) => void;
+  isLoading?: boolean;
+  loadingId: number | null;
+};
+
+const VestingTable: FC<IProps> = ({
+  rows,
+  onRowDelete,
+  isLoading,
+  loadingId,
+}) => {
   const [searchRows, setSearchRows] = useState(rows);
   const { symbol } = usePDNSymbol();
   const { data: lastBlock } = useBlockNumber({ watch: true });
@@ -65,34 +86,34 @@ function VestingTable({ rows, onRowDelete, isLoading, loadingId }) {
     setSearchRows(rows);
   }, [rows]);
 
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("amount");
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const [orderBy, setOrderBy] = useState<keyof IRow>("amount");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  function handleRequestSort(event, property) {
+  function handleRequestSort(property: keyof IRow) {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   }
 
-  function handleChangePage(_, newPage) {
+  function handleChangePage(_: unknown, newPage: number) {
     setPage(newPage);
   }
 
-  function handleChangeRowsPerPage(event) {
+  function handleChangeRowsPerPage(event: React.ChangeEvent<HTMLInputElement>) {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   }
 
-  function handleRowDelete(index) {
+  function handleRowDelete(index: number) {
     onRowDelete?.(index);
   }
 
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - searchRows.length) : 0;
   const showDeleteCell = searchRows.some(
-    (row) => lastBlock < row?.expirationBlockHeight
+    (row) => lastBlock! < row?.expirationBlockHeight
   );
   const filteredCells = headCells.filter(
     (cell) => !(!showDeleteCell && cell.id === "delete")
@@ -125,15 +146,19 @@ function VestingTable({ rows, onRowDelete, isLoading, loadingId }) {
                   <TableCell
                     key={headCell.id}
                     align="left"
-                    sortDirection={orderBy === headCell.id ? order : false}
+                    sortDirection={
+                      orderBy === headCell.id
+                        ? (order as SortDirection)
+                        : undefined
+                    }
                   >
                     {headCell.id === "amount" ||
                     headCell.id === "expirationBlockHeight" ? (
                       <TableSortLabel
                         active={orderBy === headCell.id}
                         direction={orderBy === headCell.id ? order : "asc"}
-                        onClick={(event) =>
-                          handleRequestSort(event, headCell.id)
+                        onClick={() =>
+                          handleRequestSort(headCell.id as keyof IRow)
                         }
                         style={{ fontWeight: "bolder" }}
                       >
@@ -161,20 +186,47 @@ function VestingTable({ rows, onRowDelete, isLoading, loadingId }) {
                     >
                       <TableCell align="left">{row.address}</TableCell>
                       <TableCell align="left">
-                        {row.amount} {symbol}
+                        <>
+                          {row.amount} {symbol}
+                        </>
                       </TableCell>
                       <TableCell align="left">
-                        {row.expirationBlockHeight - lastBlock}
+                        {Number(row.expirationBlockHeight) - lastBlock!}
                       </TableCell>
                       <TableCell align="right">
-                        {lastBlock < row?.expirationBlockHeight && (
+                        {!!lastBlock &&
+                        lastBlock >= Number(row?.expirationBlockHeight) ? (
+                          <Tooltip title="You can't delete expired vests!">
+                            <span style={{ cursor: "not-allowed" }}>
+                              <LoadingButton
+                                variant="contained"
+                                color="error"
+                                size="small"
+                                onClick={() => handleRowDelete(row?.vestIndex)}
+                                loading={
+                                  isLoading && loadingId === row?.vestIndex
+                                }
+                                disabled={
+                                  (isLoading && loadingId !== row?.vestIndex) ||
+                                  lastBlock! >=
+                                    Number(row?.expirationBlockHeight)
+                                }
+                              >
+                                Delete
+                              </LoadingButton>
+                            </span>
+                          </Tooltip>
+                        ) : (
                           <LoadingButton
                             variant="contained"
                             color="error"
                             size="small"
                             onClick={() => handleRowDelete(row?.vestIndex)}
                             loading={isLoading && loadingId === row?.vestIndex}
-                            disabled={isLoading && loadingId !== row?.vestIndex}
+                            disabled={
+                              (isLoading && loadingId !== row?.vestIndex) ||
+                              lastBlock! >= Number(row?.expirationBlockHeight)
+                            }
                           >
                             Delete
                           </LoadingButton>
@@ -209,6 +261,6 @@ function VestingTable({ rows, onRowDelete, isLoading, loadingId }) {
       </Paper>
     </Box>
   );
-}
+};
 
 export default VestingTable;

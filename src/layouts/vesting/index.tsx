@@ -1,16 +1,18 @@
+import { type FC, useEffect, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+
 import { useVestLength, useVestsMetadata } from "src/lib";
 import { useDeleteUnexpiredVests } from "src/lib/hooks/useDeleteUnexpiredVests";
+import { getTransactionLink } from "src/utils/getTransactionLink";
+
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import SearchInput from "src/sections/vesting/search-input/SearchInput";
 import VestingTable from "src/sections/vesting/vesting-table/VestingTable";
-import { getTransactionLink } from "src/utils/getTransactionLink";
 
-export default function VestingLayout() {
+const VestingLayout: FC = () => {
   const [shouldSubmit, setShouldSubmit] = useState(false);
   const [address, setAddress] = useState("");
-  const [vestToDelete, setVestToDelete] = useState(null);
+  const [vestToDelete, setVestToDelete] = useState<number | null>(null);
 
   const { vestLength, vestLengthStatus } = useVestLength({
     address,
@@ -39,7 +41,7 @@ export default function VestingLayout() {
   }, [address]);
 
   useEffect(() => {
-    if (vestToDelete >= 0) {
+    if (!!vestToDelete && vestToDelete >= 0) {
       deleteUnExpiredVests?.();
     }
 
@@ -52,7 +54,7 @@ export default function VestingLayout() {
     }
   }, [deleteUnExpiredVestsStatus]);
 
-  function handleInputChange(e) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAddress(e.target.value);
   }
 
@@ -64,7 +66,7 @@ export default function VestingLayout() {
     setAddress("");
   }
 
-  function handleDeleteVest(selectedVestIndex) {
+  function handleDeleteVest(selectedVestIndex: number) {
     setVestToDelete(selectedVestIndex);
   }
 
@@ -74,6 +76,7 @@ export default function VestingLayout() {
     loading: "info",
     error: "error",
     success: "success",
+    idle: "",
   }[deleteUnExpiredVestsStatus];
 
   const rows = vestsMetadata.map((metadata) => ({
@@ -121,14 +124,17 @@ export default function VestingLayout() {
         </Grid>
       )}
 
-      {vestLength > 0 && !!vestsMetadata.length && shouldSubmit && (
-        <VestingTable
-          rows={rows}
-          onRowDelete={handleDeleteVest}
-          isLoading={deleteUnExpiredVestsStatus === "loading"}
-          loadingId={vestToDelete}
-        />
-      )}
+      {!!vestLength &&
+        vestLength > 0 &&
+        !!vestsMetadata.length &&
+        shouldSubmit && (
+          <VestingTable
+            rows={rows}
+            onRowDelete={handleDeleteVest}
+            isLoading={deleteUnExpiredVestsStatus === "loading"}
+            loadingId={vestToDelete}
+          />
+        )}
 
       {deleteUnExpiredVestsStatus !== "idle" && (
         <TransactionSnackbar
@@ -141,4 +147,6 @@ export default function VestingLayout() {
       )}
     </Box>
   );
-}
+};
+
+export default VestingLayout;
