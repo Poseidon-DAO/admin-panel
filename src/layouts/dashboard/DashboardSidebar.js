@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import account from "../../_mock/account";
 import useResponsive from "../../hooks/useResponsive";
-import Logo from "../../components/Logo.js";
+import Logo from "../../components/Logo";
 import Scrollbar from "../../components/Scrollbar";
 import NavSection from "../../components/NavSection";
 

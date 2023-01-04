@@ -16,7 +16,7 @@ import {
   usePollMetadata,
   useVote,
 } from "src/lib";
-import { PollTypes, VoteTypes } from "src/types";
+import { PollTypes, VoteTypes } from "src/constants";
 
 import Iconify from "./Iconify";
 
