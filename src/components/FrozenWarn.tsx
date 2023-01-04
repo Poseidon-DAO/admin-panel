@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
-import React from "react";
 
-export default function FrozenWarn() {
+export const FrozenWarn = () => {
   return (
     <Box
       sx={{
@@ -17,4 +16,6 @@ export default function FrozenWarn() {
       <h4 color="#fff">The DAO is frozen</h4>
     </Box>
   );
-}
+};
+
+export default FrozenWarn;

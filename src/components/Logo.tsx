@@ -1,20 +1,18 @@
-import PropTypes from "prop-types";
+import { type FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Box } from "@mui/material";
 
-Logo.propTypes = {
-  disabledLink: PropTypes.bool,
-  roundedCorners: PropTypes.bool,
-  width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+type IProps = {
+  disabledLink?: boolean;
+  roundedCorners?: boolean;
+  width?: number;
 };
 
-Logo.defaultProps = {
-  disabledLink: false,
-  roundedCorners: false,
-  width: 150,
-};
-
-export default function Logo({ disabledLink, width, roundedCorners }) {
+const Logo: FC<IProps> = ({
+  disabledLink = false,
+  width = 150,
+  roundedCorners = false,
+}) => {
   const logo = (
     <Box width={width}>
       <img
@@ -30,4 +28,6 @@ export default function Logo({ disabledLink, width, roundedCorners }) {
   }
 
   return <RouterLink to="/">{logo}</RouterLink>;
-}
+};
+
+export default Logo;
