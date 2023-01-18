@@ -18,12 +18,12 @@ const PDNTransfers: FC = () => {
   const { totalSumMoved, weeklyTransfers } = useWeeklyVolumeMove();
   const { symbol } = usePDNSymbol();
 
-  const pdnMoveChartData = makeChartData(weeklyTransfers!);
-  const pdnMovePieChartData = makePieChartData(weeklyTransfers!);
-
   if (!totalSumMoved) {
     return null;
   }
+
+  const pdnMoveChartData = makeChartData(weeklyTransfers!);
+  const pdnMovePieChartData = makePieChartData(weeklyTransfers!);
 
   return (
     <Grid container spacing={3}>

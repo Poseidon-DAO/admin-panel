@@ -18,12 +18,12 @@ const PDNMints: FC = () => {
   const { totalSumMint, weeklyMints } = useWeeklyVolumeMint();
   const { symbol } = usePDNSymbol();
 
-  const pdnMintChartData = makeChartData(weeklyMints!);
-  const pdnMintPieChartData = makePieChartData(weeklyMints!);
-
   if (!totalSumMint) {
     return null;
   }
+
+  const pdnMintChartData = makeChartData(weeklyMints!);
+  const pdnMintPieChartData = makePieChartData(weeklyMints!);
 
   return (
     <Grid container spacing={3}>

@@ -18,14 +18,12 @@ const PDNBurns: FC = () => {
   const { totalSumBurned, weeklyBurns } = useWeeklyVolumeBurn();
   const { symbol } = usePDNSymbol();
 
-  const pdnBurnChartData = makeChartData(weeklyBurns!);
-  const pdnBurnPieChartData = makePieChartData(weeklyBurns!);
-
-  console.log(pdnBurnChartData);
-
   if (!totalSumBurned) {
     return null;
   }
+
+  const pdnBurnChartData = makeChartData(weeklyBurns!);
+  const pdnBurnPieChartData = makePieChartData(weeklyBurns!);
 
   return (
     <Grid container spacing={3}>

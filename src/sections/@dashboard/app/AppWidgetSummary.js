@@ -1,8 +1,6 @@
 import { alpha, styled } from "@mui/material/styles";
 import { Card, Typography } from "@mui/material";
 
-import { fShortenNumber } from "../../../utils/formatNumber";
-
 import Iconify from "../../../components/Iconify";
 
 const IconWrapperStyle = styled("div")(({ theme }) => ({
@@ -45,7 +43,7 @@ export default function AppWidgetSummary({
         <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
 
-      <Typography variant="h3">{fShortenNumber(total)}</Typography>
+      <Typography variant="h3">{total.toFixed(2)}</Typography>
 
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
