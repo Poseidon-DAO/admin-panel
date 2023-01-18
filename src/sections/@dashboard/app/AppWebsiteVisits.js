@@ -1,17 +1,9 @@
-import PropTypes from "prop-types";
 import merge from "lodash/merge";
 import ReactApexChart from "react-apexcharts";
 
 import { Card, CardHeader, Box } from "@mui/material";
 
 import { BaseOptionChart } from "../../../components/chart";
-
-AppWebsiteVisits.propTypes = {
-  title: PropTypes.string,
-  subheader: PropTypes.string,
-  chartData: PropTypes.array.isRequired,
-  chartLabels: PropTypes.arrayOf(PropTypes.string).isRequired,
-};
 
 export default function AppWebsiteVisits({
   title,
@@ -24,17 +16,14 @@ export default function AppWebsiteVisits({
     plotOptions: { bar: { columnWidth: "16%" } },
     fill: { type: chartData.map((i) => i.fill) },
     labels: chartLabels,
-    xaxis: { type: "datetime" },
     tooltip: {
       shared: true,
       intersect: false,
-      y: {
-        formatter: (y) => {
-          if (typeof y !== "undefined") {
-            return `${y.toFixed(0)} visits`;
-          }
-          return y;
-        },
+      y: { formatter: (y) => y },
+    },
+    yaxis: {
+      labels: {
+        formatter: (x) => Number(x).toFixed(0),
       },
     },
   });

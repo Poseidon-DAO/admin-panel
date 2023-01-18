@@ -16,7 +16,7 @@ import {
   Typography,
   type SortDirection,
 } from "@mui/material";
-import { usePDNSymbol } from "src/lib";
+import { usePDNSymbol } from "src/lib/chain";
 import { useBlockNumber } from "wagmi";
 
 function descendingComparator(a: IRow, b: IRow, orderBy: keyof IRow) {

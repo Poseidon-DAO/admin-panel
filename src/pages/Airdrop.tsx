@@ -9,7 +9,7 @@ import CSVLoader from "src/sections/airdrop/csv-loader/CSVLoader";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import PageTitle from "src/sections/common/page-title/PageTitle";
 
-import { useAirdrop, useSecurityDelayInBlocks } from "src/lib";
+import { useAirdrop, useSecurityDelayInBlocks } from "src/lib/chain";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 import { useRouterContext } from "src/hooks";
 

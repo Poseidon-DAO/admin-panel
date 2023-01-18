@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 
 import Iconify from "src/components/Iconify";
-import { useSecurityDelayInBlocks } from "src/lib";
+import { useSecurityDelayInBlocks } from "src/lib/chain";
 import { useRouterContext } from "src/hooks";
 
 type FormState = {

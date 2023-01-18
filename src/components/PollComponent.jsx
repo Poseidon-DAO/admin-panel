@@ -15,7 +15,7 @@ import {
   usePollExpirationBlock,
   usePollMetadata,
   useVote,
-} from "src/lib";
+} from "src/lib/chain";
 import { PollTypes, VoteTypes } from "src/constants";
 
 import Iconify from "./Iconify";

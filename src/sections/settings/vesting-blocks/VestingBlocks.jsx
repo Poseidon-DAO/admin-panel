@@ -10,7 +10,10 @@ import {
   Box,
 } from "@mui/material";
 import Iconify from "src/components/Iconify";
-import { useSecurityDelayInBlocks, useSetSecurityDelayInBlocks } from "src/lib";
+import {
+  useSecurityDelayInBlocks,
+  useSetSecurityDelayInBlocks,
+} from "src/lib/chain";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 

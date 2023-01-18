@@ -1,7 +1,7 @@
 import { useState, useEffect, type FC } from "react";
 import { Container } from "@mui/material";
 
-import { useTransfer } from "src/lib";
+import { useTransfer } from "src/lib/chain";
 import { useRouterContext, useDebounce } from "src/hooks";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 
