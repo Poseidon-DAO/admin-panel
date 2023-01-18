@@ -1,7 +1,7 @@
 import merge from "lodash/merge";
 import ReactApexChart from "react-apexcharts";
 
-import { Card, CardHeader, Box } from "@mui/material";
+import { Card, CardHeader, Box, CircularProgress, Grid } from "@mui/material";
 
 import { BaseOptionChart } from "../../../components/chart";
 
@@ -10,6 +10,7 @@ export default function AppWebsiteVisits({
   subheader,
   chartLabels,
   chartData,
+  loading = false,
   ...other
 }) {
   const chartOptions = merge(BaseOptionChart(), {
@@ -33,12 +34,25 @@ export default function AppWebsiteVisits({
       <CardHeader title={title} subheader={subheader} />
 
       <Box sx={{ p: 3, pb: 1 }} dir="ltr">
-        <ReactApexChart
-          type="line"
-          series={chartData}
-          options={chartOptions}
-          height={364}
-        />
+        {loading ? (
+          <Grid
+            container
+            height={380}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box mb={12}>
+              <CircularProgress />
+            </Box>
+          </Grid>
+        ) : (
+          <ReactApexChart
+            type="line"
+            series={chartData}
+            options={chartOptions}
+            height={364}
+          />
+        )}
       </Box>
     </Card>
   );

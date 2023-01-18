@@ -3,7 +3,7 @@ import merge from "lodash/merge";
 import ReactApexChart from "react-apexcharts";
 
 import { useTheme, styled } from "@mui/material/styles";
-import { Card, CardHeader } from "@mui/material";
+import { Box, Card, CardHeader, CircularProgress, Grid } from "@mui/material";
 
 import { fNumber } from "../../../utils/formatNumber";
 
@@ -40,6 +40,7 @@ export default function AppCurrentVisits({
   subheader,
   chartColors,
   chartData,
+  loading = false,
   ...other
 }) {
   const theme = useTheme();
@@ -73,12 +74,25 @@ export default function AppCurrentVisits({
       <CardHeader title={title} subheader={subheader} />
 
       <ChartWrapperStyle dir="ltr">
-        <ReactApexChart
-          type="pie"
-          series={chartSeries}
-          options={chartOptions}
-          height={280}
-        />
+        {loading ? (
+          <Grid
+            container
+            height={380}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box mb={12}>
+              <CircularProgress />
+            </Box>
+          </Grid>
+        ) : (
+          <ReactApexChart
+            type="pie"
+            series={chartSeries}
+            options={chartOptions}
+            height={280}
+          />
+        )}
       </ChartWrapperStyle>
     </Card>
   );

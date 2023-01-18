@@ -1,5 +1,5 @@
 import { alpha, styled } from "@mui/material/styles";
-import { Card, Typography } from "@mui/material";
+import { Box, Card, CircularProgress, Typography } from "@mui/material";
 
 import Iconify from "../../../components/Iconify";
 
@@ -19,6 +19,7 @@ export default function AppWidgetSummary({
   total,
   icon,
   color = "primary",
+  loading = false,
 }) {
   return (
     <Card
@@ -43,7 +44,13 @@ export default function AppWidgetSummary({
         <Iconify icon={icon} width={24} height={24} />
       </IconWrapperStyle>
 
-      <Typography variant="h3">{total.toFixed(2)}</Typography>
+      {loading ? (
+        <Box height={48}>
+          <CircularProgress size={20} />
+        </Box>
+      ) : (
+        <Typography variant="h3">{Number(total.toFixed(2))}</Typography>
+      )}
 
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}

@@ -1,11 +1,11 @@
 import { useQuery } from "wagmi";
 
-import { type TransferEventLog } from "../types/TransferEventLog";
+import { type TransferEventLogForMint } from "../types/TransferEventLog";
 import { BASE_URI } from "../baseUrl";
 
 interface QueryResponse {
   totalSumMint: number;
-  weeklyMints: Record<number, TransferEventLog[]>;
+  weeklyMints: Record<number, TransferEventLogForMint[]>;
 }
 
 const queryKey = "weeklyMints";

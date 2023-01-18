@@ -12,3 +12,5 @@ export type TransferEventLog = {
   timestamp: string | null;
   functionName: string | null;
 };
+
+export type TransferEventLogForMint = TransferEventLog & { gNft: number };
