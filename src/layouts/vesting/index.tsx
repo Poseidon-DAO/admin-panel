@@ -1,8 +1,8 @@
 import { type FC, useEffect, useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 
-import { useVestLength, useVestsMetadata } from "src/lib";
-import { useDeleteUnexpiredVests } from "src/lib/hooks/useDeleteUnexpiredVests";
+import { useVestLength, useVestsMetadata } from "src/lib/chain";
+import { useDeleteUnexpiredVests } from "src/lib/chain/hooks/useDeleteUnexpiredVests";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";

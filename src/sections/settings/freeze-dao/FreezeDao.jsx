@@ -8,7 +8,7 @@ import {
   Chip,
   Button,
 } from "@mui/material";
-import { useFreeze, /* useFreezeRestore */ useIsFrozen } from "src/lib";
+import { useFreeze, /* useFreezeRestore */ useIsFrozen } from "src/lib/chain";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 

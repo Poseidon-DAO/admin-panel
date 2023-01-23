@@ -15,7 +15,7 @@ import {
   useERC1155Id,
   useERC1155Ratio,
   useSetERC1155,
-} from "src/lib";
+} from "src/lib/chain";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { getTransactionLink } from "src/utils/getTransactionLink";
 

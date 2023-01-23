@@ -8,7 +8,7 @@ import {
   useIsUserAllowed,
   usePDNBalance,
   usePDNSymbol,
-} from "src/lib";
+} from "src/lib/chain";
 
 import { FullPageLoader } from "src/components/FullPageLoader";
 
