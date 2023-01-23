@@ -43,7 +43,7 @@ const Stats: FC = () => {
 
       <Grid item xs={12} sm={6} md={3}>
         <AppWidgetSummary
-          title="gNFT's weekly mint total volume"
+          title="G-NFT's weekly mint total volume"
           total={totalSumMint}
           color="warning"
           icon="lucide:hammer"
@@ -53,7 +53,7 @@ const Stats: FC = () => {
 
       <Grid item xs={12} sm={6} md={3}>
         <AppWidgetSummary
-          title="Total gNFT's"
+          title="Total G-NFT's"
           total={totalNfts}
           color="error"
           icon="clarity:picture-line"

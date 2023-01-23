@@ -49,7 +49,7 @@ export default function AppWidgetSummary({
           <CircularProgress size={20} />
         </Box>
       ) : (
-        <Typography variant="h3">{Number(total.toFixed(2))}</Typography>
+        <Typography variant="h4">{Number(total).toLocaleString()}</Typography>
       )}
 
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>

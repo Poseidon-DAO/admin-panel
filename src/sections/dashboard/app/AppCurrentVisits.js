@@ -5,8 +5,6 @@ import ReactApexChart from "react-apexcharts";
 import { useTheme, styled } from "@mui/material/styles";
 import { Box, Card, CardHeader, CircularProgress, Grid } from "@mui/material";
 
-import { fNumber } from "../../../utils/formatNumber";
-
 import { BaseOptionChart } from "../../../components/chart";
 
 const CHART_HEIGHT = 372;
@@ -55,15 +53,7 @@ export default function AppCurrentVisits({
     stroke: { colors: [theme.palette.background.paper] },
     legend: { floating: true, horizontalAlign: "center" },
     dataLabels: { enabled: true, dropShadow: { enabled: false } },
-    tooltip: {
-      fillSeriesColor: false,
-      y: {
-        formatter: (seriesName) => fNumber(seriesName),
-        title: {
-          formatter: (seriesName) => `${seriesName}`,
-        },
-      },
-    },
+    tooltip: { fillSeriesColor: false },
     plotOptions: {
       pie: { donut: { labels: { show: false } } },
     },
