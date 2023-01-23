@@ -4,6 +4,7 @@ import Page from "src/components/Page";
 
 import PageTitle from "src/sections/common/page-title/PageTitle";
 import {
+  // Airdrops,
   Stats,
   PDNTransfers,
   PDNBurns,
@@ -28,9 +29,11 @@ export default function DashboardApp({ sectionTitle }) {
           <PDNBurns />
         </Box>
 
-        <Box>
+        <Box my={3}>
           <PDNMints />
         </Box>
+
+        <Box>{/* <Airdrops /> */}</Box>
       </Container>
     </Page>
   );

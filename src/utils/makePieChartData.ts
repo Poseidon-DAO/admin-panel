@@ -8,7 +8,10 @@ export function makePieChartData(data: Record<number, TransferEventLog[]>) {
     { label: string; formattedLabel: string; value: number }[]
   >((acc, [key, itemsArr]) => {
     const totalForDay = itemsArr.reduce((sumForDay, item) => {
-      return (sumForDay += Number(ethers.utils.formatEther(item.data)));
+      return (sumForDay +=
+        item.functionName === "burnAndReceiveNFT"
+          ? Number(item.data)
+          : Number(ethers.utils.formatEther(item.data)));
     }, 0);
 
     const newItem = {

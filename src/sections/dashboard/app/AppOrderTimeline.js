@@ -1,5 +1,11 @@
-import PropTypes from "prop-types";
-import { Card, Typography, CardHeader, CardContent } from "@mui/material";
+import {
+  Card,
+  Typography,
+  CardHeader,
+  CardContent,
+  Link,
+  Box,
+} from "@mui/material";
 import {
   Timeline,
   TimelineDot,
@@ -8,14 +14,11 @@ import {
   TimelineSeparator,
   TimelineConnector,
 } from "@mui/lab";
+import Iconify from "src/components/Iconify";
+
+import { getTransactionLink } from "src/utils/getTransactionLink";
 
 import { fDateTime } from "../../../utils/formatTime";
-
-AppOrderTimeline.propTypes = {
-  title: PropTypes.string,
-  subheader: PropTypes.string,
-  list: PropTypes.array.isRequired,
-};
 
 export default function AppOrderTimeline({ title, subheader, list, ...other }) {
   return (
@@ -29,7 +32,7 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
           },
         }}
       >
-        <Timeline>
+        <Timeline style={{ minHeight: 363 }}>
           {list.map((item, index) => (
             <OrderItem
               key={item.id}
@@ -43,34 +46,43 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
   );
 }
 
-OrderItem.propTypes = {
-  isLast: PropTypes.bool,
-  item: PropTypes.shape({
-    time: PropTypes.instanceOf(Date),
-    title: PropTypes.string,
-    type: PropTypes.string,
-  }),
-};
-
 function OrderItem({ item, isLast }) {
-  const { type, title, time } = item;
+  const { title, hash, time } = item;
+
   return (
     <TimelineItem>
       <TimelineSeparator>
-        <TimelineDot
-          color={
-            (type === "order1" && "primary") ||
-            (type === "order2" && "success") ||
-            (type === "order3" && "info") ||
-            (type === "order4" && "warning") ||
-            "error"
-          }
-        />
+        <TimelineDot color="primary" />
         {isLast ? null : <TimelineConnector />}
       </TimelineSeparator>
 
       <TimelineContent>
-        <Typography variant="subtitle2">{title}</Typography>
+        <Box display="flex" alignItems="center">
+          <Typography variant="subtitle2">{title} </Typography>
+
+          <Link
+            href={getTransactionLink(hash)}
+            variant="body2"
+            target="_blank"
+            display="flex"
+            alignItems="center"
+          >
+            <Typography
+              title={hash}
+              variant="caption"
+              marginLeft="10px"
+              width="250px"
+              overflow="hidden"
+              noWrap
+            >
+              {hash}
+            </Typography>
+            <Iconify
+              icon="material-symbols:open-in-new"
+              sx={{ cursor: "pointer", marginLeft: 1 }}
+            />
+          </Link>
+        </Box>
 
         <Typography variant="caption" sx={{ color: "text.secondary" }}>
           {fDateTime(time)}

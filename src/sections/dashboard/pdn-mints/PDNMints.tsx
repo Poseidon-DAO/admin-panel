@@ -4,7 +4,6 @@ import { Grid, useTheme } from "@mui/material";
 import { AppCurrentVisits, AppWebsiteVisits } from "src/sections/dashboard/app";
 
 import { useWeeklyVolumeMint } from "src/lib/api";
-import { usePDNSymbol } from "src/lib/chain";
 
 import { makePieChartData } from "src/utils/makePieChartData";
 import { makeChartDataForMints } from "src/utils/makeChartDataForMints";
@@ -13,7 +12,6 @@ const PDNMints: FC = () => {
   const theme = useTheme();
 
   const { totalSumMint, weeklyMints, fetchStatus } = useWeeklyVolumeMint();
-  const { symbol } = usePDNSymbol();
 
   const isLoading = fetchStatus === "loading";
 
@@ -31,13 +29,13 @@ const PDNMints: FC = () => {
         lg={hasDataToShow ? 8 : 12}
       >
         <AppWebsiteVisits
-          title={`${symbol} weekly mints`}
+          title="G-NFT weekly mints"
           subheader="Last 7 days"
           chartLabels={pdnMintPieChartData.map((d) => d.formattedLabel)}
           loading={isLoading}
           chartData={[
             {
-              name: `${symbol} amount`,
+              name: `G-NFT's minted`,
               type: "column",
               fill: "solid",
               data: pdnMintChartData,
@@ -49,7 +47,7 @@ const PDNMints: FC = () => {
       {hasDataToShow && (
         <Grid item xs={12} md={6} lg={4}>
           <AppCurrentVisits
-            title={`${symbol} weekly mints`}
+            title="G-NFT weekly mints"
             subheader="Last 7 days"
             chartData={pdnMintPieChartData.filter((d) => !!d.value)}
             loading={isLoading}

@@ -37,7 +37,7 @@ const PDNTransfers: FC = () => {
           loading={isLoading}
           chartData={[
             {
-              name: `${symbol} amount`,
+              name: `${symbol} amount transfered`,
               type: "column",
               fill: "solid",
               data: pdnMoveChartData,

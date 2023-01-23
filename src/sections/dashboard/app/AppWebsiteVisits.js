@@ -14,7 +14,7 @@ export default function AppWebsiteVisits({
   ...other
 }) {
   const chartOptions = merge(BaseOptionChart(), {
-    plotOptions: { bar: { columnWidth: "16%" } },
+    plotOptions: { bar: { columnWidth: "10%" } },
     fill: { type: chartData.map((i) => i.fill) },
     labels: chartLabels,
     tooltip: {
@@ -26,6 +26,9 @@ export default function AppWebsiteVisits({
       labels: {
         formatter: (x) => Number(x).toFixed(0),
       },
+    },
+    chart: {
+      stacked: true,
     },
   });
 
@@ -50,7 +53,7 @@ export default function AppWebsiteVisits({
             type="line"
             series={chartData}
             options={chartOptions}
-            height={364}
+            height={365}
           />
         )}
       </Box>

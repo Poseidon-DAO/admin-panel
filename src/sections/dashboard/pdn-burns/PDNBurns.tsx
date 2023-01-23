@@ -37,7 +37,7 @@ const PDNBurns: FC = () => {
           loading={isLoading}
           chartData={[
             {
-              name: `${symbol} amount`,
+              name: `${symbol} amount burned`,
               type: "column",
               fill: "solid",
               data: pdnBurnChartData,
