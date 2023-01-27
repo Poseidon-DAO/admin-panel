@@ -1,4 +1,3 @@
-// material
 import { alpha, useTheme } from "@mui/material/styles";
 import { GlobalStyles } from "@mui/material";
 
@@ -19,7 +18,6 @@ export function BaseOptionChartStyle() {
           ".apexcharts-xaxistooltip": {
             ...background,
             border: 0,
-            boxShadow: theme.customShadows.z24,
             color: theme.palette.text.primary,
             borderRadius: Number(theme.shape.borderRadius) * 1.5,
             "&:before": { borderBottomColor: "transparent" },
@@ -30,13 +28,12 @@ export function BaseOptionChartStyle() {
           ".apexcharts-tooltip.apexcharts-theme-light": {
             ...background,
             border: 0,
-            boxShadow: theme.customShadows.z24,
             borderRadius: Number(theme.shape.borderRadius) * 1.5,
             "& .apexcharts-tooltip-title": {
               border: 0,
               textAlign: "center",
               fontWeight: theme.typography.fontWeightBold,
-              backgroundColor: theme.palette.grey[500_16],
+              backgroundColor: theme.palette.grey[500],
               color:
                 theme.palette.text[
                   theme.palette.mode === "light" ? "secondary" : "primary"
@@ -81,7 +78,6 @@ export default function BaseOptionChart() {
   };
 
   return {
-    // Colors
     colors: [
       theme.palette.primary.main,
       theme.palette.chart.yellow[0],
@@ -91,16 +87,13 @@ export default function BaseOptionChart() {
       theme.palette.chart.red[0],
     ],
 
-    // Chart
     chart: {
       toolbar: { show: false },
       zoom: { enabled: false },
-      // animations: { enabled: false },
       foreColor: theme.palette.text.disabled,
       fontFamily: theme.typography.fontFamily,
     },
 
-    // States
     states: {
       hover: {
         filter: {
@@ -116,7 +109,6 @@ export default function BaseOptionChart() {
       },
     },
 
-    // Fill
     fill: {
       opacity: 1,
       gradient: {
@@ -128,47 +120,38 @@ export default function BaseOptionChart() {
       },
     },
 
-    // Datalabels
     dataLabels: { enabled: false },
 
-    // Stroke
     stroke: {
       width: 3,
-      curve: "smooth",
-      lineCap: "round",
+      curve: "smooth" as const,
+      lineCap: "round" as const,
     },
 
-    // Grid
     grid: {
       strokeDashArray: 3,
       borderColor: theme.palette.divider,
     },
 
-    // Xaxis
     xaxis: {
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
 
-    // Markers
     markers: {
       size: 0,
       strokeColors: theme.palette.background.paper,
     },
 
-    // Tooltip
     tooltip: {
-      x: {
-        show: false,
-      },
+      x: { show: false },
     },
 
-    // Legend
     legend: {
       show: true,
-      fontSize: 13,
-      position: "top",
-      horizontalAlign: "right",
+      fontSize: "13px",
+      position: "top" as const,
+      horizontalAlign: "right" as const,
       markers: {
         radius: 12,
       },
@@ -179,14 +162,11 @@ export default function BaseOptionChart() {
       },
     },
 
-    // plotOptions
     plotOptions: {
-      // Bar
       bar: {
         columnWidth: "28%",
         borderRadius: 4,
       },
-      // Pie + Donut
       pie: {
         donut: {
           labels: {
@@ -194,34 +174,6 @@ export default function BaseOptionChart() {
             value: LABEL_VALUE,
             total: LABEL_TOTAL,
           },
-        },
-      },
-      // Radialbar
-      radialBar: {
-        track: {
-          strokeWidth: "100%",
-          background: theme.palette.grey[500_16],
-        },
-        dataLabels: {
-          value: LABEL_VALUE,
-          total: LABEL_TOTAL,
-        },
-      },
-      // Radar
-      radar: {
-        polygons: {
-          fill: { colors: ["transparent"] },
-          strokeColors: theme.palette.divider,
-          connectorColors: theme.palette.divider,
-        },
-      },
-      // polarArea
-      polarArea: {
-        rings: {
-          strokeColor: theme.palette.divider,
-        },
-        spokes: {
-          connectorColors: theme.palette.divider,
         },
       },
     },

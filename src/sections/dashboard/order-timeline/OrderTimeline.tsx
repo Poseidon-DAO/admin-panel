@@ -20,9 +20,21 @@ import { getTransactionLink } from "src/utils/getTransactionLink";
 
 import { fDateTime } from "../../../utils/formatTime";
 
-export default function AppOrderTimeline({ title, subheader, list, ...other }) {
+type IProps = {
+  title: string;
+  subheader: string;
+  list: {
+    id: string;
+    title: string;
+    hash: string;
+    type: string;
+    time: Date | null;
+  }[];
+};
+
+export default function OrderTimeline({ title, subheader, list }: IProps) {
   return (
-    <Card {...other}>
+    <Card>
       <CardHeader title={title} subheader={subheader} />
 
       <CardContent
@@ -46,7 +58,18 @@ export default function AppOrderTimeline({ title, subheader, list, ...other }) {
   );
 }
 
-function OrderItem({ item, isLast }) {
+type OrderItemProps = {
+  item: {
+    id: string;
+    title: string;
+    hash: string;
+    type: string;
+    time: Date | null;
+  };
+  isLast: boolean;
+};
+
+function OrderItem({ item, isLast }: OrderItemProps) {
   const { title, hash, time } = item;
 
   return (
@@ -58,7 +81,7 @@ function OrderItem({ item, isLast }) {
 
       <TimelineContent>
         <Box display="flex" alignItems="center">
-          <Typography variant="subtitle2">{title} </Typography>
+          <Typography variant="subtitle2">{title}</Typography>
 
           <Link
             href={getTransactionLink(hash)}
@@ -85,7 +108,7 @@ function OrderItem({ item, isLast }) {
         </Box>
 
         <Typography variant="caption" sx={{ color: "text.secondary" }}>
-          {fDateTime(time)}
+          {fDateTime(time!)}
         </Typography>
       </TimelineContent>
     </TimelineItem>

@@ -9,20 +9,18 @@ import {
 import palette from "./palette";
 import typography from "./typography";
 import componentsOverride from "./overrides";
-import shadows, { customShadows } from "./shadows";
+import shadows from "./shadows";
+
+export const theme = createTheme({
+  palette,
+  typography,
+  shadows,
+  shape: { borderRadius: 8 },
+});
+
+theme.components = componentsOverride(theme);
 
 export default function ThemeProvider({ children }: { children: ReactNode }) {
-  const theme = createTheme({
-    palette,
-    typography,
-    // @ts-ignore
-    shadows,
-    customShadows,
-    shape: { borderRadius: 8 },
-  });
-
-  theme.components = componentsOverride(theme);
-
   return (
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>

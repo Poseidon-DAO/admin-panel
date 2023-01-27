@@ -222,7 +222,7 @@ function NotificationItem({ notification }) {
       }}
     >
       <ListItemAvatar>
-        <Avatar sx={{ bgcolor: "background.neutral" }}>{avatar}</Avatar>
+        <Avatar sx={{ bgcolor: "grey.200" }}>{avatar}</Avatar>
       </ListItemAvatar>
       <ListItemText
         primary={title}

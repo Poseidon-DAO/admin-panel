@@ -52,7 +52,7 @@ const Login: FC = () => {
                 }}
                 endIcon={
                   <img
-                    src="../assets/metamask-logo.png"
+                    src="/static/metamask-logo.png"
                     alt="metamask"
                     width="40"
                   />

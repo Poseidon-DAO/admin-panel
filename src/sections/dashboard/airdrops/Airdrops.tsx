@@ -1,39 +1,41 @@
 import { type FC } from "react";
 import { Grid } from "@mui/material";
 
-import { AppOrderTimeline, AppWebsiteVisits } from "src/sections/dashboard/app";
 import { usePDNSymbol } from "src/lib/chain";
 import { makeChartData } from "src/utils/makeChartData";
 import { makePieChartData } from "src/utils/makePieChartData";
 import { useAirdrops } from "src/lib/api/hooks/useAirdrops";
-import { groupAirdropsByDate } from "src/utils/groupAirdropsByDate";
+
+import OrderTimeline from "../order-timeline/OrderTimeline";
+import BarChart from "../bar-chart/BarChart";
 
 const Airdrops: FC = () => {
   const { airdrops, fetchStatus } = useAirdrops();
   const { symbol } = usePDNSymbol();
 
   const isLoading = fetchStatus === "loading";
+  const isSuccess = fetchStatus === "success";
 
-  const { groupedAirdrops } = groupAirdropsByDate(airdrops!);
+  if (!Object.keys(airdrops!).length && isSuccess) return null;
 
-  const pdnBurnChartData = makeChartData(groupedAirdrops!);
-  const pdnBurnPieChartData = makePieChartData(groupedAirdrops!);
+  const pdnBurnChartData = makeChartData(airdrops!);
+  const pdnMintPieChartData = makePieChartData(airdrops!);
 
-  const orderChartData = (airdrops || [])?.map((airdrop) => ({
-    id: airdrop.logIndex,
+  const orderChartData = (Object.values(airdrops!) || [])?.map((airdrop) => ({
+    id: airdrop[0].logIndex,
     title: "Airdrop",
-    hash: airdrop.transactionHash,
-    type: `hash: ${airdrop.transactionHash}`,
-    time: airdrop.blockDate,
+    hash: airdrop[0].transactionHash,
+    type: `hash: ${airdrop[0].transactionHash}`,
+    time: airdrop[0].blockDate,
   }));
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={6} lg={8}>
-        <AppWebsiteVisits
+        <BarChart
           title="Airdrops"
-          subheader="All"
-          chartLabels={pdnBurnPieChartData.map((d) => d.formattedLabel)}
+          subheader="Last 5"
+          chartLabels={pdnMintPieChartData.map((d) => d.formattedLabel)}
           loading={isLoading}
           chartData={[
             {
@@ -47,9 +49,9 @@ const Airdrops: FC = () => {
       </Grid>
 
       <Grid item xs={12} md={6} lg={4}>
-        <AppOrderTimeline
+        <OrderTimeline
           title="Order Timeline"
-          subheader="Airdrops"
+          subheader="Last 5"
           list={orderChartData}
         />
       </Grid>
