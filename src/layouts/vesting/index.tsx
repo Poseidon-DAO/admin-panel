@@ -117,7 +117,7 @@ const VestingLayout: FC = () => {
           justifyContent="center"
           minHeight="50vh"
         >
-          <Typography variant="h5" maxWidth="450px" textAlign="center">
+          <Typography variant="h5" maxWidth="600px" textAlign="center">
             Please provide an address, in order to get the data about vesting
             related to the address
           </Typography>

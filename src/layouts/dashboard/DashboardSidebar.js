@@ -83,12 +83,13 @@ export default function DashboardSidebar({
             <Box sx={{ ml: 2 }}>
               <Tooltip title={address || ""}>
                 <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
-                  {formatAddress(address, 4)}
+                  {formatAddress(address, 6)}
                 </Typography>
               </Tooltip>
               <Tooltip title={balance || ""}>
                 <Typography variant="caption" sx={{ color: "text.primary" }}>
-                  {Number(balance).toFixed(5)} {symbol}
+                  {new Intl.NumberFormat("en-US").format(Number(balance))}{" "}
+                  {symbol}
                 </Typography>
               </Tooltip>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>

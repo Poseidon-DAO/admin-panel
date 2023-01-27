@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "target": "es2016",
+    "lib": ["es6", "dom"],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
     "allowJs": true,
     "module": "commonjs",
     "esModuleInterop": true,

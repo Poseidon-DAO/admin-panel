@@ -1,7 +1,7 @@
 import { alpha, styled } from "@mui/material/styles";
 import { Box, Card, CircularProgress, Typography } from "@mui/material";
 
-import Iconify from "../../../components/Iconify";
+import Iconify from "src/components/Iconify";
 
 const IconWrapperStyle = styled("div")(({ theme }) => ({
   margin: "auto",
@@ -14,21 +14,29 @@ const IconWrapperStyle = styled("div")(({ theme }) => ({
   marginBottom: theme.spacing(3),
 }));
 
-export default function AppWidgetSummary({
+type IProps = {
+  title: string;
+  total?: number;
+  icon: string;
+  color?: "primary" | "info" | "warning" | "error";
+  loading: boolean;
+};
+
+export default function StatsItem({
   title,
   total,
   icon,
   color = "primary",
   loading = false,
-}) {
+}: IProps) {
   return (
     <Card
       sx={{
         py: 5,
         boxShadow: 0,
         textAlign: "center",
-        color: (theme) => theme.palette[color].darker,
-        bgcolor: (theme) => theme.palette[color].lighter,
+        color: (theme) => theme.palette[color].dark,
+        bgcolor: (theme) => theme.palette[color].light,
       }}
     >
       <IconWrapperStyle

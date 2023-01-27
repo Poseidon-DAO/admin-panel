@@ -5,6 +5,8 @@ import { Box } from "@mui/material";
 type IProps = {
   icon: string | IconifyIcon;
   sx?: object;
+  width?: number;
+  height?: number;
 };
 
 const Iconify: FC<IProps> = ({ icon, sx = {}, ...other }) => {

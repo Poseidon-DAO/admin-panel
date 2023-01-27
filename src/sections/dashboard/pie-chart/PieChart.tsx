@@ -1,11 +1,10 @@
-import PropTypes from "prop-types";
-import merge from "lodash/merge";
 import ReactApexChart from "react-apexcharts";
+import { merge } from "lodash";
 
 import { useTheme, styled } from "@mui/material/styles";
 import { Box, Card, CardHeader, CircularProgress, Grid } from "@mui/material";
 
-import { BaseOptionChart } from "../../../components/chart";
+import { BaseOptionChart } from "src/components/chart";
 
 const CHART_HEIGHT = 372;
 const LEGEND_HEIGHT = 72;
@@ -26,41 +25,28 @@ const ChartWrapperStyle = styled("div")(({ theme }) => ({
   },
 }));
 
-AppCurrentVisits.propTypes = {
-  title: PropTypes.string,
-  subheader: PropTypes.string,
-  chartColors: PropTypes.arrayOf(PropTypes.string),
-  chartData: PropTypes.array,
+type IProps = {
+  title: string;
+  subheader: string;
+  chartColors: string[];
+  chartData: { label: string; formattedLabel: string; value: number }[];
+  loading?: boolean;
 };
 
-export default function AppCurrentVisits({
+export default function PieChart({
   title,
   subheader,
   chartColors,
   chartData,
   loading = false,
-  ...other
-}) {
+}: IProps) {
   const theme = useTheme();
 
   const chartLabels = chartData.map((i) => i.label);
-
   const chartSeries = chartData.map((i) => i.value);
 
-  const chartOptions = merge(BaseOptionChart(), {
-    colors: chartColors,
-    labels: chartLabels,
-    stroke: { colors: [theme.palette.background.paper] },
-    legend: { floating: true, horizontalAlign: "center" },
-    dataLabels: { enabled: true, dropShadow: { enabled: false } },
-    tooltip: { fillSeriesColor: false },
-    plotOptions: {
-      pie: { donut: { labels: { show: false } } },
-    },
-  });
-
   return (
-    <Card {...other}>
+    <Card>
       <CardHeader title={title} subheader={subheader} />
 
       <ChartWrapperStyle dir="ltr">
@@ -79,7 +65,17 @@ export default function AppCurrentVisits({
           <ReactApexChart
             type="pie"
             series={chartSeries}
-            options={chartOptions}
+            options={merge(BaseOptionChart(), {
+              colors: chartColors,
+              labels: chartLabels,
+              stroke: { colors: [theme.palette.background.paper] },
+              legend: { floating: true, horizontalAlign: "center" },
+              dataLabels: { enabled: true, dropShadow: { enabled: false } },
+              tooltip: { fillSeriesColor: false },
+              plotOptions: {
+                pie: { donut: { labels: { show: false } } },
+              },
+            })}
             height={280}
           />
         )}

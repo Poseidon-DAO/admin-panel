@@ -1,6 +1,5 @@
 import { type FC } from "react";
 import { Grid } from "@mui/material";
-import { AppWidgetSummary } from "src/sections/dashboard/app";
 
 import {
   useWeeklyVolumeBurn,
@@ -9,6 +8,8 @@ import {
 } from "src/lib/api";
 import { usePDNSymbol } from "src/lib/chain";
 import { useTotalNfts } from "src/lib/api/hooks/useTotalNfts";
+
+import StatsItem from "../stats-item/StatsItem";
 
 const Stats: FC = () => {
   const { totalSumMoved, fetchStatus: movesFetchStatus } =
@@ -23,7 +24,7 @@ const Stats: FC = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6} md={3}>
-        <AppWidgetSummary
+        <StatsItem
           title={`${symbol} weekly move total volume`}
           total={totalSumMoved}
           icon="bi:coin"
@@ -32,7 +33,7 @@ const Stats: FC = () => {
       </Grid>
 
       <Grid item xs={12} sm={6} md={3}>
-        <AppWidgetSummary
+        <StatsItem
           title={`${symbol} weekly burn total volume`}
           total={totalSumBurned}
           color="info"
@@ -42,7 +43,7 @@ const Stats: FC = () => {
       </Grid>
 
       <Grid item xs={12} sm={6} md={3}>
-        <AppWidgetSummary
+        <StatsItem
           title="G-NFT's weekly mint total volume"
           total={totalSumMint}
           color="warning"
@@ -52,7 +53,7 @@ const Stats: FC = () => {
       </Grid>
 
       <Grid item xs={12} sm={6} md={3}>
-        <AppWidgetSummary
+        <StatsItem
           title="Total G-NFT's"
           total={totalNfts}
           color="error"

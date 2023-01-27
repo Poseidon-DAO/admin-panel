@@ -1,12 +1,13 @@
 import { type FC } from "react";
 import { Grid, useTheme } from "@mui/material";
 
-import { AppCurrentVisits, AppWebsiteVisits } from "src/sections/dashboard/app";
-
 import { useWeeklyVolumeMint } from "src/lib/api";
 
 import { makePieChartData } from "src/utils/makePieChartData";
 import { makeChartDataForMints } from "src/utils/makeChartDataForMints";
+
+import PieChart from "../pie-chart/PieChart";
+import BarChart from "../bar-chart/BarChart";
 
 const PDNMints: FC = () => {
   const theme = useTheme();
@@ -28,7 +29,7 @@ const PDNMints: FC = () => {
         md={hasDataToShow ? 6 : 12}
         lg={hasDataToShow ? 8 : 12}
       >
-        <AppWebsiteVisits
+        <BarChart
           title="G-NFT weekly mints"
           subheader="Last 7 days"
           chartLabels={pdnMintPieChartData.map((d) => d.formattedLabel)}
@@ -46,19 +47,15 @@ const PDNMints: FC = () => {
 
       {hasDataToShow && (
         <Grid item xs={12} md={6} lg={4}>
-          <AppCurrentVisits
+          <PieChart
             title="G-NFT weekly mints"
             subheader="Last 7 days"
             chartData={pdnMintPieChartData.filter((d) => !!d.value)}
             loading={isLoading}
             chartColors={[
-              // @ts-ignore
               theme.palette.primary.main,
-              // @ts-ignore
               theme.palette.chart.blue[0],
-              // @ts-ignore
               theme.palette.chart.violet[0],
-              // @ts-ignore
               theme.palette.chart.yellow[0],
             ]}
           />
