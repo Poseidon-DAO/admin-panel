@@ -1,4 +1,5 @@
 export * from "./useAirdrop";
+export * from "./useBurnAllowance";
 export * from "./useCreatePoll";
 export * from "./useDeleteUnexpiredVests";
 export * from "./useERC1155Address";
@@ -6,6 +7,7 @@ export * from "./useERC1155Id";
 export * from "./useERC1155Ratio";
 export * from "./useFreeze";
 export * from "./useFreezeRestore";
+export * from "./useIsAllowedToBurn";
 export * from "./useIsFrozen";
 export * from "./useIsUserAllowed";
 export * from "./useMultisigLength";

@@ -2,8 +2,9 @@ import { type FC } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import BurnRatio from "src/sections/settings/burn-ratio/BurnRatio";
 import FreezeDao from "src/sections/settings/freeze-dao/FreezeDao";
+import AllowBurn from "src/sections/settings/allow-burn/AllowBurn";
+import BurnRatio from "src/sections/settings/burn-ratio/BurnRatio";
 import VestingBlocks from "src/sections/settings/vesting-blocks/VestingBlocks";
 
 const SettingsLayout: FC = () => {
@@ -11,6 +12,10 @@ const SettingsLayout: FC = () => {
     <Box>
       <ItemWrapper>
         <FreezeDao />
+      </ItemWrapper>
+
+      <ItemWrapper>
+        <AllowBurn />
       </ItemWrapper>
 
       <ItemWrapper>

@@ -34,7 +34,7 @@ const useSetERC1155 = ({
     enabled: !!address && !!erc1155Address && !!ercId && !!ratio && enabled,
   });
 
-  const { data, write } = useContractWrite(config);
+  const { data, write, status: writeStatus } = useContractWrite(config);
 
   const { isSuccess, status } = useWaitForTransaction({
     hash: data?.hash,
@@ -44,6 +44,7 @@ const useSetERC1155 = ({
     setERC1155: write,
     setERC1155Data: data,
     setERC1155Status: status,
+    setERC1155WriteStatus: writeStatus,
     isSetERC1155Success: isSuccess,
   };
 };

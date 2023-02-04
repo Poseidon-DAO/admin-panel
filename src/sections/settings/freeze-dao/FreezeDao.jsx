@@ -83,9 +83,17 @@ export default function FreezeDao() {
           </Grid>
           <Grid item sm={2} ml={-8}>
             {isFrozen ? (
-              <Chip label="FROZEN" color="error" style={{ color: "white" }} />
+              <Chip
+                label="FROZEN"
+                color="error"
+                style={{ color: "white", width: 80 }}
+              />
             ) : (
-              <Chip label="ACTIVE" color="success" style={{ color: "white" }} />
+              <Chip
+                label="ACTIVE"
+                color="success"
+                style={{ color: "white", width: 80 }}
+              />
             )}
           </Grid>
           <Grid container item sm={1} justifyContent="flex-end">
