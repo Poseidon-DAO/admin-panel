@@ -16,6 +16,7 @@ import {
 } from "src/lib/chain";
 import TransactionSnackbar from "src/sections/common/transaction-snackbar/TransactionSnackbar";
 import { getTransactionLink } from "src/utils/getTransactionLink";
+import { useDebounce } from "src/hooks";
 
 export default function VestingBlocks() {
   const theme = useTheme();
@@ -26,8 +27,14 @@ export default function VestingBlocks() {
   const [localDelay, setLocalDelay] = useState(delayInBlocks);
   const [transactionState, setTransactionState] = useState("");
 
-  const { setDelayInBlocks, delayInBlocksData, delayInBlocksStatus } =
-    useSetSecurityDelayInBlocks({ duration: localDelay });
+  const debouncedDelay = useDebounce(localDelay);
+
+  const {
+    setDelayInBlocks,
+    delayInBlocksData,
+    delayInBlocksStatus,
+    delayInBlocksWriteStatus,
+  } = useSetSecurityDelayInBlocks({ duration: debouncedDelay });
 
   useEffect(() => {
     setLocalDelay(delayInBlocks);
@@ -47,6 +54,12 @@ export default function VestingBlocks() {
       setTransactionState("success");
     }
   }, [delayInBlocksStatus, delayInBlocks]);
+
+  useEffect(() => {
+    if (delayInBlocksWriteStatus === "error") {
+      setLocalDelay(delayInBlocks);
+    }
+  }, [delayInBlocksWriteStatus, delayInBlocks]);
 
   function handleEditClick() {
     setEditing(true);

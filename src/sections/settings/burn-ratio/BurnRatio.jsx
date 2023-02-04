@@ -30,7 +30,12 @@ export default function BurnRatio() {
   const [localRatio, setLocalRatio] = useState(ratio);
   const [transactionState, setTransactionState] = useState("");
 
-  const { setERC1155, setERC1155Data, setERC1155Status } = useSetERC1155({
+  const {
+    setERC1155,
+    setERC1155Data,
+    setERC1155Status,
+    setERC1155WriteStatus,
+  } = useSetERC1155({
     erc1155Address: address,
     ercId: id,
     ratio: localRatio,
@@ -53,6 +58,12 @@ export default function BurnRatio() {
       setTransactionState("success");
     }
   }, [setERC1155Status]);
+
+  useEffect(() => {
+    if (setERC1155WriteStatus === "error") {
+      setLocalRatio(ratio);
+    }
+  }, [setERC1155WriteStatus, ratio]);
 
   function handleEditClick() {
     setEditing(true);

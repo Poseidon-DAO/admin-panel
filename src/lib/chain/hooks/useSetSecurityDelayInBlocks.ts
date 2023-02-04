@@ -23,7 +23,7 @@ const useSetSecurityDelayInBlocks = ({ duration }: IProps) => {
     enabled: !!duration,
   });
 
-  const { data, write } = useContractWrite(config);
+  const { data, write, status: writeStatus } = useContractWrite(config);
 
   const { isSuccess, status } = useWaitForTransaction({
     hash: data?.hash,
@@ -33,6 +33,7 @@ const useSetSecurityDelayInBlocks = ({ duration }: IProps) => {
     setDelayInBlocks: write,
     delayInBlocksData: data,
     delayInBlocksStatus: status,
+    delayInBlocksWriteStatus: writeStatus,
     isSetDelayInBlocksSuccess: isSuccess,
   };
 };
