@@ -10,18 +10,17 @@ import OrderTimeline from "../order-timeline/OrderTimeline";
 import BarChart from "../bar-chart/BarChart";
 
 const Airdrops: FC = () => {
-  const { airdrops, fetchStatus } = useAirdrops();
+  const { airdrops = {}, fetchStatus } = useAirdrops();
   const { symbol } = usePDNSymbol();
 
   const isLoading = fetchStatus === "loading";
-  const isSuccess = fetchStatus === "success";
 
-  if (!Object.keys(airdrops!).length && isSuccess) return null;
+  if (!Object.keys(airdrops!).length) return null;
 
-  const pdnBurnChartData = makeChartData(airdrops!);
-  const pdnMintPieChartData = makePieChartData(airdrops!);
+  const pdnBurnChartData = makeChartData(airdrops);
+  const pdnMintPieChartData = makePieChartData(airdrops);
 
-  const orderChartData = (Object.values(airdrops!) || [])?.map((airdrop) => ({
+  const orderChartData = (Object.values(airdrops) || [])?.map((airdrop) => ({
     id: airdrop[0].logIndex,
     title: "Airdrop",
     hash: airdrop[0].transactionHash,

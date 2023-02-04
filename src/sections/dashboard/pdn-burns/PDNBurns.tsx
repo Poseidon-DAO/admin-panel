@@ -12,13 +12,17 @@ import BarChart from "../bar-chart/BarChart";
 const PDNBurns: FC = () => {
   const theme = useTheme();
 
-  const { totalSumBurned, weeklyBurns, fetchStatus } = useWeeklyVolumeBurn();
+  const {
+    totalSumBurned = 0,
+    weeklyBurns = {},
+    fetchStatus,
+  } = useWeeklyVolumeBurn();
   const { symbol } = usePDNSymbol();
 
   const isLoading = fetchStatus === "loading";
 
-  const pdnBurnChartData = makeChartData(weeklyBurns!);
-  const pdnBurnPieChartData = makePieChartData(weeklyBurns!);
+  const pdnBurnChartData = makeChartData(weeklyBurns);
+  const pdnBurnPieChartData = makePieChartData(weeklyBurns);
 
   const hasDataToShow = totalSumBurned! > 0;
 
