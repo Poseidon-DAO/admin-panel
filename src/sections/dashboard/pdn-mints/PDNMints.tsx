@@ -12,12 +12,16 @@ import BarChart from "../bar-chart/BarChart";
 const PDNMints: FC = () => {
   const theme = useTheme();
 
-  const { totalSumMint, weeklyMints, fetchStatus } = useWeeklyVolumeMint();
+  const {
+    totalSumMint = 0,
+    weeklyMints = {},
+    fetchStatus,
+  } = useWeeklyVolumeMint();
 
   const isLoading = fetchStatus === "loading";
 
-  const pdnMintChartData = makeChartDataForMints(weeklyMints!);
-  const pdnMintPieChartData = makePieChartData(weeklyMints!);
+  const pdnMintChartData = makeChartDataForMints(weeklyMints);
+  const pdnMintPieChartData = makePieChartData(weeklyMints);
 
   const hasDataToShow = totalSumMint! > 0;
 

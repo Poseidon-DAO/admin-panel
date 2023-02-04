@@ -9,17 +9,16 @@ import OrderTimeline from "../order-timeline/OrderTimeline";
 import BarChart from "../bar-chart/BarChart";
 
 const Vests: FC = () => {
-  const { vests, fetchStatus } = useVests();
+  const { vests = {}, fetchStatus } = useVests();
   const { symbol } = usePDNSymbol();
 
   const isLoading = fetchStatus === "loading";
-  const isSuccess = fetchStatus === "success";
 
-  if (!Object.keys(vests!).length && isSuccess) return null;
+  if (!Object.keys(vests!).length) return null;
 
-  const { values, labels } = makeChartData(vests!);
+  const { values, labels } = makeChartData(vests);
 
-  const orderChartData = (Object.values(vests!) || [])?.map((vest) => ({
+  const orderChartData = (Object.values(vests) || [])?.map((vest) => ({
     id: vest[0].logIndex,
     title: "Vest",
     hash: vest[0].transactionHash,
