@@ -10,7 +10,7 @@ const useIsAllowedToBurn = () => {
   const query = useContractRead({ ...options, watch: true });
 
   return {
-    isAllowedToBurn: !!query.data ? query.data : null,
+    isAllowedToBurn: !!query.data,
     isFetchingBurnAllowance: query.isFetching,
     isLoadingBurnAllowance: query.isLoading,
   };

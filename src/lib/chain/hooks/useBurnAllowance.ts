@@ -4,7 +4,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 
-import { accessibilityOptions } from "src/contracts/options";
+import { erc20Options } from "src/contracts/options";
 import { SMART_CONTRACT_FUNCTIONS } from "src/contracts/smartContract";
 
 type IProps = {
@@ -13,13 +13,12 @@ type IProps = {
 };
 
 const useBurnAllowance = ({ allow, enabled = true }: IProps) => {
-  const options = accessibilityOptions(
-    SMART_CONTRACT_FUNCTIONS.SET_ALLOW_BURNING
-  );
+  const options = erc20Options(SMART_CONTRACT_FUNCTIONS.SET_ALLOW_BURNING);
 
   const { config } = usePrepareContractWrite({
     ...options,
-    enabled: !!allow && enabled,
+    args: [allow],
+    enabled,
   });
 
   const { data, write, status: writeStatus } = useContractWrite(config);
