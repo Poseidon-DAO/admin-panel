@@ -12,13 +12,17 @@ import BarChart from "../bar-chart/BarChart";
 const PDNTransfers: FC = () => {
   const theme = useTheme();
 
-  const { totalSumMoved, weeklyTransfers, fetchStatus } = useWeeklyVolumeMove();
+  const {
+    totalSumMoved = 0,
+    weeklyTransfers = {},
+    fetchStatus,
+  } = useWeeklyVolumeMove();
   const { symbol } = usePDNSymbol();
 
   const isLoading = fetchStatus === "loading";
 
-  const pdnMoveChartData = makeChartData(weeklyTransfers!);
-  const pdnMovePieChartData = makePieChartData(weeklyTransfers!);
+  const pdnMoveChartData = makeChartData(weeklyTransfers);
+  const pdnMovePieChartData = makePieChartData(weeklyTransfers);
 
   const hasDataToShow = totalSumMoved! > 0;
 

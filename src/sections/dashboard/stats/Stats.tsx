@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 import {
   useWeeklyVolumeBurn,
@@ -20,6 +20,19 @@ const Stats: FC = () => {
   const { totalNfts, fetchStatus: totalFetchStatus } = useTotalNfts();
 
   const { symbol } = usePDNSymbol();
+
+  if (
+    movesFetchStatus === "error" ||
+    burnsFetchStatus === "error" ||
+    mintsFetchStatus === "error" ||
+    totalFetchStatus === "error"
+  ) {
+    return (
+      <Typography color="error">
+        OPPSS!!! Something went wrong while fetching token stats.
+      </Typography>
+    );
+  }
 
   return (
     <Grid container spacing={3}>

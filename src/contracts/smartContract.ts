@@ -24,6 +24,8 @@ const GET_VEST_LENGTH = "getVestLength";
 const GET_VEST_METADATA = "getVestMetaData";
 const DELETE_UNEXPIRED_VESTS = "deleteUnexpiredVests";
 const GET_POLL_META = "getPollMetaData";
+const GET_IS_ALLOWED_TO_BURN = "isAllowedToBurn";
+const SET_ALLOW_BURNING = "allowBurning";
 const EVENT_VOTE_MULTISIG = "VoteMultisigPollEvent";
 
 const SMART_CONTRACT_FUNCTIONS = {
@@ -51,6 +53,8 @@ const SMART_CONTRACT_FUNCTIONS = {
   SET_SECURITY_DELAY_IN_BLOCKS,
   GET_VEST_LENGTH,
   GET_VEST_METADATA,
+  GET_IS_ALLOWED_TO_BURN,
+  SET_ALLOW_BURNING,
   DELETE_UNEXPIRED_VESTS,
 };
 

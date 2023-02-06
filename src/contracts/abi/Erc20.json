@@ -122,6 +122,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isAllowed",
+        "type": "bool"
+      }
+    ],
+    "name": "IsAllowedToBurnEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "oldOwner",
@@ -135,6 +154,25 @@
       }
     ],
     "name": "OwnerChangeEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "securityDelayInBlocks",
+        "type": "uint256"
+      }
+    ],
+    "name": "SecurityDelayInBlocksEvent",
     "type": "event"
   },
   {
@@ -188,25 +226,6 @@
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "securityDelayInBlocks",
-        "type": "uint256"
-      }
-    ],
-    "name": "securityDelayInBlocksEvent",
-    "type": "event"
-  },
-  {
     "inputs": [],
     "name": "ERC1155Address",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
@@ -250,6 +269,13 @@
       }
     ],
     "name": "airdropVest",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bool", "name": "_allow", "type": "bool" }],
+    "name": "allowBurning",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -374,6 +400,13 @@
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isAllowedToBurn",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {

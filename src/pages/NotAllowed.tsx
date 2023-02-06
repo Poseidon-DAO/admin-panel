@@ -25,7 +25,7 @@ const NotAllowed: FC = () => {
         width="100vw"
       >
         <img
-          src="../assets/logo.png"
+          src="/static/logo.png"
           alt="PoseidonDAO"
           height="100px"
           width="100px"
