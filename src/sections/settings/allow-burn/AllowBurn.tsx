@@ -46,6 +46,8 @@ export default function AllowBurn() {
     setLocalIsAllowedToBurn(event.target.checked);
   }
 
+  const isConnectingToMetamask = setBurnAllowanceWriteStatus === "loading";
+
   const isVerifying = setBurnAllowanceStatus === "loading";
   const showSnackbar = setBurnAllowanceStatus !== "idle";
   const snackbarDuration = isVerifying ? null : 3000;
@@ -89,7 +91,7 @@ export default function AllowBurn() {
             )}
           </Grid>
           <Grid container item sm={1} justifyContent="flex-end">
-            {isVerifying ? (
+            {isVerifying || isConnectingToMetamask ? (
               <Box marginRight={2}>
                 <CircularProgress size={20} />
               </Box>
