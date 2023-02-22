@@ -18,7 +18,12 @@ const useDeleteUnexpiredVests = ({ address, start, end }: IProps) => {
   const { config } = usePrepareContractWrite({
     ...options,
     args: [address, start, end],
-    enabled: !!address && !!start && !!end && start >= 0 && end >= 0,
+    enabled:
+      !!address &&
+      typeof start === "number" &&
+      start >= 0 &&
+      typeof end === "number" &&
+      end >= 0,
   });
 
   const { data, write } = useContractWrite(config);

@@ -264,7 +264,12 @@ function Table({
                       </TableCell>
 
                       <TableCell align="left">{row.address}</TableCell>
-                      <TableCell align="left">{row.amount}</TableCell>
+                      <TableCell align="left">
+                        {new Intl.NumberFormat("en-US", {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        }).format(Number(row.amount))}
+                      </TableCell>
                       {isVestingActive && (
                         <TableCell align="left">{row.vestingAmount}</TableCell>
                       )}
