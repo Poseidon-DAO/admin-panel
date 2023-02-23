@@ -259,30 +259,73 @@ const TransactionForm: FC<IProps> = ({
             helperText={errors["amount"]}
             style={{ width: "100%" }}
             InputProps={{
-              endAdornment: !amount ? (
-                maxAmountButton ? (
+              endAdornment: (
+                <>
                   <Tooltip
-                    title="Use the max amount of tokens you have"
-                    placement="top"
+                    title={
+                      <>
+                        <p>e.g.</p>
+                        <p>
+                          0.01{" "}
+                          <span style={{ float: "right", marginLeft: 10 }}>
+                            $PDN
+                          </span>
+                        </p>
+                        <p>
+                          10{" "}
+                          <span style={{ float: "right", marginLeft: 10 }}>
+                            $PDN
+                          </span>
+                        </p>
+                        <p>
+                          100.5{" "}
+                          <span style={{ float: "right", marginLeft: 10 }}>
+                            $PDN
+                          </span>
+                        </p>
+                      </>
+                    }
+                    arrow
                   >
-                    <Button
-                      variant="text"
-                      size="medium"
-                      onClick={handleMaxValueSet}
+                    <IconButton
+                      style={{ margin: "0 5px", cursor: "help" }}
+                      disableTouchRipple
                     >
-                      Max
-                    </Button>
+                      <Iconify
+                        icon="ant-design:info-circle-outlined"
+                        width={20}
+                        height={20}
+                        color="inherit"
+                      />
+                    </IconButton>
                   </Tooltip>
-                ) : null
-              ) : (
-                <Tooltip title="Remove amount" placement="top">
-                  <IconButton
-                    size="medium"
-                    onClick={() => handleRemove({ amount: "" })}
-                  >
-                    <Iconify icon="charm:cross" />
-                  </IconButton>
-                </Tooltip>
+
+                  {!amount ? (
+                    maxAmountButton ? (
+                      <Tooltip
+                        title="Use the max amount of tokens you have"
+                        placement="top"
+                      >
+                        <Button
+                          variant="text"
+                          size="medium"
+                          onClick={handleMaxValueSet}
+                        >
+                          Max
+                        </Button>
+                      </Tooltip>
+                    ) : null
+                  ) : (
+                    <Tooltip title="Remove amount" placement="top">
+                      <IconButton
+                        size="medium"
+                        onClick={() => handleRemove({ amount: "" })}
+                      >
+                        <Iconify icon="charm:cross" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                </>
               ),
             }}
           />
@@ -293,7 +336,7 @@ const TransactionForm: FC<IProps> = ({
               value={vestingAmount}
               disabled={loading}
               onChange={handleInputChange(true)}
-              placeholder="5760"
+              placeholder={delayInBlocks?.toString() || ""}
               label="Blocks"
               type="number"
               autoComplete="off"

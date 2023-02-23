@@ -106,7 +106,7 @@ export default function BurnRatio() {
                 value={String(localRatio)}
                 onChange={handleRatioChange}
                 variant="standard"
-                label="Amount of tokens to burn"
+                label="Burn ratio amount (without decimals)"
                 sx={{ width: "90%" }}
                 autoFocus
               />

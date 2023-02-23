@@ -41,6 +41,7 @@ export default function DashboardLayout({ activeSectionTitle }) {
   } = usePDNSymbol();
 
   const { isAllowed, isLoading } = useIsUserAllowed();
+  const wrongNetwork = process.env.REACT_APP_CHAIN !== `0x${chain?.id}`;
 
   if (isLoading) {
     return <FullPageLoader />;
@@ -85,7 +86,7 @@ export default function DashboardLayout({ activeSectionTitle }) {
         />
 
         <CustomSnackbar
-          isOpen={process.env.REACT_APP_CHAIN !== `0x${chain?.id}`}
+          isOpen={wrongNetwork}
           type="error"
           message={`Please switch to ${NetworkTypes[
             process.env.REACT_APP_CHAIN

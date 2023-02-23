@@ -7,6 +7,7 @@ type IProps = {
   sx?: object;
   width?: number;
   height?: number;
+  color?: string;
 };
 
 const Iconify: FC<IProps> = ({ icon, sx = {}, ...other }) => {
