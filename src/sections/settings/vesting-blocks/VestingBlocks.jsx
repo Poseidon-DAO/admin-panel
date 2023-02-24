@@ -102,7 +102,7 @@ export default function VestingBlocks() {
                 value={String(localDelay)}
                 onChange={handleDelayChange}
                 variant="standard"
-                label="Vesting blocks"
+                label="Security vesting block delay (minimum block height for vesting)"
                 sx={{ width: "90%" }}
                 autoFocus
               />

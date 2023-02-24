@@ -191,7 +191,11 @@ const VestingTable: FC<IProps> = ({
                       <TableCell align="left">{row.address}</TableCell>
                       <TableCell align="left">
                         <>
-                          {row.amount} {symbol}
+                          {new Intl.NumberFormat("en-US", {
+                            maximumFractionDigits: 2,
+                            minimumFractionDigits: 2,
+                          }).format(Number(row.amount))}{" "}
+                          {symbol}
                         </>
                       </TableCell>
                       <TableCell align="left">

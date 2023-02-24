@@ -41,7 +41,7 @@ const VestingLayout: FC = () => {
   }, [address]);
 
   useEffect(() => {
-    if (!!vestToDelete && vestToDelete >= 0) {
+    if (typeof vestToDelete === "number" && vestToDelete >= 0) {
       deleteUnExpiredVests?.();
     }
 

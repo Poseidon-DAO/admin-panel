@@ -1,6 +1,6 @@
 import { type FC, useState } from "react";
 import { Button, Grid, TextField, IconButton } from "@mui/material";
-import Web3 from "web3";
+import web3 from "web3";
 
 import Iconify from "src/components/Iconify";
 
@@ -16,7 +16,7 @@ const SearchInput: FC<IProps> = ({ address, onChange, onClick, onDelete }) => {
 
   function isValid() {
     const isEmpty = !address;
-    const isValid = Web3.utils.isAddress(address);
+    const isValid = web3.utils.isAddress(address);
 
     if (!isValid) {
       setError("Please provide a valid address!");

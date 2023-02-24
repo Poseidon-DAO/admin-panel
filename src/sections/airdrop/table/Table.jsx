@@ -140,8 +140,7 @@ function Table({
     ? headCells.filter((cell) => cell.id !== "vestingAmount")
     : headCells;
   const rowCount = searchRows.length;
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - searchRows.length) : 0;
+  const emptyRows = Math.max(0, (1 + page) * rowsPerPage - searchRows.length);
   const numSelected = selected.length;
 
   return (
@@ -264,7 +263,12 @@ function Table({
                       </TableCell>
 
                       <TableCell align="left">{row.address}</TableCell>
-                      <TableCell align="left">{row.amount}</TableCell>
+                      <TableCell align="left">
+                        {new Intl.NumberFormat("en-US", {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        }).format(Number(row.amount))}
+                      </TableCell>
                       {isVestingActive && (
                         <TableCell align="left">{row.vestingAmount}</TableCell>
                       )}
@@ -275,7 +279,7 @@ function Table({
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: 53 * emptyRows,
+                    height: 55 * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />

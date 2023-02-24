@@ -120,7 +120,7 @@ function CSVLoader({
                         icon="ant-design:info-circle-outlined"
                         width={20}
                         height={20}
-                        color="#d7dde1"
+                        color="inherit"
                       />
                     </IconButton>
                   </CustomTooltip>

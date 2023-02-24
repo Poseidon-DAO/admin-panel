@@ -88,7 +88,10 @@ export default function DashboardSidebar({
               </Tooltip>
               <Tooltip title={balance || ""}>
                 <Typography variant="caption" sx={{ color: "text.primary" }}>
-                  {new Intl.NumberFormat("en-US").format(Number(balance))}{" "}
+                  {new Intl.NumberFormat("en-US", {
+                    maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
+                  }).format(Number(balance))}{" "}
                   {symbol}
                 </Typography>
               </Tooltip>
